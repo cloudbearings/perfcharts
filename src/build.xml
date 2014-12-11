@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="chartgeneration" default="all" basedir=".">
+	<description>Chart Generation Tool</description>
+	<property name="build" value="../build_dir"/>
+	<property name="lib" value="../lib"/> 
+	<target name="init">
+		<mkdir dir="${build}" />
+	</target>
+	<target name="build" depends="init">
+		<ant antfile="build.xml" dir="chartgeneration-core" target="all" inheritall="false" inheritrefs="false">
+			<property name="lib" value="../${lib}"/>
+			<property name="build" value="../${build}/chartgeneration-core"/> 
+		</ant>
+		<ant antfile="build.xml" dir="chartgeneration-perftest" target="all" inheritall="false" inheritrefs="false">
+			<property name="lib" value="../${lib}"/> 
+			<property name="build" value="../${build}/chartgeneration-perftest"/> 
+		</ant>
+	</target>
+	<target name="package" depends="build">
+	</target>
+	<target name="all" depends="package">
+	</target>
+	<target name="clean">
+		<ant antfile="build.xml" dir="chartgeneration-core" target="clean" inheritall="true" inheritrefs="false">
+			<property name="lib" value="../${lib}"/>
+			<property name="build" value="../${build}/chartgeneration-core"/> 
+		</ant>
+		<ant antfile="build.xml" dir="chartgeneration-perftest" target="clean" inheritall="true" inheritrefs="false">
+			<property name="lib" value="../${lib}"/> 
+			<property name="build" value="../${build}/chartgeneration-perftest"/> 
+		</ant>
+		<delete dir="${build}"/>
+	</target>
+</project>

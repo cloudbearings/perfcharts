@@ -1,0 +1,11 @@
+*~
+*.class
+*.bak
+*.log
+.project
+.classpath
+.metadata/
+.settings/
+chartgeneration*.jar
+build_dir/
+

@@ -1,0 +1,33 @@
+#!/bin/bash
+OUTPUT_DIR=output
+REPORT_FILE=report.html
+while getopts d:o:? opt; do
+	case $opt in
+	d) OUTPUT_DIR=$OPTARG;;
+	o) REPORT_FILE=$OPTARG;;
+	?|*)	echo
+		echo Usage: `basename $0` [OPTION...] [INPUT DIRECTORY]
+		echo
+		echo Performance Test Report Generator - Chart Generation Tool
+		echo Examples:
+		echo '	'`basename $0`'	'\# Generate a report from current directory
+		echo '	'`basename $0` input/'	'\# Generate a report from directory \"input/\"
+		echo '	'`basename $0` -d output/ -o report.html input/'	'\# Generate a report \"report.html\" from \"input/\", and place generated files into output/
+		echo
+		echo Options:
+		echo '	'-d DIRECTORY'		'specify the output directory
+		echo '	'-o FILE'		'the file name of generated report, default to \"report.html\"
+		exit -1;;
+	esac
+done
+shift $[$OPTIND - 1]
+
+if [ -n "$1" ]; then
+	INPUT_DIR=$1
+else
+	INPUT_DIR=.
+fi
+
+CGT_HOME=$(cd `dirname $0`; pwd)
+LIB_PATH=$CGT_HOME/lib
+echo $OUTPUT_DIR/$REPORT_FILE
