@@ -3,7 +3,6 @@ package com.redhat.chartgeneration.configtemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.redhat.chartgeneration.common.ConstantSelector;
 import com.redhat.chartgeneration.common.FieldSelector;
 import com.redhat.chartgeneration.common.IndexFieldSelector;
 import com.redhat.chartgeneration.config.AxisMode;
@@ -20,6 +19,7 @@ public class CPULoadChartTemplate extends BaseChartTemplateWithInterval {
 		FieldSelector cpuload1min = new IndexFieldSelector(2);
 		FieldSelector cpuload5min = new IndexFieldSelector(3);
 		FieldSelector cpuload15min = new IndexFieldSelector(4);
+		FieldSelector coresField = new IndexFieldSelector(5);
 		List<LineConfigRule> rules = new ArrayList<LineConfigRule>();
 		rules.add(new LineConfigRule("^CPULOAD$", "1 min", "LD", labelField,
 				timestampField, cpuload1min, new AverageCalculation(interval)));
@@ -28,9 +28,8 @@ public class CPULoadChartTemplate extends BaseChartTemplateWithInterval {
 		rules.add(new LineConfigRule("^CPULOAD$", "15 min", "LD", labelField,
 				timestampField, cpuload15min, new AverageCalculation(interval)));
 		rules.add(new LineConfigRule("^CPULOAD$", "CPUs", "LD", labelField,
-				timestampField, new ConstantSelector(2),
-				new AverageCalculation(interval)));
-		return createConfig("CPU Load over Time", "time", "mtx", rules,
+				timestampField, coresField, new AverageCalculation(interval)));
+		return createConfig("CPU Load over Time", "time", "load", rules,
 				AxisMode.TIME);
 	}
 

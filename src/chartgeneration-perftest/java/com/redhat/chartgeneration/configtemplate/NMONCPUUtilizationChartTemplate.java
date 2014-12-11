@@ -37,7 +37,7 @@ public class NMONCPUUtilizationChartTemplate extends
 		rules.add(new LineConfigRule("^CPU$", "CPUs", "", getLabelField(),
 				timestampField, cpusField,
 				new AverageCalculation(getInterval())));
-		return createConfig("CPU Utilization over Time", "time", "mtx", rules,
+		return createConfig("CPU Utilization over Time", "time", "%", rules,
 				AxisMode.TIME);
 	}
 
