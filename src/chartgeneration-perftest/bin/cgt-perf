@@ -28,6 +28,7 @@ perftest_parser=$CGT_LIB/chartgeneration-perftest-parser.jar
 perftest_generator=$CGT_LIB/chartgeneration-core.jar
 jmeter_default_config_file=$CGT_HOME/res/jmeter.conf
 rm_default_config_file=$CGT_HOME/res/res.conf
+report_template=$CGT_HOME/res/report_mono.html
 
 # deal with arguments
 while getopts d:o:? opt; do
@@ -47,9 +48,9 @@ else
 fi
 
 jmeter_data_table=$tmp_dir/jmeter.csv
-jmeter_json_file=$output_dir/Jmeter.json
 resource_monitoring_dir=$tmp_dir/resource_monitoring
-rm_json_dir=$output_dir
+json_dir=$output_dir
+jmeter_json_file=$json_dir/Jmeter.json
 
 # parse raw data to data tables
 rm "$tmp_dir/*" -Rf
@@ -104,32 +105,36 @@ if [ -f "$res_data_table" ]; then
 	file_base_name=`basename $res_data_table`
 	file_bare_name=${file_base_name%%.*}
 	server_name=${file_bare_name%%_*}
-	#echo $res_data_table $server_name
+	unset config_file_template
 	if [ -f "$input_dir/$server_name.conf" ]; then
-		cp "$input_dir/$server_name.conf" "$resource_monitoring_dir/$server_name.conf"
+		config_file_template=$input_dir/$server_name.conf
 	elif [ -f "$input_dir/res.template.conf" ]; then
-		cp "$input_dir/res.template.conf" "$resource_monitoring_dir/$server_name.conf"
+		config_file_template=$input_dir/res.template.conf
 	else
-		cp "$rm_default_config_file" "$resource_monitoring_dir/$server_name.conf"
+		config_file_template=$rm_default_config_file
 	fi
-	$CGT_JAVA_COMMAND -jar $perftest_generator "$resource_monitoring_dir/$server_name.conf" < "$res_data_table" > "$rm_json_dir/Resource-$server_name.json"
+	sed "s/<!--{server_name}-->/${server_name}/g" "$config_file_template" > "$resource_monitoring_dir/$server_name.conf"
+	$CGT_JAVA_COMMAND -jar $perftest_generator "$resource_monitoring_dir/$server_name.conf" < "$res_data_table" > "$json_dir/Resource-$server_name.json"
 fi
 done
 
 # generate final report
 js_file=$output_dir/data.js
-echo '(function(){var d=ChartGeneration.data,j;' > $js_file
-for json_file in $output_dir/*.json; do
+echo '(function(){var d=ChartGeneration.data,j;' > "$js_file"
+for json_file in $json_dir/*.json; do
 if [ -f "$json_file" ]; then
 	file_base_name=`basename $json_file`
 	file_bare_name=${file_base_name%%.*}
-	echo -n 'j=' >> $js_file
-	cat "$json_file" >> $js_file
-	echo ";if(!j.title)j.title='$file_bare_name';d.push(j);" >> $js_file
+	echo -n 'j=' >> "$js_file"
+	cat "$json_file" >> "$js_file"
+	echo ";if(!j.title)j.title='$file_bare_name';d.push(j);" >> "$js_file"
 fi
 done
 echo '})();' >> $js_file
 
-
+cp "$report_template" "$report_file" -f
+echo '<script type="text/javascript">' >> "$report_file"
+cat $js_file >> "$report_file"
+echo '</script>' >> "$report_file"
 
 

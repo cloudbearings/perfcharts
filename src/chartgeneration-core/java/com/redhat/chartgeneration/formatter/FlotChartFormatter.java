@@ -33,9 +33,12 @@ public class FlotChartFormatter {
 				.append("\",\"yLabel\":\"")
 				.append(graph.getYLabel().replace("\"", "\\\""))
 				.append("\",\"xaxisMode\":\"")
-				.append(graph.getXaxisMode().toString())
-				.append("\",\"series\":[");
-
+				.append(graph.getXaxisMode().toString());
+		if (graph.getSubtitle() != null) {
+			sb.append("\",\"subtitle\":\"")
+			.append(graph.getSubtitle().replace("\"", "\\\""));
+		}
+		sb.append("\",\"series\":[");
 		for (GraphLine line : graph.getLines()) {
 			sb.append("\n{\"label\":\"")
 					.append(line.getLabel().replace("\"", "\\\"")).append("\"");

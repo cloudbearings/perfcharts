@@ -48,7 +48,7 @@
 			$("<li/>")
 					.append(
 							$(
-									"<a class='report_switch' href='javascript:'>Composite Chart</a>")
+									"<a class='report_switch' href='javascript:'>Composite Report</a>")
 									.click(function() {
 										$(".control_pad").html("");
 										showCompositeReport();
@@ -65,7 +65,7 @@
 			report.title = "Composite Report";
 			report.charts = [ {
 				title : "Composite Chart",
-				subtitle : "Users & RT",
+				subtitle : "",
 				xaxisMode : "TIME",
 				series : [],
 				yaxes : [],
@@ -90,8 +90,9 @@
 				unit = line._unit ? line._unit.value : "";
 				if (!yaxesMap[unit]) {
 					yaxes.push({
+						position: yaxes.length & 1 ? "right" : "left",
 						tickFormatter : function(num, _) {
-							return num + unit;
+							return yTickFormatter(num, _) + unit; 
 						}
 					});
 					yaxesMap[unit] = yaxes.length;
@@ -111,7 +112,10 @@
 					}
 				}
 			}
-			draw(tag.$placeholder, tag.$legend, compositeChart);
+			draw(tag.$placeholder, tag.$legend, compositeChart, function(options){
+				options.yaxes=yaxes;
+				return options;
+			});
 		}
 
 		function on_clearSelection_click() {
@@ -197,21 +201,25 @@
 			});
 			$placeholder.css("padding-bottom", maxTickLabelHeight);
 		}
+		function yTickFormatter(num, _) {
+			var r = num;
+			var absNum = Math.abs(num);
+			var rounded = Math.round(num);
+			var d = Math.abs(num - rounded);
+			if (absNum != 0 && (absNum >= 1e6 || num <= 1e-5))
+				r = num.toExponential();
+			else if (d >= 1e-5)
+				r = num.toFixed(1);
+			else if (d > 0)
+				r = rounded;
+			return r;
+		}
 		function draw($placeholder, $legend, chart, optionsHook) {
 			var options = {
 				yaxes : chart.yaxes,
 				yaxis : {
 					minTickSize : 0.1,
-					tickFormatter : function(num, _) {
-						var r = num;
-						var absNum = Math.abs(num);
-						var d;
-						if (absNum != 0 && (absNum >= 1e6 || num <= 1e-5))
-							r = num.toExponential();
-						else if (num != Math.round(num))
-							r = num.toFixed(1);
-						return r;
-					}
+					tickFormatter : yTickFormatter
 				},
 				legend : {
 					position : "nw",
