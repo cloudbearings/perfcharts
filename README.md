@@ -21,16 +21,33 @@ Components
 The tool contains three main components: Parser, Generator, and Driver Program.
 
 * _Parser_ reads raw data, extracts the part of data we are interested in, and produces data table (in CSV format).
-* _Generator_ generates charts from data tables according to configuration files that is defined by users and tells a generator which charts should be produced.
+* _Generator_ generates charts from data tables according to configuration files that is defined by users and specifies which charts should be produced.
 * _Driver Program_ controls the overall progress of running.
 
+Build
+-----------
+1. This software uses [Apache Ant](http://ant.apache.org/) for compiling and packaging. Please install Apache Ant first.
+
+- for RHEL/CentOS/Fedora users
+		
+		sudo yum install ant
+
+- for Debian/Ubuntu users
+		
+		sudo aptitude install ant
+
+2. Enter src directory, and build.
+
+		cd src
+		ant
 
 Steps to Generate Perf-test Charts
 ----------------------------------
 ### Use cgt-perf ###
 We provide a shell script (cgt-perf.sh) to simplify the process for perf-test chart generation.
 
-	Usage: cgt-perf.sh [-d output_dir] [-o output_report] [input_dir]
+	Usage:
+		cgt-perf.sh [-d OUTPUT_DIR] [-o OUTPUT_FILE] [INPUT_DIR]
 
 #### Step 1 ####
 Create a new directory, and put all related perf-test logs into the directory. 
@@ -48,7 +65,7 @@ Enter the directory you just created, and run cgt-perf.sh in bin/.
 
 	cgt-perf.sh
 
-Or you can run cgt-perf.sh <input_dir> to indicate the input directory manually:
+Or you can run cgt-perf.sh INPUT_DIR to indicate the input directory manually:
 
 	cgt-perf.sh /home/cgt/input/
 

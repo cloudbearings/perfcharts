@@ -32,6 +32,7 @@
 				opacity : 0.80
 			}).appendTo("body");
 			// set up nav
+			$("h1").text("Perf-test Report");
 			var data = ChartGeneration.data;
 			var $report_nav = $("#report_nav");
 			for (var i = 0; i < data.length; ++i) {
@@ -435,7 +436,7 @@ html {
 </head>
 <body>
 	<header>
-		<h1>My Report</h1>
+		<h1>Empty Report</h1>
 		<nav>
 			<ul id="report_nav">
 			</ul>
@@ -455,4 +456,4 @@ html {
 	</footer>
 </body>
 </html>
-<!-- <script type="text/javascript" src="data.js"></script> -->
+<script type="text/javascript" src="data.js"></script>

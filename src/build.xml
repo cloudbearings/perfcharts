@@ -15,6 +15,10 @@
 			<property name="lib" value="../${lib}"/> 
 			<property name="build" value="../${build}/chartgeneration-perftest"/> 
 		</ant>
+		<ant antfile="build.xml" dir="chartgeneration-perftest-parser" target="all" inheritall="false" inheritrefs="false">
+			<property name="lib" value="../${lib}"/> 
+			<property name="build" value="../${build}/chartgeneration-perftest-parser"/> 
+		</ant>
 	</target>
 	<target name="package" depends="build">
 	</target>
@@ -28,6 +32,10 @@
 		<ant antfile="build.xml" dir="chartgeneration-perftest" target="clean" inheritall="true" inheritrefs="false">
 			<property name="lib" value="../${lib}"/> 
 			<property name="build" value="../${build}/chartgeneration-perftest"/> 
+		</ant>
+		<ant antfile="build.xml" dir="chartgeneration-perftest-parser" target="clean" inheritall="true" inheritrefs="false">
+			<property name="lib" value="../${lib}"/> 
+			<property name="build" value="../${build}/chartgeneration-perftest-parser"/> 
 		</ant>
 		<delete dir="${build}"/>
 	</target>

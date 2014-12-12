@@ -5,7 +5,7 @@ import java.util.List;
 import com.redhat.chartgeneration.common.FieldSelector;
 import com.redhat.chartgeneration.configtemplate.ChartConfigTemplate;
 
-public class AppConfig {
+public class ReportConfig {
 	private String version;
 	private String title;
 	private String author;
