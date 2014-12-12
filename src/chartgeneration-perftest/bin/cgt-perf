@@ -21,20 +21,16 @@ export CGT_LIB=$CGT_HOME/lib
 export CGT_JAVA_COMMAND=java
 #export CLASSPATH=.:$CGT_LIB:$CLASSPATH
 #echo "CGT_HOME is $CGT_HOME"
+input_dir=\.
 output_dir=output
 report_file=report.html
-tmp_dir=$output_dir/tmp
-perftest_parser=$CGT_LIB/chartgeneration-perftest-parser.jar
-perftest_generator=$CGT_LIB/chartgeneration-core.jar
-jmeter_default_config_file=$CGT_HOME/res/jmeter.conf
-rm_default_config_file=$CGT_HOME/res/res.conf
-report_template=$CGT_HOME/res/report_mono.html
-
 # deal with arguments
 while getopts d:o:? opt; do
 	case $opt in
-	d) output_dir=$OPTARG;;
-	o) report_file=$OPTARG;;
+	d) 
+		output_dir=$OPTARG;;
+	o) 
+		report_file=$OPTARG;;
 	?|*)	echo
 		show_usage
 		exit -1;;
@@ -43,9 +39,16 @@ done
 shift $[$OPTIND - 1]
 if [ -n "$1" ]; then
 	input_dir=$1
-else
-	input_dir=\.
 fi
+
+
+tmp_dir=$output_dir/tmp
+perftest_parser=$CGT_LIB/chartgeneration-perftest-parser.jar
+perftest_generator=$CGT_LIB/chartgeneration-core.jar
+jmeter_default_config_file=$CGT_HOME/res/jmeter.conf
+rm_default_config_file=$CGT_HOME/res/res.conf
+report_template=$CGT_HOME/res/report_mono.html
+
 
 jmeter_data_table=$tmp_dir/jmeter.csv
 resource_monitoring_dir=$tmp_dir/resource_monitoring
