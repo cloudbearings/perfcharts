@@ -12,3 +12,5 @@ build_dir/
 log/
 tmp/
 output/
+bin/*
+res/*
