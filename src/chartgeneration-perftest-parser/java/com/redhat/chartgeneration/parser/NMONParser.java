@@ -80,8 +80,6 @@ public class NMONParser implements DataParser {
 				parseDiskWrite(writer, line, timeTable, diskColumnMap);
 		}
 		writer.flush();
-		out.close();
-		// lines.size();
 	}
 
 	private static void parseCPUUtilization(BufferedWriter writer,

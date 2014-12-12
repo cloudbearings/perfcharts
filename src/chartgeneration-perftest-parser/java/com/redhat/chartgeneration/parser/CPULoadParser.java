@@ -22,21 +22,26 @@ public class CPULoadParser implements DataParser {
 		timeFormat.setTimeZone(utcZone);
 		while ((lineStr = reader.readLine()) != null) {
 			String[] extractedLine = lineStr.split(",");
+			long time = 0;
 			if (extractedLine.length < 2)
 				continue;
+			try {
+				time = timeFormat.parse(extractedLine[0]).getTime();
+			} catch (Exception ex) {
+				System.err.print("[Warning] com.redhat.chartgeneration.parser.CPULoadParser.parse: Ignore line\n" + lineStr);
+				continue;
+			}
 			writer.write("CPULOAD,");
-			writer.write(Long.toString(timeFormat.parse(extractedLine[0])
-					.getTime()));
+			writer.write(Long.toString(time));
 			String[] cpuLoadStr = extractedLine[1].trim().split(" ");
 			writer.write(String.format(",%.2f", Float.parseFloat(cpuLoadStr[0])));
 			writer.write(String.format(",%.2f", Float.parseFloat(cpuLoadStr[1])));
 			writer.write(String.format(",%.2f", Float.parseFloat(cpuLoadStr[2])));
 			writer.write(",");
-			writer.write(Integer.toString(Integer.parseInt(cpuLoadStr[3])));
+			writer.write(cpuLoadStr.length > 3 ? Integer.toString(Integer
+					.parseInt(cpuLoadStr[3])) : "0");
 			writer.write("\n");
 		}
-		in.close();
 		writer.flush();
-		out.close();
 	}
 }

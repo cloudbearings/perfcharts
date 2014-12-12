@@ -2,10 +2,13 @@
 *.class
 *.bak
 *.log
+*.tmp
 .project
 .classpath
 .metadata/
 .settings/
 chartgeneration*.jar
 build_dir/
-
+log/
+tmp/
+output/

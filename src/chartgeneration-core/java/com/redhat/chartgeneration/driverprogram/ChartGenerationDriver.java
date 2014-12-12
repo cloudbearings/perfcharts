@@ -12,9 +12,9 @@ import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 
-import com.redhat.chartgeneration.config.AppConfig;
-import com.redhat.chartgeneration.config.ConfigLoader;
 import com.redhat.chartgeneration.config.LineGraphConfig;
+import com.redhat.chartgeneration.config.ReportConfig;
+import com.redhat.chartgeneration.config.ReportConfigLoader;
 import com.redhat.chartgeneration.configtemplate.ChartConfigTemplate;
 import com.redhat.chartgeneration.formatter.FlotChartFormatter;
 import com.redhat.chartgeneration.generator.ReportGenerator;
@@ -25,14 +25,15 @@ public class ChartGenerationDriver {
 
 	public static void main(String[] args) {
 		try {
+			//AppConfig.getInstance();
 			if (args.length < 1) {
 				System.err.println("Usage: \n<config file>");
 				return;
 			}
 			String configFilePath = args[0];
 
-			ConfigLoader templateLoader = new ConfigLoader();
-			AppConfig config = templateLoader.load(configFilePath);
+			ReportConfigLoader templateLoader = new ReportConfigLoader();
+			ReportConfig config = templateLoader.load(configFilePath);
 
 			List<LineGraphConfig> lineGraphConfigs = new ArrayList<LineGraphConfig>();
 			for (ChartConfigTemplate template : config.getConfigTemplate()) {
