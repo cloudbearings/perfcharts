@@ -16,11 +16,9 @@ show_usage() {
 }
 
 # initialize global variables
-export CGT_HOME=$(cd `dirname $0`; cd ..; pwd)
-export CGT_LIB=$CGT_HOME/lib
-export CGT_JAVA_COMMAND=java
-#export CLASSPATH=.:$CGT_LIB:$CLASSPATH
-#echo "CGT_HOME is $CGT_HOME"
+if ! [ -n "$CGT_HOME" ]; then export CGT_HOME=$(cd `dirname $0`; cd ..; pwd); fi
+if ! [ -n "$CGT_LIB" ]; then export CGT_LIB=$CGT_HOME/lib; fi
+if ! [ -n "$CGT_JAVA_COMMAND" ]; then export CGT_JAVA_COMMAND=java; fi
 input_dir=\.
 # deal with arguments
 while getopts d:o:? opt; do
@@ -49,10 +47,10 @@ jmeter_default_config_file=$CGT_HOME/res/jmeter.conf
 rm_default_config_file=$CGT_HOME/res/res.conf
 report_template=$CGT_HOME/res/report_mono.html
 
-
-jmeter_data_table=$tmp_dir/jmeter.csv
+jmeter_dir=$tmp_dir/jmeter
+jmeter_data_table=$jmeter_dir/jmeter.csv
 resource_monitoring_dir=$tmp_dir/resource_monitoring
-json_dir=$output_dir
+json_dir=$tmp_dir/subreports
 jmeter_json_file=$json_dir/Jmeter.json
 
 # parse raw data to data tables
@@ -66,40 +64,39 @@ if [ -f "$file" ]; then
 	case $file_extension in
 	load|nmon)
 		server_name=${file_bare_name%%_*}
-
-		mkdir -p $resource_monitoring_dir
+		mkdir -p "$resource_monitoring_dir"
 		if [ "$file_extension" == "load" ]; then
 			parser_class=CPULoadParser
 		elif [ "$file_extension" == "nmon" ]; then
 			parser_class=NMONParser
 		fi
-		#echo $CGT_JAVA_COMMAND -jar $perftest_parser $parser_class \< $file \>\> $csv_file
-		if ! $CGT_JAVA_COMMAND -jar $perftest_parser $parser_class < "$file" >> "$resource_monitoring_dir/$server_name.csv"; then
+		if ! $CGT_JAVA_COMMAND -jar "$perftest_parser" "$parser_class" < "$file" >> "$resource_monitoring_dir/$server_name.csv"; then
 			exit 1
 		fi
 		;;
 	jtl)
+		mkdir -p "$jmeter_dir"
 		parser_class=JmeterParser
-		if ! $CGT_JAVA_COMMAND -jar $perftest_parser $parser_class < "$file" >> "$jmeter_data_table"; then
+		if ! $CGT_JAVA_COMMAND -jar "$perftest_parser" "$parser_class" < "$file" >> "$jmeter_data_table"; then
 			exit 1
 		fi
 		;;
 	conf) ;;
-	*) echo "[Warning] $file is ignored because I do not know what it is.";;
+	*) echo "[Warning] The file'$file' is ignored, because I don't know what it is.";;
 	esac
 fi
 done
 
 # generate charts
-
+mkdir -p "$json_dir"
 # generate charts from Jmeter
 if [ -f "$jmeter_data_table" ]; then
 	if [ -f "$input_dir/jmeter.conf" ]; then
-		cp $input_dir/jmeter.conf $tmp_dir/jmeter.conf
+		cp "$input_dir/jmeter.conf" "$jmeter_dir/jmeter.conf"
 	else
-		cp $jmeter_default_config_file $tmp_dir/jmeter.conf
+		cp "$jmeter_default_config_file" "$jmeter_dir/jmeter.conf"
 	fi
-	$CGT_JAVA_COMMAND -jar $perftest_generator "$tmp_dir/jmeter.conf" < "$jmeter_data_table" > "$jmeter_json_file"
+	$CGT_JAVA_COMMAND -jar "$perftest_generator" "$jmeter_dir/jmeter.conf" < "$jmeter_data_table" > "$jmeter_json_file"
 fi
 
 # generate system resource monitoring charts
@@ -117,12 +114,12 @@ if [ -f "$res_data_table" ]; then
 		config_file_template=$rm_default_config_file
 	fi
 	sed "s/<!--{server_name}-->/${server_name}/g" "$config_file_template" > "$resource_monitoring_dir/$server_name.conf"
-	$CGT_JAVA_COMMAND -jar $perftest_generator "$resource_monitoring_dir/$server_name.conf" < "$res_data_table" > "$json_dir/Resource-$server_name.json"
+	$CGT_JAVA_COMMAND -jar "$perftest_generator" "$resource_monitoring_dir/$server_name.conf" < "$res_data_table" > "$json_dir/Resource-$server_name.json"
 fi
 done
 
 # generate final report
-js_file=$output_dir/data.js
+js_file=$tmp_dir/data.js
 echo '(function(){var d=ChartGeneration.data,j;' > "$js_file"
 for json_file in $json_dir/*.json; do
 if [ -f "$json_file" ]; then
@@ -133,7 +130,7 @@ if [ -f "$json_file" ]; then
 	echo ";if(!j.title)j.title='$file_bare_name';d.push(j);" >> "$js_file"
 fi
 done
-echo '})();' >> $js_file
+echo '})();' >> "$js_file"
 
 cp "$report_template" "$report_file" -f
 echo '<script type="text/javascript">' >> "$report_file"
