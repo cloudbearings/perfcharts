@@ -22,8 +22,6 @@ export CGT_JAVA_COMMAND=java
 #export CLASSPATH=.:$CGT_LIB:$CLASSPATH
 #echo "CGT_HOME is $CGT_HOME"
 input_dir=\.
-output_dir=output
-report_file=report.html
 # deal with arguments
 while getopts d:o:? opt; do
 	case $opt in
@@ -41,6 +39,8 @@ if [ -n "$1" ]; then
 	input_dir=$1
 fi
 
+if ! [ -n "$output_dir" ]; then output_dir=$input_dir/output; fi
+if ! [ -n "$report_file" ]; then report_file=$output_dir/report.html; fi
 
 tmp_dir=$output_dir/tmp
 perftest_parser=$CGT_LIB/chartgeneration-perftest-parser.jar
