@@ -63,19 +63,19 @@ A complete example is in examples/perf-test/.
 #### Step 2 ####
 Enter the directory you just created, and run cgt-perf.sh in bin/.
 
-	cgt-perf.sh
+	cgt-perf
 
 Or you can run cgt-perf.sh INPUT_DIR to indicate the input directory manually:
 
-	cgt-perf.sh /home/cgt/input/
+	cgt-perf /home/cgt/input/
 
 All generated files will be placed into the sub-directory "report" in your input directory. This is the default location for storing all output files. To specify another output directory, use -d option:
 
-	cgt-perf.sh -d home/cgt/output/ /home/cgt/input/
+	cgt-perf -d home/cgt/output/ /home/cgt/input/
 
 The file "report.html" in output directory is what you need. To specify another name of generated report, use -o option:
 
-	cgt-perf.sh -d home/cgt/output/ /home/cgt/input/ -o my_report.html
+	cgt-perf -d home/cgt/output/ /home/cgt/input/ -o my_report.html
 
 ### Advanced usage ###
 
@@ -114,3 +114,16 @@ Here is the format of output JSON:
 	]}
 
 The detailed guidelines for customize reports is out of the section, and will be discussed in a separated document.
+
+Release Log
+-----------
+* v0.2.0
+1. add support for subtitles
+2. add support for the number of cores in CPU load charts
+3. rewrite the driver program in Bash shell script
+4. new document
+5. some bugfixes
+
+* v0.1.0
+1. first release
+
