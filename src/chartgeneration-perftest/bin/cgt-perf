@@ -3,16 +3,18 @@
 # show usage of the script
 show_usage() {
 	local base_name=`basename $0`
-	echo Performance Test Report Generator - Chart Generation Tool\
-	echo Usage: $base_name [OPTION...] [INPUT DIRECTORY]
-	echo Examples:
-	echo '	'$base_name'	'\# Generate a report from current directory
-	echo '	'$base_name input/'	'\# Generate a report from directory \"input/\"
-	echo '	'$base_name -d output/ -o report.html input/'	'\# Generate a report \"report.html\" from \"input/\", and place generated files into output/
+	echo 'Performance Test Report Generator - Chart Generation Tool'
+	echo "Usage: $base_name [OPTION...] [INPUT DIRECTORY]"
+	echo 'Examples:'
+	echo "	$base_name	# Generate a report from current directory"
+	echo "	$base_name -z CST	# Generate a report from current directory with specifying the timezone of China Standard Time (CST)"
+	echo "	$base_name input/	# Generate a report from directory 'input/'"
+	echo "	$base_name -d output/ -o report.html input/	# Generate report 'report.html' from 'input/', and place generated files into 'output/'"
 	echo
-	echo Options:
-	echo '	'-d DIRECTORY'		'specify the output directory
-	echo '	'-o FILE'		'the file name of generated report, default to \"report.html\"
+	echo 'Options:'
+	echo '	-d DIRECTORY		specify the output directory'
+	echo "	-o FILE		the file name of generated report, default to 'report.html'"
+	echo '	-z TIMEZONE		specify the timezone. For example, UTC+8'
 }
 
 # initialize global variables
@@ -21,12 +23,14 @@ if ! [ -n "$CGT_LIB" ]; then export CGT_LIB=$CGT_HOME/lib; fi
 if ! [ -n "$CGT_JAVA_COMMAND" ]; then export CGT_JAVA_COMMAND=java; fi
 input_dir=\.
 # deal with arguments
-while getopts d:o:? opt; do
+while getopts d:o:z:? opt; do
 	case $opt in
 	d) 
 		output_dir=$OPTARG;;
 	o) 
 		report_file=$OPTARG;;
+	z)
+		timezone=$OPTARG;;
 	?|*)	echo
 		show_usage
 		exit -1;;
@@ -44,7 +48,7 @@ tmp_dir=$output_dir/tmp
 perftest_parser=$CGT_LIB/chartgeneration-perftest-parser.jar
 perftest_generator=$CGT_LIB/chartgeneration-core.jar
 jmeter_default_config_file=$CGT_HOME/res/jmeter.conf
-rm_default_config_file=$CGT_HOME/res/res.conf
+rm_default_config_file=$CGT_HOME/res/res.template.conf
 report_template=$CGT_HOME/res/report_mono.html
 
 jmeter_dir=$tmp_dir/jmeter
@@ -54,7 +58,7 @@ json_dir=$tmp_dir/subreports
 jmeter_json_file=$json_dir/Jmeter.json
 
 # parse raw data to data tables
-rm "$tmp_dir/*" -Rf
+rm "$tmp_dir" -Rf
 for file in $input_dir/*; do
 if [ -f "$file" ]; then
 	file_base_name=`basename $file`
@@ -70,14 +74,14 @@ if [ -f "$file" ]; then
 		elif [ "$file_extension" == "nmon" ]; then
 			parser_class=NMONParser
 		fi
-		if ! $CGT_JAVA_COMMAND -jar "$perftest_parser" "$parser_class" < "$file" >> "$resource_monitoring_dir/$server_name.csv"; then
+		if ! $CGT_JAVA_COMMAND -jar "$perftest_parser" "$parser_class" "$timezone" < "$file" >> "$resource_monitoring_dir/$server_name.csv"; then
 			exit 1
 		fi
 		;;
 	jtl)
 		mkdir -p "$jmeter_dir"
 		parser_class=JmeterParser
-		if ! $CGT_JAVA_COMMAND -jar "$perftest_parser" "$parser_class" < "$file" >> "$jmeter_data_table"; then
+		if ! $CGT_JAVA_COMMAND -jar "$perftest_parser" "$parser_class" "$timezone" < "$file" >> "$jmeter_data_table"; then
 			exit 1
 		fi
 		;;

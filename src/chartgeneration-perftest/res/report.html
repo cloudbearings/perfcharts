@@ -90,9 +90,9 @@
 				unit = line._unit ? line._unit.value : "";
 				if (!yaxesMap[unit]) {
 					yaxes.push({
-						position: yaxes.length & 1 ? "right" : "left",
+						position : yaxes.length & 1 ? "right" : "left",
 						tickFormatter : function(num, _) {
-							return yTickFormatter(num, _) + unit; 
+							return yTickFormatter(num, _) + unit;
 						}
 					});
 					yaxesMap[unit] = yaxes.length;
@@ -112,8 +112,9 @@
 					}
 				}
 			}
-			draw(tag.$placeholder, tag.$legend, compositeChart, function(options){
-				options.yaxes=yaxes;
+			draw(tag.$placeholder, tag.$legend, compositeChart, function(
+					options) {
+				options.yaxes = yaxes;
 				return options;
 			});
 		}
@@ -176,7 +177,31 @@
 				var chart = charts[i];
 				var $chart = $("<div class='chart'/>");
 				$charts.append($chart);
-				drawChart($chart, chart);
+				if (chart.chartType === "JmeterSummaryChart")
+					drawJmeterSummaryChart($chart, chart);
+				else
+					drawChart($chart, chart);
+			}
+		}
+		function drawJmeterSummaryChart($chart, chart) {
+			$chart.append($("<h3 class='chart_title'/>").text(chart.title))
+					.append(
+							$("<h4 class='chart_subtitle'/>").text(
+									chart.subtitle));
+			var $table = $("<table class='chart_table JmeterSummaryChart' />")
+					.appendTo($chart);
+			var $tableHeaderRow = $("<tr/>").appendTo(
+					$("<thead/>").appendTo($table));
+			for (var i = 0; i < chart.columnLabels.length; ++i) {
+				$("<th/>").text(chart.columnLabels[i])
+						.appendTo($tableHeaderRow);
+			}
+			var $tbody = $("<tbody/>").appendTo($table);
+			for (var i = 0; i < chart.rows.length; ++i) {
+				var $tableRow = $("<tr/>").appendTo($tbody);
+				for (var j = 0; j < chart.rows[i].length; ++j) {
+					$("<td/>").text(chart.rows[i][j]).appendTo($tableRow);
+				}
 			}
 		}
 		function drawChart($chart, chart) {
@@ -224,7 +249,7 @@
 				legend : {
 					position : "nw",
 					margin : [ 0, 0 ],
-					noColumns : 5,
+					noColumns : 4,
 					container : $legend
 				},
 				selection : {
@@ -261,6 +286,7 @@
 					map.push(chart.series[i].label);
 				}
 				options.xaxis = {
+					minTickSize : 1,
 					tickSize : 1,
 					tickLength : 0,
 					tickFormatter : function(num, _) {
@@ -371,7 +397,7 @@
 </script>
 <style type="text/css">
 header, #content, footer {
-	width: 1000px;
+	width: 1100px;
 	margin: 0 auto;
 }
 
@@ -397,8 +423,9 @@ html {
 	border: 2px solid #333;
 	margin: 20px auto;
 	padding: 10px;
-	width: 976px;
+	width: 1076px;
 	page-break-inside: avoid;
+	overflow: auto;
 }
 
 .report_title, .chart_title, .chart_subtitle {
@@ -416,13 +443,13 @@ html {
 }
 
 .placeholder {
-	width: 800px;
+	width: 900px;
 	height: 480px;
 	margin: 0 auto;
 }
 
 .legend {
-	width: 800px;
+	width: 900px;
 	margin: 0 auto;
 }
 
@@ -439,6 +466,34 @@ html {
 
 .y_label {
 	margin: 5px 60px;
+}
+
+.chart_table {
+	border: 4px double;
+	border-collapse: collapse;
+	margin: 0 auto;
+}
+
+.chart_table thead {
+	background-color: #ddd;
+}
+
+.chart_table td, .chart_table th {
+	border: 1px solid;
+}
+
+.JmeterSummaryChart {
+	table-layout: fixed;
+}
+
+.JmeterSummaryChart>tbody>tr>td {
+	text-align: right;
+}
+
+.JmeterSummaryChart>tbody>tr>td:FIRST-CHILD {
+	word-wrap: break-word;
+	text-align: left;
+	max-width: 200px;
 }
 </style>
 </head>
@@ -460,7 +515,7 @@ html {
 		<hr />
 	</section>
 	<footer>
-		<p>Powered by Chart Generation Tool v0.1</p>
+		<p>Powered by Chart Generation Tool from HSS</p>
 	</footer>
 </body>
 </html>

@@ -50,7 +50,7 @@ public class ReportConfigLoader {
 		FieldSelector labelField = null;
 		ChartConfigTemplate configTemplate = null;
 
-		URLClassLoader customClassLoader = null;
+		// URLClassLoader customClassLoader = null;
 		try {
 			while (reader.hasNext()) {
 				switch (reader.next()) {
@@ -78,8 +78,12 @@ public class ReportConfigLoader {
 										.info("add config class location '"
 												+ urls[i].toString() + "'");
 							}
-							customClassLoader = new URLClassLoader(urls,
-									ReportConfigLoader.class.getClassLoader());
+							// customClassLoader = new URLClassLoader(urls,
+							// Thread.currentThread().getContextClassLoader());
+							Thread.currentThread().setContextClassLoader(
+									new URLClassLoader(urls, Thread
+											.currentThread()
+											.getContextClassLoader()));
 						}
 						cfg.setVersion(reader
 								.getAttributeValue(null, "version"));
@@ -110,8 +114,11 @@ public class ReportConfigLoader {
 							 * Class .forName(className).asSubclass(
 							 * ChartConfigTemplate.class);
 							 */
-							ClassLoader loader = customClassLoader != null ? customClassLoader
-									: ReportConfigLoader.class.getClassLoader();
+							// ClassLoader loader = customClassLoader != null ?
+							// customClassLoader
+							// : ReportConfigLoader.class.getClassLoader();
+							ClassLoader loader = Thread.currentThread()
+									.getContextClassLoader();
 							Class<? extends ChartConfigTemplate> clazz = loader
 									.loadClass(className).asSubclass(
 											ChartConfigTemplate.class);
@@ -139,8 +146,8 @@ public class ReportConfigLoader {
 				}
 			}
 		} finally {
-			if (customClassLoader != null)
-				customClassLoader.close();
+//			if (customClassLoader != null)
+//				customClassLoader.close();
 		}
 
 		return cfg;

@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.TimeZone;
 
 public class CPULoadParser implements DataParser {
 	public void parse(InputStream in, OutputStream out) throws IOException,
@@ -17,9 +16,9 @@ public class CPULoadParser implements DataParser {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
 		String lineStr;
-		TimeZone utcZone = TimeZone.getTimeZone("UTC");
+		//TimeZone utcZone = TimeZone.getTimeZone("UTC");
 		SimpleDateFormat timeFormat = new SimpleDateFormat("y-M-d H:m:s");
-		timeFormat.setTimeZone(utcZone);
+		//timeFormat.setTimeZone(utcZone);
 		while ((lineStr = reader.readLine()) != null) {
 			String[] extractedLine = lineStr.split(",");
 			long time = 0;
@@ -38,8 +37,8 @@ public class CPULoadParser implements DataParser {
 			writer.write(String.format(",%.2f", Float.parseFloat(cpuLoadStr[1])));
 			writer.write(String.format(",%.2f", Float.parseFloat(cpuLoadStr[2])));
 			writer.write(",");
-			writer.write(cpuLoadStr.length > 3 ? Integer.toString(Integer
-					.parseInt(cpuLoadStr[3])) : "0");
+			writer.write(extractedLine.length > 2 ? Integer.toString(Integer
+					.parseInt(extractedLine[2])) : "0");
 			writer.write("\n");
 		}
 		writer.flush();

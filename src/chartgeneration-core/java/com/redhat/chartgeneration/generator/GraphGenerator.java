@@ -1,46 +1,48 @@
 package com.redhat.chartgeneration.generator;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.redhat.chartgeneration.config.LineConfig;
+import com.redhat.chartgeneration.config.GraphConfig;
 import com.redhat.chartgeneration.config.LineConfigGenerator;
-import com.redhat.chartgeneration.config.LineConfigRule;
-import com.redhat.chartgeneration.config.LineGraphConfig;
-import com.redhat.chartgeneration.graph.GraphLine;
-import com.redhat.chartgeneration.graph.LineGraph;
-import com.redhat.chartgeneration.graph.LineStop;
+import com.redhat.chartgeneration.config.GraphLineConfig;
+import com.redhat.chartgeneration.config.GraphLineConfigRule;
+import com.redhat.chartgeneration.report.GraphLine;
+import com.redhat.chartgeneration.report.StatGraph;
+import com.redhat.chartgeneration.report.LineStop;
 
-public class GraphGenerator {
-	private LineGraphConfig lineGraphConfig;
+public class GraphGenerator implements Generator {
+	private GraphConfig lineGraphConfig;
 
-	public LineGraph generate(InputStream in) throws IOException {
-		LogReader reader = new LogReader();
-		final PerfLog log = new PerfLog();
-		final List<List<Object>> rows = reader
-				.read(in/* , log.getFieldTypes() */);
-		log.setRows(rows);
-		return generate(log);
+//	public LineGraph generate(InputStream in) throws IOException {
+//		LogReader reader = new LogReader();
+//		final PerfLog log = new PerfLog();
+//		final List<List<Object>> rows = reader
+//				.read(in/* , log.getFieldTypes() */);
+//		log.setRows(rows);
+//		return generate(log);
+//	}
+	public GraphGenerator(GraphConfig lineGraphConfig) {
+		this.lineGraphConfig = lineGraphConfig;
 	}
 
-	public LineGraph generate(final PerfLog log) throws IOException {
+	public StatGraph generate(final PerfLog log) throws IOException {
 		final List<List<Object>> rows = log.getRows();
 
 		final LineConfigGenerator cfgGenerator = new LineConfigGenerator();
-		List<LineConfigRule> rules = lineGraphConfig.getRules();
-		final List<LineConfig> lineConfigs = new ArrayList<LineConfig>();
-		for (LineConfigRule rule : rules) {
+		List<GraphLineConfigRule> rules = lineGraphConfig.getRules();
+		final List<GraphLineConfig> lineConfigs = new ArrayList<GraphLineConfig>();
+		for (GraphLineConfigRule rule : rules) {
 			lineConfigs.addAll(cfgGenerator.generate(rule, log));
 		}
 
 		final List<GraphLine> resultLines = new ArrayList<GraphLine>(
 				lineConfigs.size());
-		for (final LineConfig config : lineConfigs) {
+		for (final GraphLineConfig config : lineConfigs) {
 			final List<List<Object>> involvedRows = new LinkedList<List<Object>>();
 			for (List<Object> row : rows) {
 				if (config.getInvolvedRowLabels().contains(
@@ -69,16 +71,16 @@ public class GraphGenerator {
 			resultLines.add(line);
 			// }
 		}
-		return new LineGraph(lineGraphConfig.getTitle(), lineGraphConfig.getSubtitle(),
+		return new StatGraph(lineGraphConfig.getTitle(), lineGraphConfig.getSubtitle(),
 				lineGraphConfig.getXLabel(), lineGraphConfig.getYLabel(),
 				resultLines, lineGraphConfig.getXaxisMode());
 	}
 
-	public LineGraphConfig getLineGraphConfig() {
+	public GraphConfig getLineGraphConfig() {
 		return lineGraphConfig;
 	}
 
-	public void setLineGraphConfig(LineGraphConfig lineGraphConfig) {
+	public void setLineGraphConfig(GraphConfig lineGraphConfig) {
 		this.lineGraphConfig = lineGraphConfig;
 	}
 

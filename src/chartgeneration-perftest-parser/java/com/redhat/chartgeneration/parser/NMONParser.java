@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 public class NMONParser implements DataParser {
@@ -26,9 +25,9 @@ public class NMONParser implements DataParser {
 		List<String[]> lines = new LinkedList<String[]>();
 		Map<Integer, Long> timeTable = new HashMap<Integer, Long>(16000);
 		Map<String, String> metaInfo = new HashMap<String, String>(30);
-		TimeZone utcZone = TimeZone.getTimeZone("UTC");
+		//TimeZone utcZone = TimeZone.getTimeZone("UTC");
 		SimpleDateFormat timeFormat = new SimpleDateFormat("H:m:s d-MMM-y");
-		timeFormat.setTimeZone(utcZone);
+		//timeFormat.setTimeZone(utcZone);
 
 		Map<String, Integer> diskColumnMap = new HashMap<String, Integer>(4);
 		Pattern diskPattern = Pattern.compile("^[hsv]d[a-z]$");

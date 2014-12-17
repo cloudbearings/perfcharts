@@ -25,7 +25,6 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 
 (function($){var options={crosshair:{mode:null,color:"rgba(170, 0, 0, 0.80)",lineWidth:1}};function init(plot){var crosshair={x:-1,y:-1,locked:false};plot.setCrosshair=function setCrosshair(pos){if(!pos)crosshair.x=-1;else{var o=plot.p2c(pos);crosshair.x=Math.max(0,Math.min(o.left,plot.width()));crosshair.y=Math.max(0,Math.min(o.top,plot.height()))}plot.triggerRedrawOverlay()};plot.clearCrosshair=plot.setCrosshair;plot.lockCrosshair=function lockCrosshair(pos){if(pos)plot.setCrosshair(pos);crosshair.locked=true};plot.unlockCrosshair=function unlockCrosshair(){crosshair.locked=false};function onMouseOut(e){if(crosshair.locked)return;if(crosshair.x!=-1){crosshair.x=-1;plot.triggerRedrawOverlay()}}function onMouseMove(e){if(crosshair.locked)return;if(plot.getSelection&&plot.getSelection()){crosshair.x=-1;return}var offset=plot.offset();crosshair.x=Math.max(0,Math.min(e.pageX-offset.left,plot.width()));crosshair.y=Math.max(0,Math.min(e.pageY-offset.top,plot.height()));plot.triggerRedrawOverlay()}plot.hooks.bindEvents.push(function(plot,eventHolder){if(!plot.getOptions().crosshair.mode)return;eventHolder.mouseout(onMouseOut);eventHolder.mousemove(onMouseMove)});plot.hooks.drawOverlay.push(function(plot,ctx){var c=plot.getOptions().crosshair;if(!c.mode)return;var plotOffset=plot.getPlotOffset();ctx.save();ctx.translate(plotOffset.left,plotOffset.top);if(crosshair.x!=-1){var adj=plot.getOptions().crosshair.lineWidth%2?.5:0;ctx.strokeStyle=c.color;ctx.lineWidth=c.lineWidth;ctx.lineJoin="round";ctx.beginPath();if(c.mode.indexOf("x")!=-1){var drawX=Math.floor(crosshair.x)+adj;ctx.moveTo(drawX,0);ctx.lineTo(drawX,plot.height())}if(c.mode.indexOf("y")!=-1){var drawY=Math.floor(crosshair.y)+adj;ctx.moveTo(0,drawY);ctx.lineTo(plot.width(),drawY)}ctx.stroke()}ctx.restore()});plot.hooks.shutdown.push(function(plot,eventHolder){eventHolder.unbind("mouseout",onMouseOut);eventHolder.unbind("mousemove",onMouseMove)})}$.plot.plugins.push({init:init,options:options,name:"crosshair",version:"1.0"})})(jQuery);
 </script>
-
 <script type="text/javascript">
 	var ChartGeneration = function() {
 	};
@@ -103,9 +102,9 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 				unit = line._unit ? line._unit.value : "";
 				if (!yaxesMap[unit]) {
 					yaxes.push({
-						position: yaxes.length & 1 ? "right" : "left",
+						position : yaxes.length & 1 ? "right" : "left",
 						tickFormatter : function(num, _) {
-							return yTickFormatter(num, _) + unit; 
+							return yTickFormatter(num, _) + unit;
 						}
 					});
 					yaxesMap[unit] = yaxes.length;
@@ -125,8 +124,9 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 					}
 				}
 			}
-			draw(tag.$placeholder, tag.$legend, compositeChart, function(options){
-				options.yaxes=yaxes;
+			draw(tag.$placeholder, tag.$legend, compositeChart, function(
+					options) {
+				options.yaxes = yaxes;
 				return options;
 			});
 		}
@@ -189,7 +189,31 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 				var chart = charts[i];
 				var $chart = $("<div class='chart'/>");
 				$charts.append($chart);
-				drawChart($chart, chart);
+				if (chart.chartType === "JmeterSummaryChart")
+					drawJmeterSummaryChart($chart, chart);
+				else
+					drawChart($chart, chart);
+			}
+		}
+		function drawJmeterSummaryChart($chart, chart) {
+			$chart.append($("<h3 class='chart_title'/>").text(chart.title))
+					.append(
+							$("<h4 class='chart_subtitle'/>").text(
+									chart.subtitle));
+			var $table = $("<table class='chart_table JmeterSummaryChart' />")
+					.appendTo($chart);
+			var $tableHeaderRow = $("<tr/>").appendTo(
+					$("<thead/>").appendTo($table));
+			for (var i = 0; i < chart.columnLabels.length; ++i) {
+				$("<th/>").text(chart.columnLabels[i])
+						.appendTo($tableHeaderRow);
+			}
+			var $tbody = $("<tbody/>").appendTo($table);
+			for (var i = 0; i < chart.rows.length; ++i) {
+				var $tableRow = $("<tr/>").appendTo($tbody);
+				for (var j = 0; j < chart.rows[i].length; ++j) {
+					$("<td/>").text(chart.rows[i][j]).appendTo($tableRow);
+				}
 			}
 		}
 		function drawChart($chart, chart) {
@@ -237,7 +261,7 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 				legend : {
 					position : "nw",
 					margin : [ 0, 0 ],
-					noColumns : 5,
+					noColumns : 4,
 					container : $legend
 				},
 				selection : {
@@ -274,6 +298,7 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 					map.push(chart.series[i].label);
 				}
 				options.xaxis = {
+					minTickSize : 1,
 					tickSize : 1,
 					tickLength : 0,
 					tickFormatter : function(num, _) {
@@ -384,7 +409,7 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 </script>
 <style type="text/css">
 header, #content, footer {
-	width: 1000px;
+	width: 1100px;
 	margin: 0 auto;
 }
 
@@ -410,8 +435,9 @@ html {
 	border: 2px solid #333;
 	margin: 20px auto;
 	padding: 10px;
-	width: 976px;
+	width: 1076px;
 	page-break-inside: avoid;
+	overflow: auto;
 }
 
 .report_title, .chart_title, .chart_subtitle {
@@ -429,13 +455,13 @@ html {
 }
 
 .placeholder {
-	width: 800px;
+	width: 900px;
 	height: 480px;
 	margin: 0 auto;
 }
 
 .legend {
-	width: 800px;
+	width: 900px;
 	margin: 0 auto;
 }
 
@@ -452,6 +478,34 @@ html {
 
 .y_label {
 	margin: 5px 60px;
+}
+
+.chart_table {
+	border: 4px double;
+	border-collapse: collapse;
+	margin: 0 auto;
+}
+
+.chart_table thead {
+	background-color: #ddd;
+}
+
+.chart_table td, .chart_table th {
+	border: 1px solid;
+}
+
+.JmeterSummaryChart {
+	table-layout: fixed;
+}
+
+.JmeterSummaryChart>tbody>tr>td {
+	text-align: right;
+}
+
+.JmeterSummaryChart>tbody>tr>td:FIRST-CHILD {
+	word-wrap: break-word;
+	text-align: left;
+	max-width: 200px;
 }
 </style>
 </head>
@@ -473,7 +527,7 @@ html {
 		<hr />
 	</section>
 	<footer>
-		<p>Powered by Chart Generation Tool v0.1</p>
+		<p>Powered by Chart Generation Tool from HSS</p>
 	</footer>
 </body>
 </html>

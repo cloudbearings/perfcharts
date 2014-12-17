@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.redhat.chartgeneration.common.FieldSelector;
 import com.redhat.chartgeneration.config.AxisMode;
-import com.redhat.chartgeneration.config.LineConfigRule;
-import com.redhat.chartgeneration.config.LineGraphConfig;
+import com.redhat.chartgeneration.config.GraphLineConfigRule;
+import com.redhat.chartgeneration.config.GraphConfig;
 
 public abstract class BaseChartTemplate implements ChartConfigTemplate {
 	private FieldSelector labelField;
@@ -54,21 +54,21 @@ public abstract class BaseChartTemplate implements ChartConfigTemplate {
 		this.yLabel = yLabel;
 	}
 
-	protected LineGraphConfig createConfig(String defaultTitle,
+	protected GraphConfig createConfig(String defaultTitle,
 			String defaultXLabel, String defaultYLabel,
-			List<LineConfigRule> rules, AxisMode xaxisMode) {
+			List<GraphLineConfigRule> rules, AxisMode xaxisMode) {
 		return createConfig(defaultTitle, null, defaultXLabel, defaultYLabel,
 				rules, xaxisMode);
 	}
 
-	protected LineGraphConfig createConfig(String defaultTitle,
+	protected GraphConfig createConfig(String defaultTitle,
 			String defaultSubtitle, String defaultXLabel, String defaultYLabel,
-			List<LineConfigRule> rules, AxisMode xaxisMode) {
-		return new LineGraphConfig(title == null ? defaultTitle : title,
+			List<GraphLineConfigRule> rules, AxisMode xaxisMode) {
+		return new GraphConfig(title == null ? defaultTitle : title,
 				subtitle == null ? defaultSubtitle : subtitle,
 				xLabel == null ? defaultXLabel : xLabel,
 				yLabel == null ? defaultYLabel : yLabel, rules, xaxisMode);
 	}
 
-	public abstract LineGraphConfig generateGraphConfig();
+	public abstract GraphConfig generateChartConfig();
 }
