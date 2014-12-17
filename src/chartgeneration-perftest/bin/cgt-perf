@@ -14,7 +14,7 @@ show_usage() {
 	echo 'Options:'
 	echo '	-d DIRECTORY		specify the output directory'
 	echo "	-o FILE		the file name of generated report, default to 'report.html'"
-	echo '	-z TIMEZONE		specify the timezone. For example, UTC+8'
+	echo "	-z TIME_ZONE		specify the time zone, like 'GMT+8'"
 }
 
 # initialize global variables
@@ -30,7 +30,7 @@ while getopts d:o:z:? opt; do
 	o) 
 		report_file=$OPTARG;;
 	z)
-		timezone=$OPTARG;;
+		time_zone=$OPTARG;;
 	?|*)	echo
 		show_usage
 		exit -1;;
@@ -74,14 +74,14 @@ if [ -f "$file" ]; then
 		elif [ "$file_extension" == "nmon" ]; then
 			parser_class=NMONParser
 		fi
-		if ! $CGT_JAVA_COMMAND -jar "$perftest_parser" "$parser_class" "$timezone" < "$file" >> "$resource_monitoring_dir/$server_name.csv"; then
+		if ! $CGT_JAVA_COMMAND -jar "$perftest_parser" "$parser_class" "$time_zone" < "$file" >> "$resource_monitoring_dir/$server_name.csv"; then
 			exit 1
 		fi
 		;;
 	jtl)
 		mkdir -p "$jmeter_dir"
 		parser_class=JmeterParser
-		if ! $CGT_JAVA_COMMAND -jar "$perftest_parser" "$parser_class" "$timezone" < "$file" >> "$jmeter_data_table"; then
+		if ! $CGT_JAVA_COMMAND -jar "$perftest_parser" "$parser_class" "$time_zone" < "$file" >> "$jmeter_data_table"; then
 			exit 1
 		fi
 		;;

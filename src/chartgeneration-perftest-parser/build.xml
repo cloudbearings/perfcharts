@@ -13,12 +13,17 @@
 		<mkdir dir="${lib}" />
 	</target>
 	<target name="build" depends="init">
-		<javac target="1.7" source="1.7" srcdir="${src}" destdir="${build}" includeantruntime="false" />
+		<javac target="1.7" source="1.7" srcdir="${src}" destdir="${build}" includeantruntime="false">
+			<classpath>
+				<pathelement location="${lib}/chartgeneration-core.jar" />
+ 			</classpath>
+		</javac>
 	</target>
 	<target name="package" depends="build">
 		<jar jarfile="${lib}/${target_name}" basedir="${build}">
 			<manifest>
 				<attribute name="Main-Class" value="${main_class}" />
+				<attribute name="Class-Path" value="chartgeneration-core.jar" />
 			</manifest>
 		</jar>
 	</target>

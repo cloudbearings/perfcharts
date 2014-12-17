@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CPULoadParser implements DataParser {
 	public void parse(InputStream in, OutputStream out) throws IOException,
@@ -25,7 +26,9 @@ public class CPULoadParser implements DataParser {
 			if (extractedLine.length < 2)
 				continue;
 			try {
-				time = timeFormat.parse(extractedLine[0]).getTime();
+				Date date = timeFormat.parse(extractedLine[0]);
+				time = date.getTime();
+				//System.err.println(extractedLine[0] + "->" + date);
 			} catch (Exception ex) {
 				System.err.print("[Warning] com.redhat.chartgeneration.parser.CPULoadParser.parse: Ignore line\n" + lineStr);
 				continue;
