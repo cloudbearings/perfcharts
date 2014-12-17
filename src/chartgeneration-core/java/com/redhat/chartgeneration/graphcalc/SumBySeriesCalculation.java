@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.redhat.chartgeneration.common.FieldSelector;
-import com.redhat.chartgeneration.graph.LineStop;
+import com.redhat.chartgeneration.report.LineStop;
 
 public class SumBySeriesCalculation implements GraphCalculation {
 	private int interval = 1000;

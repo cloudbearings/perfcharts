@@ -53,11 +53,10 @@ public class LogReader {
 	}
 
 	private static List<Object> getFields(String line) {
-		List<Object> result = new ArrayList<Object>(10);
-		StringTokenizer tokenizer = new StringTokenizer(line, ",");
-		for (; tokenizer.hasMoreTokens();) {
-			String fieldString = getField(tokenizer.nextToken());
-			result.add(Utilities.parseString(fieldString));
+		String[] columns = line.split(",");
+		List<Object> result = new ArrayList<Object>(columns.length);
+		for (String col : columns) {
+			result.add(Utilities.parseString(getField(col)));
 		}
 		return result;
 	}

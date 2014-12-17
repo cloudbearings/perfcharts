@@ -1,31 +1,28 @@
 package com.redhat.chartgeneration.formatter;
 
-import java.util.List;
+import com.redhat.chartgeneration.report.GraphLine;
+import com.redhat.chartgeneration.report.LineStop;
+import com.redhat.chartgeneration.report.StatGraph;
 
-import com.redhat.chartgeneration.graph.GraphLine;
-import com.redhat.chartgeneration.graph.GraphReport;
-import com.redhat.chartgeneration.graph.LineGraph;
-import com.redhat.chartgeneration.graph.LineStop;
+public class FlotChartFormatter implements StatGraphFormatter {
+	// public String format(StatReport report) {
+	// StringBuilder sb = new StringBuilder("{");
+	// // if (report.getTitle() != null)
+	// // sb.append("\"title\":\"")
+	// // .append(report.getTitle().replace("\"", "\\\""))
+	// // .append("\",");
+	// sb.append("\"charts\":[");
+	// List<LineGraph> charts = report.getGraphs();
+	// for (LineGraph graph : charts) {
+	// sb.append(format(graph)).append(",");
+	// }
+	// if (!charts.isEmpty())
+	// sb.deleteCharAt(sb.length() - 1);
+	// sb.append("]}");
+	// return sb.toString();
+	// }
 
-public class FlotChartFormatter {
-	public String format(GraphReport report) {
-		StringBuilder sb = new StringBuilder("{");
-		if (report.getTitle() != null)
-			sb.append("\"title\":\"")
-					.append(report.getTitle().replace("\"", "\\\""))
-					.append("\",");
-		sb.append("\"charts\":[");
-		List<LineGraph> charts = report.getGraphs();
-		for (LineGraph graph : charts) {
-			sb.append(format(graph)).append(",");
-		}
-		if (!charts.isEmpty())
-			sb.deleteCharAt(sb.length() - 1);
-		sb.append("]}");
-		return sb.toString();
-	}
-
-	public String format(LineGraph graph) {
+	public String format(StatGraph graph) throws Exception {
 		StringBuilder sb = new StringBuilder("\n{\"title\":\"")
 				.append(graph.getTitle().replace("\"", "\\\""))
 				.append("\",\"xLabel\":\"")
@@ -35,8 +32,8 @@ public class FlotChartFormatter {
 				.append("\",\"xaxisMode\":\"")
 				.append(graph.getXaxisMode().toString());
 		if (graph.getSubtitle() != null) {
-			sb.append("\",\"subtitle\":\"")
-			.append(graph.getSubtitle().replace("\"", "\\\""));
+			sb.append("\",\"subtitle\":\"").append(
+					graph.getSubtitle().replace("\"", "\\\""));
 		}
 		sb.append("\",\"series\":[");
 		for (GraphLine line : graph.getLines()) {

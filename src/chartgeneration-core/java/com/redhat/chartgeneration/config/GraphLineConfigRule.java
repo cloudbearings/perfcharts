@@ -3,9 +3,11 @@ package com.redhat.chartgeneration.config;
 import com.redhat.chartgeneration.common.FieldSelector;
 import com.redhat.chartgeneration.graphcalc.GraphCalculation;
 
-public class LineConfigRule {
+public class GraphLineConfigRule {
 	private String labelPattern;
 	private String seriesLabelFormat;
+	private Comparable<?> startX;
+	private Comparable<?> endX;
 	private FieldSelector labelField;
 	private FieldSelector xField;
 	private FieldSelector yField;
@@ -15,18 +17,18 @@ public class LineConfigRule {
 	private String unit;
 	private boolean showUnit;
 
-	public LineConfigRule() {
+	public GraphLineConfigRule() {
 
 	}
 
-	public LineConfigRule(String labelPattern, String seriesLabelFormat,
+	public GraphLineConfigRule(String labelPattern, String seriesLabelFormat,
 			String unit, FieldSelector labelField, FieldSelector xField,
 			FieldSelector yField, GraphCalculation calculation) {
 		this(labelPattern, seriesLabelFormat, unit, labelField, xField, yField,
 				calculation, true, false, false);
 	}
 
-	public LineConfigRule(String labelPattern, String seriesLabelFormat,
+	public GraphLineConfigRule(String labelPattern, String seriesLabelFormat,
 			String unit, FieldSelector labelField, FieldSelector xField,
 			FieldSelector yField, GraphCalculation calculation,
 			boolean showLines, boolean showBars, boolean showUnit) {
@@ -40,6 +42,31 @@ public class LineConfigRule {
 		this.showLines = showLines;
 		this.unit = unit;
 		this.showUnit = showUnit;
+	}
+	
+	public GraphLineConfigRule(String labelPattern, String seriesLabelFormat,
+			String unit, Comparable<?> startX, Comparable<?> endX, FieldSelector labelField, FieldSelector xField,
+			FieldSelector yField, GraphCalculation calculation,
+			boolean showLines, boolean showBars, boolean showUnit) {
+		this(labelPattern, seriesLabelFormat, unit, labelField, xField, yField, calculation, showLines, showBars, showUnit);
+		this.startX = startX;
+		this.endX = endX;
+	}
+
+	public Comparable<?> getStartX() {
+		return startX;
+	}
+
+	public void setStartX(Comparable<?> startX) {
+		this.startX = startX;
+	}
+
+	public Comparable<?> getEndX() {
+		return endX;
+	}
+
+	public void setEndX(Comparable<?> endX) {
+		this.endX = endX;
 	}
 
 	public String getLabelPattern() {

@@ -15,7 +15,7 @@ import com.redhat.chartgeneration.generator.PerfLog;
 
 public class LineConfigGenerator {
 
-	public List<LineConfig> generate(final LineConfigRule rule, PerfLog log) {
+	public List<GraphLineConfig> generate(final GraphLineConfigRule rule, PerfLog log) {
 		FieldSelector labelField = rule.getLabelField();
 		Pattern pattern = Pattern.compile(rule.getLabelPattern());
 		String labelFormat = rule.getSeriesLabelFormat();
@@ -36,11 +36,11 @@ public class LineConfigGenerator {
 			}
 		}
 
-		final List<LineConfig> lineConfigs = new ArrayList<LineConfig>(
+		final List<GraphLineConfig> lineConfigs = new ArrayList<GraphLineConfig>(
 				map.size());
 		for (String lineLabels : map.keySet()) {
 			Set<String> seriesLabels = map.get(lineLabels);
-			lineConfigs.add(new LineConfig(lineLabels, rule.getUnit(), rule
+			lineConfigs.add(new GraphLineConfig(lineLabels, rule.getUnit(), rule
 					.getLabelField(), rule.getXField(), rule.getYField(), rule
 					.getCalculation(), seriesLabels, rule.isShowLines(), rule
 					.isShowBars(), rule.isShowUnit()));

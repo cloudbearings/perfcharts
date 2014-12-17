@@ -1,4 +1,4 @@
-package com.redhat.chartgeneration.graph;
+package com.redhat.chartgeneration.report;
 
 public class LineStop {
 	private Object x;

@@ -1,37 +1,28 @@
-package com.redhat.chartgeneration.graph;
+package com.redhat.chartgeneration.report;
 
 import java.util.List;
 
 import com.redhat.chartgeneration.config.AxisMode;
+import com.redhat.chartgeneration.formatter.FlotChartFormatter;
+import com.redhat.chartgeneration.formatter.StatGraphFormatter;
 
-public class LineGraph {
-	private String title;
-	private String subtitle;
+public class StatGraph extends StatChart {
 	private String xLabel;
 	private String yLabel;
 	private AxisMode xaxisMode;
 	private List<GraphLine> lines;
+	private StatGraphFormatter formatter = new FlotChartFormatter();
 
-	public LineGraph() {
-	 
+	public StatGraph() {
 	}
 
-	public LineGraph(String title, String subtitle, String xLabel, String yLabel,
-			List<GraphLine> lines, AxisMode xaxisMode) {
-		this.title = title;
-		this.subtitle = subtitle;
+	public StatGraph(String title, String subtitle, String xLabel,
+			String yLabel, List<GraphLine> lines, AxisMode xaxisMode) {
+		super(title, subtitle);
 		this.xLabel = xLabel;
 		this.yLabel = yLabel;
 		this.lines = lines;
 		this.xaxisMode = xaxisMode;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
 	}
 
 	public String getXLabel() {
@@ -66,12 +57,19 @@ public class LineGraph {
 		this.xaxisMode = xaxisMode;
 	}
 
-	public String getSubtitle() {
-		return subtitle;
+	@Override
+	public String format() throws Exception {
+		return formatter.format(this);
 	}
 
-	public void setSubtitle(String subtitle) {
-		this.subtitle = subtitle;
+	public StatGraphFormatter getFormatter() {
+		return formatter;
 	}
+
+	public void setFormatter(StatGraphFormatter formatter) {
+		this.formatter = formatter;
+	}
+
+	
 
 }

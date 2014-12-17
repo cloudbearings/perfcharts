@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.redhat.chartgeneration.common.FieldSelector;
-import com.redhat.chartgeneration.graph.LineStop;
+import com.redhat.chartgeneration.report.LineStop;
 
 public class CountCalculation implements GraphCalculation {
 	private int interval = 1000;

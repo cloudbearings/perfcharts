@@ -1,4 +1,4 @@
-package com.redhat.chartgeneration.graph;
+package com.redhat.chartgeneration.report;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,8 +5,10 @@ import java.util.Set;
 import com.redhat.chartgeneration.common.FieldSelector;
 import com.redhat.chartgeneration.graphcalc.GraphCalculation;
 
-public class LineConfig {
+public class GraphLineConfig {
 	private String label;
+	private Comparable<?> startX;
+	private Comparable<?> endX;
 	private FieldSelector labelField;
 	private FieldSelector xField;
 	private FieldSelector yField;
@@ -17,12 +19,13 @@ public class LineConfig {
 	private String unit;
 	private boolean showUnit;
 
-	public LineConfig() {
+	public GraphLineConfig() {
 	}
 
-	public LineConfig(String label, String unit, FieldSelector labelField,
+	public GraphLineConfig(String label, String unit, FieldSelector labelField,
 			FieldSelector xField, FieldSelector yField,
-			GraphCalculation calculation, Set<String> involvedRowLabels, boolean showLines, boolean showBars, boolean showUnit) {
+			GraphCalculation calculation, Set<String> involvedRowLabels,
+			boolean showLines, boolean showBars, boolean showUnit) {
 		this.label = label;
 		this.unit = unit;
 		this.labelField = labelField;
@@ -33,6 +36,17 @@ public class LineConfig {
 		this.showBars = showBars;
 		this.showLines = showLines;
 		this.showUnit = showUnit;
+	}
+
+	public GraphLineConfig(String label, Comparable<?> startX, Comparable<?> endX,
+			String unit, FieldSelector labelField, FieldSelector xField,
+			FieldSelector yField, GraphCalculation calculation,
+			Set<String> involvedRowLabels, boolean showLines, boolean showBars,
+			boolean showUnit) {
+		this(label, unit, labelField, xField, yField, calculation,
+				involvedRowLabels, showLines, showBars, showUnit);
+		this.startX = startX;
+		this.endX = endX;
 	}
 
 	public String getLabel() {
@@ -114,7 +128,7 @@ public class LineConfig {
 	public void setShowBars(boolean showBars) {
 		this.showBars = showBars;
 	}
-	
+
 	public String getUnit() {
 		return unit;
 	}
@@ -129,6 +143,22 @@ public class LineConfig {
 
 	public void setShowUnit(boolean showUnit) {
 		this.showUnit = showUnit;
+	}
+
+	public Comparable<?> getStartX() {
+		return startX;
+	}
+
+	public void setStartX(Comparable<?> startX) {
+		this.startX = startX;
+	}
+
+	public Comparable<?> getEndX() {
+		return endX;
+	}
+
+	public void setEndX(Comparable<?> endX) {
+		this.endX = endX;
 	}
 
 }
