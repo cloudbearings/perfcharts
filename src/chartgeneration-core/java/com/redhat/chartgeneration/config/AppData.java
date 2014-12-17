@@ -41,7 +41,7 @@ public class AppData {
 		if (logLevel != null && !logLevel.isEmpty()) {
 			logger.setLevel(Level.parse(logLevel));
 		} else {
-			logger.setLevel(Level.WARNING);
+			logger.setLevel(Level.INFO);
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		String logFileName = cgt_log + File.separator + "generator_"

@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.TimeZone;
 
+import com.redhat.chartgeneration.config.AppData;
+
 public class PerftestParserEntry {
 	private DataParser parser;
 
@@ -18,8 +20,9 @@ public class PerftestParserEntry {
 			System.err.println("Usage:\n PARSER_CLASS [TIME_ZONE]");
 			return;
 		}
-		TimeZone.setDefault(TimeZone.getTimeZone(args.length > 1 ? args[1]
+		TimeZone.setDefault(TimeZone.getTimeZone(args.length > 1 && !args[1].isEmpty() ? args[1]
 				: "UTC"));
+		AppData.getInstance().getLogger().info("The time zone for parsing NMON and CPU load logs is " + TimeZone.getDefault().getDisplayName());
 		String parserClassName = args[0];
 		if (!parserClassName.startsWith("/"))
 			parserClassName = PerftestParserEntry.class.getPackage().getName()

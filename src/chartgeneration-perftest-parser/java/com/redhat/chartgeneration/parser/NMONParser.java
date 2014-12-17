@@ -42,6 +42,7 @@ public class NMONParser implements DataParser {
 						.substring(1));
 				Date time = timeFormat.parse(extractedLine[2] + " "
 						+ extractedLine[3]);
+				//System.err.println(extractedLine[2] + "->" + time);
 				timeTable.put(tsLabelValue, time.getTime());
 			} else if (extractedLine[0].startsWith("DISK")
 					&& extractedLine.length > 2
