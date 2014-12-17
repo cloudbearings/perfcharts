@@ -1,23 +1,11 @@
 package com.redhat.chartgeneration.generator;
 
-import java.security.KeyStore.Entry;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.redhat.chartgeneration.config.LineConfigGenerator;
-import com.redhat.chartgeneration.config.GraphLineConfig;
-import com.redhat.chartgeneration.config.GraphLineConfigRule;
-import com.redhat.chartgeneration.config.StatChartConfig;
 import com.redhat.chartgeneration.config.StatTableConfig;
 import com.redhat.chartgeneration.report.StatTable;
 
 public class StatTableGenerator implements Generator {
 	private StatTableConfig config;
-	private LineConfigGenerator cfgGenerator;
+	//private LineConfigGenerator cfgGenerator;
 	public StatTableGenerator(StatTableConfig config) {
 		this.config = config;
 	}
