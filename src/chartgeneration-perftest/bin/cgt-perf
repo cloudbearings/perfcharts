@@ -12,9 +12,11 @@ show_usage() {
 	echo "	$base_name -d output/ -o report.html input/	# Generate report 'report.html' from 'input/', and place generated files into 'output/'"
 	echo
 	echo 'Options:'
-	echo '	-d DIRECTORY		specify the output directory'
+	echo '	-d DIRECTORY	specify the output directory'
 	echo "	-o FILE		the file name of generated report, default to 'report.html'"
-	echo "	-z TIME_ZONE		specify the time zone, like 'GMT+8'"
+	echo "	-z TIME_ZONE	specify the time zone, like 'GMT+8'"
+	echo "	-f FROM_TIME	specify the start time of duration, like '2014-12-18 9:30:00'"
+	echo "	-t TO_TIME	specify the end time of duration, like '2014-12-18 17:30:00'"
 }
 
 # initialize global variables
@@ -23,7 +25,7 @@ if ! [ -n "$CGT_LIB" ]; then export CGT_LIB=$CGT_HOME/lib; fi
 if ! [ -n "$CGT_JAVA_COMMAND" ]; then export CGT_JAVA_COMMAND=java; fi
 input_dir=\.
 # deal with arguments
-while getopts d:o:z:? opt; do
+while getopts d:o:z:f:t:? opt; do
 	case $opt in
 	d) 
 		output_dir=$OPTARG;;
@@ -31,6 +33,10 @@ while getopts d:o:z:? opt; do
 		report_file=$OPTARG;;
 	z)
 		time_zone=$OPTARG;;
+	f)
+		start_time=$OPTARG;;
+	t)
+		end_time=$OPTARG;;
 	?|*)	echo
 		show_usage
 		exit -1;;
@@ -74,14 +80,15 @@ if [ -f "$file" ]; then
 		elif [ "$file_extension" == "nmon" ]; then
 			parser_class=NMONParser
 		fi
-		if ! $CGT_JAVA_COMMAND -jar "$perftest_parser" "$parser_class" "$time_zone" < "$file" >> "$resource_monitoring_dir/$server_name.csv"; then
+		#echo $CGT_JAVA_COMMAND "-DstartTime=$start_time" "-DendTime=$end_time" -jar "$perftest_parser" "$parser_class" "$time_zone" \< "$file" \>\> "$resource_monitoring_dir/$server_name.csv"
+		if ! $CGT_JAVA_COMMAND "-DstartTime=$start_time" "-DendTime=$end_time" -jar "$perftest_parser" "$parser_class" "$time_zone" < "$file" >> "$resource_monitoring_dir/$server_name.csv"; then
 			exit 1
 		fi
 		;;
 	jtl)
 		mkdir -p "$jmeter_dir"
 		parser_class=JmeterParser
-		if ! $CGT_JAVA_COMMAND -jar "$perftest_parser" "$parser_class" "$time_zone" < "$file" >> "$jmeter_data_table"; then
+		if ! $CGT_JAVA_COMMAND "-DstartTime=$start_time" "-DendTime=$end_time" -jar "$perftest_parser" "$parser_class" "$time_zone" < "$file" >> "$jmeter_data_table"; then
 			exit 1
 		fi
 		;;

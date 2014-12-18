@@ -11,7 +11,7 @@ import com.redhat.chartgeneration.common.FieldSelector;
 import com.redhat.chartgeneration.report.LineStop;
 
 public class SumBySeriesCalculation implements GraphCalculation {
-	private int interval = 1000;
+	private int interval = 0;
 	private int times = 1;
 	private FieldSelector labelSelector;
 

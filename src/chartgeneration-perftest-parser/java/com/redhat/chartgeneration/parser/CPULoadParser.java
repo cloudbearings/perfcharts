@@ -11,15 +11,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.redhat.chartgeneration.config.AppData;
+
 public class CPULoadParser implements DataParser {
+	private SimpleDateFormat timeFormat = new SimpleDateFormat("y-M-d H:m:s");
+
 	public void parse(InputStream in, OutputStream out) throws IOException,
 			ParseException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
 		String lineStr;
-		//TimeZone utcZone = TimeZone.getTimeZone("UTC");
-		SimpleDateFormat timeFormat = new SimpleDateFormat("y-M-d H:m:s");
-		//timeFormat.setTimeZone(utcZone);
+		Date startTime = Settings.getInstance().getStartTime();
+		Date endTime = Settings.getInstance().getEndTime();
 		while ((lineStr = reader.readLine()) != null) {
 			String[] extractedLine = lineStr.split(",");
 			long time = 0;
@@ -27,10 +30,15 @@ public class CPULoadParser implements DataParser {
 				continue;
 			try {
 				Date date = timeFormat.parse(extractedLine[0]);
+				if (startTime != null && date.before(startTime)
+						|| endTime != null && date.after(endTime))
+					continue;
 				time = date.getTime();
-				//System.err.println(extractedLine[0] + "->" + date);
 			} catch (Exception ex) {
-				System.err.print("[Warning] com.redhat.chartgeneration.parser.CPULoadParser.parse: Ignore line\n" + lineStr);
+				AppData.getInstance()
+						.getLogger()
+						.warning("CPULoadParser.parse(): Ignore non-data line '"
+										+ lineStr + "'");
 				continue;
 			}
 			writer.write("CPULOAD,");

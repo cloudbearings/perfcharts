@@ -51,6 +51,16 @@ public class JmeterSummaryChartGenerator implements Generator {
 		for (List<Object> row : log.getRows()) {
 			Matcher m = txPattern.matcher(labelField.select(row).toString());
 			if (m.matches()) {
+//				@SuppressWarnings("unchecked")
+//				Comparable<Object> startX = (Comparable<Object>) config
+//						.getStartX();
+//				@SuppressWarnings("unchecked")
+//				Comparable<Object> endX = (Comparable<Object>) config.getEndX();
+//				Object x = xField.select(row);
+//				if (startX != null && startX.compareTo(x) > 0)
+//					continue;
+//				if (endX != null && endX.compareTo(x) < 0)
+//					continue;
 				String key = m.replaceAll("$1");
 				List<List<Object>> list = involvedRows.get(key);
 				if (list == null)

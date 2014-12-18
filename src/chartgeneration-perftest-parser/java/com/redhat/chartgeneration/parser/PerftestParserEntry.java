@@ -17,7 +17,8 @@ public class PerftestParserEntry {
 
 	public static void main(String[] args) throws Exception {
 		if (args.length < 1) {
-			System.err.println("Usage:\n PARSER_CLASS [TIME_ZONE]");
+			System.err.println("Usage:\n\tjava [-DstartTime=START_TIME] [-DendTime=END_TIME] -jar chartgeneration-perftest-parser.jar PARSER_CLASS [TIME_ZONE]");
+			System.err.println("\tformat of startTime and endTime: 'yyyy-MM-dd hh:mm:ss', like '2014-12-18 13:45:00'");
 			return;
 		}
 		TimeZone.setDefault(TimeZone.getTimeZone(args.length > 1 && !args[1].isEmpty() ? args[1]

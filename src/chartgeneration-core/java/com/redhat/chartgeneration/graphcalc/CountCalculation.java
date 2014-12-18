@@ -8,7 +8,7 @@ import com.redhat.chartgeneration.common.FieldSelector;
 import com.redhat.chartgeneration.report.LineStop;
 
 public class CountCalculation implements GraphCalculation {
-	private int interval = 1000;
+	private int interval = 0;
 	private double times = 1;
 	private boolean setZeroIfIntervalNoData = false;
 
@@ -91,5 +91,12 @@ public class CountCalculation implements GraphCalculation {
 
 	public void setSetZeroIfIntervalNoData(boolean setZeroIfIntervalNoData) {
 		this.setZeroIfIntervalNoData = setZeroIfIntervalNoData;
+	}
+	public int getInterval() {
+		return interval;
+	}
+
+	public void setInterval(int interval) {
+		this.interval = interval;
 	}
 }

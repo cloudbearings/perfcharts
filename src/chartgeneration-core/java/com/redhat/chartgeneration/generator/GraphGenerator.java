@@ -6,35 +6,34 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
+import com.redhat.chartgeneration.common.FieldSelector;
+import com.redhat.chartgeneration.config.AppData;
 import com.redhat.chartgeneration.config.GraphConfig;
-import com.redhat.chartgeneration.config.LineConfigGenerator;
 import com.redhat.chartgeneration.config.GraphLineConfig;
 import com.redhat.chartgeneration.config.GraphLineConfigRule;
+import com.redhat.chartgeneration.config.LineConfigGenerator;
+import com.redhat.chartgeneration.graphcalc.GraphCalculation;
 import com.redhat.chartgeneration.report.GraphLine;
-import com.redhat.chartgeneration.report.StatGraph;
 import com.redhat.chartgeneration.report.LineStop;
+import com.redhat.chartgeneration.report.StatGraph;
 
 public class GraphGenerator implements Generator {
-	private GraphConfig lineGraphConfig;
+	private GraphConfig graphConfig;
+	private final static int DEFAULT_POINTS_PER_GRAPH = 100;
 
-//	public LineGraph generate(InputStream in) throws IOException {
-//		LogReader reader = new LogReader();
-//		final PerfLog log = new PerfLog();
-//		final List<List<Object>> rows = reader
-//				.read(in/* , log.getFieldTypes() */);
-//		log.setRows(rows);
-//		return generate(log);
-//	}
 	public GraphGenerator(GraphConfig lineGraphConfig) {
-		this.lineGraphConfig = lineGraphConfig;
+		this.graphConfig = lineGraphConfig;
 	}
 
 	public StatGraph generate(final PerfLog log) throws IOException {
+		Logger logger = AppData.getInstance().getLogger();
+
 		final List<List<Object>> rows = log.getRows();
 
 		final LineConfigGenerator cfgGenerator = new LineConfigGenerator();
-		List<GraphLineConfigRule> rules = lineGraphConfig.getRules();
+		List<GraphLineConfigRule> rules = graphConfig.getRules();
 		final List<GraphLineConfig> lineConfigs = new ArrayList<GraphLineConfig>();
 		for (GraphLineConfigRule rule : rules) {
 			lineConfigs.addAll(cfgGenerator.generate(rule, log));
@@ -43,13 +42,15 @@ public class GraphGenerator implements Generator {
 		final List<GraphLine> resultLines = new ArrayList<GraphLine>(
 				lineConfigs.size());
 		for (final GraphLineConfig config : lineConfigs) {
-			final List<List<Object>> involvedRows = new LinkedList<List<Object>>();
+			final LinkedList<List<Object>> involvedRows = new LinkedList<List<Object>>();
 			for (List<Object> row : rows) {
 				if (config.getInvolvedRowLabels().contains(
 						config.getLabelField().select(row))) {
 					involvedRows.add(row);
 				}
 			}
+			if (involvedRows.isEmpty())
+				continue;
 			Collections.sort(involvedRows, new Comparator<List<Object>>() {
 				@Override
 				public int compare(List<Object> o1, List<Object> o2) {
@@ -62,26 +63,40 @@ public class GraphGenerator implements Generator {
 					return a.compareTo(b);
 				}
 			});
-
-			List<LineStop> lineStops = config.getCalculation().produce(
-					involvedRows, config.getXField(), config.getYField());
-			// if (!lineStops.isEmpty()) {
-			GraphLine line = new GraphLine(config.getLabel(), config.getUnit(), lineStops,
-					config.isShowLines(), config.isShowBars(), config.isShowUnit());
+			GraphCalculation calc = config.getCalculation();
+			int interval = calc.getInterval();
+			if (interval == 0) {
+				FieldSelector xField = config.getxField();
+				long minX = ((Number) xField.select(involvedRows.getFirst()))
+						.longValue();
+				long maxX = ((Number) xField.select(involvedRows.getLast()))
+						.longValue();
+				interval = (int) (maxX - minX) / DEFAULT_POINTS_PER_GRAPH;
+				if (interval < 1)
+					interval = 1;
+				calc.setInterval(interval);
+				logger.info("use automatic interval value " + interval
+						+ " for series '" + config.getLabel() + "' in chart '"
+						+ graphConfig.getTitle() + "'");
+			}
+			List<LineStop> lineStops = calc.produce(involvedRows,
+					config.getXField(), config.getYField());
+			GraphLine line = new GraphLine(config.getLabel(), config.getUnit(),
+					lineStops, config.isShowLines(), config.isShowBars(),
+					config.isShowUnit());
 			resultLines.add(line);
-			// }
 		}
-		return new StatGraph(lineGraphConfig.getTitle(), lineGraphConfig.getSubtitle(),
-				lineGraphConfig.getXLabel(), lineGraphConfig.getYLabel(),
-				resultLines, lineGraphConfig.getXaxisMode());
+		return new StatGraph(graphConfig.getTitle(), graphConfig.getSubtitle(),
+				graphConfig.getXLabel(), graphConfig.getYLabel(), resultLines,
+				graphConfig.getXaxisMode());
 	}
 
 	public GraphConfig getLineGraphConfig() {
-		return lineGraphConfig;
+		return graphConfig;
 	}
 
 	public void setLineGraphConfig(GraphConfig lineGraphConfig) {
-		this.lineGraphConfig = lineGraphConfig;
+		this.graphConfig = lineGraphConfig;
 	}
 
 }

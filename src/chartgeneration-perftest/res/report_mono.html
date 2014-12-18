@@ -60,7 +60,7 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 			$("<li/>")
 					.append(
 							$(
-									"<a class='report_switch' href='javascript:'>Composite Report</a>")
+									"<a class='report_switch' href='javascript:'>Composite Chart</a>")
 									.click(function() {
 										$(".control_pad").html("");
 										showCompositeReport();
@@ -74,7 +74,7 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 
 		function showCompositeReport() {
 			var report = ChartGeneration.compositeReport;
-			report.title = "Composite Report";
+			report.title = "";
 			report.charts = [ {
 				title : "Composite Chart",
 				subtitle : "",
@@ -353,9 +353,12 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 							function(event, pos, item) {
 								var plot = $placeholder.data("plot");
 								if (item) {
-									var x = new Date(item.datapoint[0])
-											.toUTCString(), y = item.datapoint[1]
+									var x = item.series.xaxis.options.mode === "time" ? new Date(item.datapoint[0])
+											.toUTCString() : item.datapoint[0];
+									var y = item.datapoint[1]
 											.toFixed(2);
+									if (item.series._unit && item.series._unit.value)
+										y += " " + item.series._unit.value;
 									$("#tooltip").html(
 											"<b>" + item.series.label
 													+ "</b><br />" + x
@@ -531,4 +534,3 @@ html {
 	</footer>
 </body>
 </html>
-
