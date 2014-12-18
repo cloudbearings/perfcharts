@@ -18,10 +18,10 @@ public class JmeterAverageRTOverallChartTemplate extends BaseGraphTemplate {
 		List<GraphLineConfigRule> rules;
 		FieldSelector rtField = new IndexFieldSelector(5);
 		rules = new ArrayList<GraphLineConfigRule>();
-		rules.add(new GraphLineConfigRule("^TX-(.+)-[SF]$", "$1", "RT",
+		rules.add(new GraphLineConfigRule("^TX-(.+)-S$", "$1", "RT",
 				getLabelField(), new ConstantSelector(1), rtField,
 				new AverageCalculation(), false, true, false));
-		return createConfig("Transactions Average Response Time Overall", "", "response time / ms",
+		return createConfig("Transactions Average Response Times Overall", "", "response time / ms",
 				rules, AxisMode.CATEGORIES);
 	}
 

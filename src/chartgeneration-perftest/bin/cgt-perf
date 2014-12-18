@@ -61,7 +61,7 @@ jmeter_dir=$tmp_dir/jmeter
 jmeter_data_table=$jmeter_dir/jmeter.csv
 resource_monitoring_dir=$tmp_dir/resource_monitoring
 json_dir=$tmp_dir/subreports
-jmeter_json_file=$json_dir/Jmeter.json
+jmeter_json_file=$json_dir/Performance.json
 
 # parse raw data to data tables
 rm "$tmp_dir" -Rf

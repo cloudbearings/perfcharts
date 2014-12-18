@@ -20,7 +20,7 @@ public class JmeterRTChartTemplate extends BaseChartTemplateWithInterval {
 		FieldSelector rtField = new IndexFieldSelector(5);
 		FieldSelector xField = new AddTransformSelector(timestampField, rtField);
 		rules = new ArrayList<GraphLineConfigRule>();
-		rules.add(new GraphLineConfigRule("^TX-(.+)-[SF]$", "$1", "RT",  getLabelField(),
+		rules.add(new GraphLineConfigRule("^TX-(.+)-S$", "$1", "RT",  getLabelField(),
 				xField, rtField, new AverageCalculation(getInterval())));
 		return createConfig("Response Times over Time",
 				"time", "response time / ms", rules, AxisMode.TIME);
