@@ -200,7 +200,11 @@
 			for (var i = 0; i < chart.rows.length; ++i) {
 				var $tableRow = $("<tr/>").appendTo($tbody);
 				for (var j = 0; j < chart.rows[i].length; ++j) {
-					$("<td/>").text(chart.rows[i][j]).appendTo($tableRow);
+					var val = chart.rows[i][j];
+					var $td = $("<td/>").text(val).appendTo($tableRow);
+					if (j == 7 && val > 0) {
+						$td.addClass("JmeterSummaryChart_error");
+					}
 				}
 			}
 		}
@@ -482,7 +486,7 @@ html {
 }
 
 .chart_table td, .chart_table th {
-	border: 1px solid;
+	border: 1px solid #000;
 }
 
 .JmeterSummaryChart {
@@ -497,6 +501,9 @@ html {
 	word-wrap: break-word;
 	text-align: left;
 	max-width: 200px;
+}
+.JmeterSummaryChart_error {
+	color: red;
 }
 </style>
 </head>

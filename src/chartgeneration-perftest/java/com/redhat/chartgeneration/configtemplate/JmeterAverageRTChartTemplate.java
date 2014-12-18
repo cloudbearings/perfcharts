@@ -20,7 +20,7 @@ public class JmeterAverageRTChartTemplate extends BaseChartTemplateWithInterval 
 		FieldSelector rtField = new IndexFieldSelector(5);
 		FieldSelector xField = new AddTransformSelector(timestampField, rtField);
 		rules = new ArrayList<GraphLineConfigRule>();
-		rules.add(new GraphLineConfigRule("^TX-(.+)-[SF]$", "average", "RT",
+		rules.add(new GraphLineConfigRule("^TX-(.+)-S$", "average", "RT",
 				getLabelField(), xField, rtField, new AverageCalculation(
 						getInterval())));
 		return createConfig("Average Response Times over Time", "time",
