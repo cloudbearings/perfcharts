@@ -14,6 +14,9 @@ public class JmeterHitsChartTemplate extends BaseChartTemplateWithInterval {
 
 	@Override
 	public GraphConfig generateChartConfig() {
+		int interval = getInterval();
+		if (interval < 1)
+			interval = 10000;
 		List<GraphLineConfigRule> rules;
 		FieldSelector timestampField = new IndexFieldSelector(1);
 		FieldSelector yField = new IndexFieldSelector(2);
@@ -21,7 +24,7 @@ public class JmeterHitsChartTemplate extends BaseChartTemplateWithInterval {
 		rules = new ArrayList<GraphLineConfigRule>();
 		rules.add(new GraphLineConfigRule("^HIT-.*", "hits", "HITS",
 				getLabelField(), timestampField, yField, new CountCalculation(
-						getInterval(), 1000.0 / getInterval())));
+						interval, 1000.0 / interval)));
 		return createConfig("Hits over Time", "time",
 				"hits", rules, AxisMode.TIME);
 	}

@@ -1,8 +1,8 @@
 package com.redhat.chartgeneration.configtemplate;
 
 
-public abstract class BaseChartTemplateWithInterval extends BaseChartTemplate {
-	private int interval = 1000;
+public abstract class BaseChartTemplateWithInterval extends BaseGraphTemplate {
+	private int interval = 0;
 
 	public BaseChartTemplateWithInterval() {
 

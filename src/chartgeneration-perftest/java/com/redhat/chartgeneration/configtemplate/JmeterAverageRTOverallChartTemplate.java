@@ -11,7 +11,7 @@ import com.redhat.chartgeneration.config.GraphLineConfigRule;
 import com.redhat.chartgeneration.config.GraphConfig;
 import com.redhat.chartgeneration.graphcalc.AverageCalculation;
 
-public class JmeterAverageRTOverallChartTemplate extends BaseChartTemplate {
+public class JmeterAverageRTOverallChartTemplate extends BaseGraphTemplate {
 
 	@Override
 	public GraphConfig generateChartConfig() {

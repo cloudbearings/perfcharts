@@ -16,6 +16,9 @@ public class JmeterTotalTPSChartTemplate extends
 
 	@Override
 	public GraphConfig generateChartConfig() {
+		int interval = getInterval();
+		if (interval < 1)
+			interval = 10000;
 		List<GraphLineConfigRule> rules;
 		FieldSelector timestampField = new IndexFieldSelector(1);
 		FieldSelector rtField = new IndexFieldSelector(5);
@@ -23,10 +26,10 @@ public class JmeterTotalTPSChartTemplate extends
 		rules = new ArrayList<GraphLineConfigRule>();
 		rules.add(new GraphLineConfigRule("^TX-(.+)-S$", "Success", "TPS",
 				getLabelField(), xField, null, new CountCalculation(
-						getInterval(), 1000.0 / getInterval(), false)));
+						interval, 1000.0 / interval, false)));
 		rules.add(new GraphLineConfigRule("^TX-(.+)-F$", "Failure", "TPS",
 				getLabelField(), xField, null, new CountCalculation(
-						getInterval(), 1000.0 / getInterval(), true)));
+						interval, 1000.0 / interval, true)));
 		return createConfig("Total TPS over Time", "time", "TPS", rules,
 				AxisMode.TIME);
 	}

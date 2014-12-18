@@ -8,7 +8,7 @@ import com.redhat.chartgeneration.common.FieldSelector;
 import com.redhat.chartgeneration.report.LineStop;
 
 public class SumCalculation implements GraphCalculation {
-	private int interval = 1000;
+	private int interval = 0;
 	private int times = 1;
 
 	public SumCalculation() {
@@ -74,5 +74,12 @@ public class SumCalculation implements GraphCalculation {
 
 	public void setTimes(int times) {
 		this.times = times;
+	}
+	public int getInterval() {
+		return interval;
+	}
+
+	public void setInterval(int interval) {
+		this.interval = interval;
 	}
 }

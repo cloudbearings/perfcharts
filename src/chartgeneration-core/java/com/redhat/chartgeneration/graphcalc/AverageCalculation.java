@@ -1,10 +1,11 @@
 package com.redhat.chartgeneration.graphcalc;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.redhat.chartgeneration.common.FieldSelector;
+import com.redhat.chartgeneration.config.AppData;
 import com.redhat.chartgeneration.report.LineStop;
 
 public class AverageCalculation implements GraphCalculation {
@@ -18,7 +19,7 @@ public class AverageCalculation implements GraphCalculation {
 	public AverageCalculation(int interval) {
 		this.interval = interval;
 	}
-	
+
 	public AverageCalculation(int interval, int times) {
 		this.interval = interval;
 		this.times = times;
@@ -30,8 +31,7 @@ public class AverageCalculation implements GraphCalculation {
 		Object lastX = 0;
 		double y = 0.0;
 		int count = 0;
-		for (Iterator<List<Object>> it = rows.iterator(); it.hasNext();) {
-			List<Object> row = it.next();
+		for (List<Object> row : rows) {
 			Object x = xField.select(row);
 			if (interval > 1) {
 				if (Long.class.isAssignableFrom(x.getClass())) {
@@ -39,10 +39,12 @@ public class AverageCalculation implements GraphCalculation {
 					x = num.longValue() / interval * interval;
 				} else if (Double.class.isAssignableFrom(x.getClass())) {
 					Number num = (Number) x;
-					x = (long)(Math.floor(num.doubleValue() / interval) * interval);
+					x = (long) (Math.floor(num.doubleValue() / interval) * interval);
 				} else {
-					// interval is omitted
-					System.err.println("[Warning] AverageCalculation.produce: interval is omitted");
+					Logger logger = AppData.getInstance().getLogger();
+					logger.warning("'interval' is omitted because '"
+							+ x.toString() + "' (whose type is '"
+							+ x.getClass().toString() + "') is not a number.");
 				}
 			}
 

@@ -25,12 +25,15 @@ public class NMONParser implements DataParser {
 		List<String[]> lines = new LinkedList<String[]>();
 		Map<Integer, Long> timeTable = new HashMap<Integer, Long>(16000);
 		Map<String, String> metaInfo = new HashMap<String, String>(30);
-		//TimeZone utcZone = TimeZone.getTimeZone("UTC");
+		// TimeZone utcZone = TimeZone.getTimeZone("UTC");
 		SimpleDateFormat timeFormat = new SimpleDateFormat("H:m:s d-MMM-y");
-		//timeFormat.setTimeZone(utcZone);
+		// timeFormat.setTimeZone(utcZone);
 
 		Map<String, Integer> diskColumnMap = new HashMap<String, Integer>(4);
 		Pattern diskPattern = Pattern.compile("^[hsv]d[a-z]$");
+
+		Date startTime = Settings.getInstance().getStartTime();
+		Date endTime = Settings.getInstance().getEndTime();
 
 		while ((lineStr = reader.readLine()) != null) {
 			String[] extractedLine = lineStr.split(",");
@@ -40,10 +43,12 @@ public class NMONParser implements DataParser {
 			if (extractedLine[0].equals("ZZZZ") && extractedLine.length >= 4) {
 				int tsLabelValue = Integer.parseInt(extractedLine[1]
 						.substring(1));
-				Date time = timeFormat.parse(extractedLine[2] + " "
+				Date date = timeFormat.parse(extractedLine[2] + " "
 						+ extractedLine[3]);
-				//System.err.println(extractedLine[2] + "->" + time);
-				timeTable.put(tsLabelValue, time.getTime());
+				if (startTime != null && date.before(startTime)
+						|| endTime != null && date.after(endTime))
+					continue;
+				timeTable.put(tsLabelValue, date.getTime());
 			} else if (extractedLine[0].startsWith("DISK")
 					&& extractedLine.length > 2
 					&& !extractedLine[1].startsWith("T")) {
@@ -84,10 +89,12 @@ public class NMONParser implements DataParser {
 
 	private static void parseCPUUtilization(BufferedWriter writer,
 			String[] line, Map<Integer, Long> timeTable) throws IOException {
+		Long ts = timeTable.get(Integer.parseInt(line[1].substring(1)));
+		if (ts == null)
+			return;
 		writer.write("CPU");
 		writer.write(",");
-		Long ts = timeTable.get(Integer.parseInt(line[1].substring(1)));
-		writer.write(ts == null ? "0 " : ts.toString());
+		writer.write(ts.toString());
 		writer.write(",");
 		writer.write(Float.toString(Float.parseFloat(line[2])));
 		writer.write(",");
@@ -103,10 +110,12 @@ public class NMONParser implements DataParser {
 
 	private static void parseMemoryUtilization(BufferedWriter writer,
 			String[] line, Map<Integer, Long> timeTable) throws IOException {
+		Long ts = timeTable.get(Integer.parseInt(line[1].substring(1)));
+		if (ts == null)
+			return;
 		writer.write("MEM");
 		writer.write(",");
-		Long ts = timeTable.get(Integer.parseInt(line[1].substring(1)));
-		writer.write(ts == null ? "0 " : ts.toString());
+		writer.write(ts.toString());
 		writer.write(",");
 		writer.write(Float.toString(Float.parseFloat(line[2])));
 		writer.write(",");
@@ -120,10 +129,12 @@ public class NMONParser implements DataParser {
 
 	private static void parseNetworkThroughput(BufferedWriter writer,
 			String[] line, Map<Integer, Long> timeTable) throws IOException {
+		Long ts = timeTable.get(Integer.parseInt(line[1].substring(1)));
+		if (ts == null)
+			return;
 		writer.write("NET");
 		writer.write(",");
-		Long ts = timeTable.get(Integer.parseInt(line[1].substring(1)));
-		writer.write(ts == null ? "0 " : ts.toString());
+		writer.write(ts.toString());
 
 		int numberOfNetworkAdapters = (line.length - 2) >> 1;
 		float read = 0;
@@ -143,7 +154,9 @@ public class NMONParser implements DataParser {
 			final String[] line, final Map<Integer, Long> timeTable,
 			final Map<String, Integer> diskColumnMap) throws IOException {
 		Long ts = timeTable.get(Integer.parseInt(line[1].substring(1)));
-		final String tsStr = ts == null ? "0 " : ts.toString();
+		if (ts == null)
+			return;
+		final String tsStr = ts.toString();
 		for (String disk : diskColumnMap.keySet()) {
 			int index = diskColumnMap.get(disk).intValue();
 			writer.write("DISKBUSY-");
@@ -160,7 +173,9 @@ public class NMONParser implements DataParser {
 			final String[] line, final Map<Integer, Long> timeTable,
 			final Map<String, Integer> diskColumnMap) throws IOException {
 		Long ts = timeTable.get(Integer.parseInt(line[1].substring(1)));
-		final String tsStr = ts == null ? "0 " : ts.toString();
+		if (ts == null)
+			return;
+		final String tsStr = ts.toString();
 		for (String disk : diskColumnMap.keySet()) {
 			int index = diskColumnMap.get(disk).intValue();
 			writer.write("DISKREAD-");
@@ -177,7 +192,9 @@ public class NMONParser implements DataParser {
 			final String[] line, final Map<Integer, Long> timeTable,
 			final Map<String, Integer> diskColumnMap) throws IOException {
 		Long ts = timeTable.get(Integer.parseInt(line[1].substring(1)));
-		final String tsStr = ts == null ? "0 " : ts.toString();
+		if (ts == null)
+			return;
+		final String tsStr = ts.toString();
 		for (String disk : diskColumnMap.keySet()) {
 			int index = diskColumnMap.get(disk).intValue();
 			writer.write("DISKWRITE-");

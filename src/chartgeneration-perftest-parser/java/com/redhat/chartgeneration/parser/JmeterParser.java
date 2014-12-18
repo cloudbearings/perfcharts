@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Date;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -16,6 +17,11 @@ public class JmeterParser implements DataParser {
 		XMLStreamReader reader = XMLInputFactory.newInstance()
 				.createXMLStreamReader(in);
 		OutputStreamWriter writer = new OutputStreamWriter(out);
+
+		Date startTime = Settings.getInstance().getStartTime();
+		Date endTime = Settings.getInstance().getEndTime();
+		long startTimeVal = startTime == null ? -1 : startTime.getTime();
+		long endTimeVal = endTime == null ? -1 : endTime.getTime();
 		int level = 0;
 		String label = null;
 		long timestamp = 0;
@@ -36,6 +42,11 @@ public class JmeterParser implements DataParser {
 					timestamp = Long.parseLong(reader.getAttributeValue(null,
 							"ts"));
 					rt = Integer.parseInt(reader.getAttributeValue(null, "t"));
+
+					if (startTimeVal > 0 && timestamp < startTimeVal
+							|| endTimeVal > 0 && timestamp + rt > endTimeVal)
+						continue;
+
 					latency = Integer.parseInt(reader.getAttributeValue(null,
 							"lt"));
 					threads = Integer.parseInt(reader.getAttributeValue(null,
@@ -47,12 +58,17 @@ public class JmeterParser implements DataParser {
 					writeFields(writer, "TX-" + label + (error ? "-F" : "-S"),
 							timestamp, threads, error ? '1' : '0', latency, rt,
 							bytes);
-				} 
+				}
 				if (isHttpSample) {
 					label = reader.getAttributeValue(null, "lb");
 					timestamp = Long.parseLong(reader.getAttributeValue(null,
 							"ts"));
 					rt = Integer.parseInt(reader.getAttributeValue(null, "t"));
+
+					if (startTimeVal > 0 && timestamp < startTimeVal
+							|| endTimeVal > 0 && timestamp + rt > endTimeVal)
+						continue;
+
 					error = !Boolean.parseBoolean(reader.getAttributeValue(
 							null, "s"));
 					writeFields(
