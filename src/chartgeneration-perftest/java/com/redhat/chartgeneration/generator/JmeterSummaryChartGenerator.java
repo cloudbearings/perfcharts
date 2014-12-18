@@ -139,7 +139,7 @@ public class JmeterSummaryChartGenerator implements Generator {
 					numRTfailure++;
 				}
 			}
-			long duration = maxTimestamp - minTimestamp;
+			long duration = maxTimestamp - minTimestamp + 1;
 
 			List<Object> tableRow = new ArrayList<Object>();
 			tableRow.add(series.getKey());
@@ -187,7 +187,7 @@ public class JmeterSummaryChartGenerator implements Generator {
 		totalRow.add(Math.sqrt(sumRTSquaredTotal / numRTsuccessTotal
 				- avgRTTotal * avgRTTotal));
 		totalRow.add(100.0 * numRTfailureTotal / samplesTotal);
-		long durationTotal = maxTimestampTotal - minTimestampTotal;
+		long durationTotal = maxTimestampTotal - minTimestampTotal + 1;
 		totalRow.add(formatThroughput(1.0 * samplesTotal / durationTotal));
 		totalRow.add(bytesSumTotal / 1.024 / durationTotal);
 		totalRow.add(1.0 * bytesSumTotal / numRTsuccessTotal);

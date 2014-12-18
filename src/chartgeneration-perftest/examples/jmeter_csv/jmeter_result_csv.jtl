@@ -1,0 +1,327 @@
+1411448596002,5,setParams,200,OK,Thread Group - formal 1-1,text,true,367,5
+1411448596008,433,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4434,0
+1411448596441,784,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,13285,0
+1411448597227,827,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411448598083,1882,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24578,0
+1411448599966,237,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411448600221,373,Advisory_New_FindNewBuild_1,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4194,0
+1411448600631,5594,Advisory_New_SaveBuilds_1,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4248,0
+1411448606232,2446,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24649,0
+1411448608679,552,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,5017,0
+1411448609232,3052,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411448612285,3208,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411448615510,1687,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24582,0
+1411448617198,190,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411448617398,249,Advisory_New_FindNewBuild_1,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4194,0
+1411448617674,5251,Advisory_New_SaveBuilds_1,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4242,0
+1411448622928,2541,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24652,0
+1411448625470,489,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411448625959,2707,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411448628668,3056,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411448631740,1701,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24581,0
+1411448633444,188,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411448633642,281,Advisory_New_FindNewBuild_1,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4195,0
+1411448633947,5260,Advisory_New_SaveBuilds_1,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4244,0
+1411448639210,2733,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24649,0
+1411448641945,513,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411448642459,2651,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411448645111,3195,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411448648321,1707,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24578,0
+1411448650029,188,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411448650225,356,Advisory_New_FindNewBuild_1,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4193,0
+1411448650601,5149,Advisory_New_SaveBuilds_1,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4244,0
+1411448655753,2621,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24648,0
+1411448658375,501,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411448658877,2677,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411448661555,3247,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411448664816,1623,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24578,0
+1411448666440,209,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411448666656,360,Advisory_New_FindNewBuild_1,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4194,0
+1411448667038,5338,Advisory_New_SaveBuilds_1,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4243,0
+1411448672380,3012,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24648,0
+1411448675392,406,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411448675800,2541,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411448678342,3271,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411448681629,1729,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24580,0
+1411448683359,82,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411448683447,3552,Advisory_New_FindNewBuild_5,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4611,0
+1411448687031,58969,Advisory_New_SaveBuilds_5,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,6355,0
+1411448746003,2702,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24724,0
+1411448748707,548,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411448749255,2605,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411448751862,3188,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411448755066,1751,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24576,0
+1411448756819,194,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411448757019,4225,Advisory_New_FindNewBuild_5,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4604,0
+1411448761266,67979,Advisory_New_SaveBuilds_5,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,6325,0
+1411448829249,3042,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24655,0
+1411448832291,417,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411448832710,2666,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411448835377,3216,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411448838609,1775,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24580,0
+1411448840385,194,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4531,0
+1411448840584,4181,Advisory_New_FindNewBuild_5,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4604,0
+1411448844786,68063,Advisory_New_SaveBuilds_5,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,6330,0
+1411448912853,2481,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24656,0
+1411448915335,330,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411448915665,2725,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411448918391,3277,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411448921683,1747,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24582,0
+1411448923432,191,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411448923629,4242,Advisory_New_FindNewBuild_5,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4606,0
+1411448927892,67969,Advisory_New_SaveBuilds_5,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,6333,0
+1411448995865,2495,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24661,0
+1411448998360,314,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411448998674,2605,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411449001280,3263,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411449004558,1640,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24577,0
+1411449006200,193,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4531,0
+1411449006398,4147,Advisory_New_FindNewBuild_5,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4605,0
+1411449010564,66180,Advisory_New_SaveBuilds_5,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,6331,0
+1411449076748,2585,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24654,0
+1411449079334,304,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411449079638,2718,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411449082357,3065,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411449085439,1760,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24580,0
+1411449087200,191,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411449087397,8104,Advisory_New_FindNewBuild_10,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,5236,0
+1411449095527,136384,Advisory_New_SaveBuilds_10,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,8655,0
+1411449231915,3749,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24738,0
+1411449235665,218,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411449235884,2629,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411449238514,3191,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411449241720,1663,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24586,0
+1411449243384,195,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411449243586,8241,Advisory_New_FindNewBuild_10,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,5236,0
+1411449251853,135396,Advisory_New_SaveBuilds_10,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,8694,0
+1411449387253,3023,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24748,0
+1411449390276,251,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411449390528,2376,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411449392905,3220,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411449396140,1699,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24580,0
+1411449397841,196,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411449398042,8301,Advisory_New_FindNewBuild_10,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,5234,0
+1411449406364,134569,Advisory_New_SaveBuilds_10,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,8638,0
+1411449540937,3549,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24738,0
+1411449544487,302,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411449544789,2455,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411449547244,3169,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411449550428,1818,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24577,0
+1411449552248,216,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4531,0
+1411449552468,8208,Advisory_New_FindNewBuild_10,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,5234,0
+1411449560696,134505,Advisory_New_SaveBuilds_10,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,8643,0
+1411449695205,3148,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24737,0
+1411449698354,303,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411449698658,2290,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411449700949,3542,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411449704507,1684,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24579,0
+1411449706192,217,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411449706413,8315,Advisory_New_FindNewBuild_10,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,5235,0
+1411449714755,134882,Advisory_New_SaveBuilds_10,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,8667,0
+1411449849641,4099,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24738,0
+1411449853741,459,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411449854200,2409,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411449856611,3107,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411449859733,1681,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24579,0
+1411449861415,198,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411449861619,12213,Advisory_New_FindNewBuild_15,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,5782,0
+1411449873857,206866,Advisory_New_SaveBuilds_15,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,11023,0
+1411450080728,3504,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25228,0
+1411450084232,477,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411450084711,2440,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411450087152,3233,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411450090400,1823,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24578,0
+1411450092225,199,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411450092431,12378,Advisory_New_FindNewBuild_15,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,5815,0
+1411450104834,211254,Advisory_New_SaveBuilds_15,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,11075,0
+1411450316093,3969,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25234,0
+1411450320062,487,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411450320550,2305,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411450322856,3281,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411450326151,1891,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24579,0
+1411450328043,206,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411450328256,12517,Advisory_New_FindNewBuild_15,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,5784,0
+1411450340796,214462,Advisory_New_SaveBuilds_15,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,11078,0
+1411450555262,4471,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25228,0
+1411450559733,411,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411450560145,2293,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411450562439,3380,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411450565833,1825,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24580,0
+1411450567659,199,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411450567865,12437,Advisory_New_FindNewBuild_15,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,5775,0
+1411450580326,212867,Advisory_New_SaveBuilds_15,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,11022,0
+1411450793197,3994,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25227,0
+1411450797193,489,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411450797682,2452,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411450800135,3511,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411450803660,1845,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24584,0
+1411450805506,85,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411450805596,12555,Advisory_New_FindNewBuild_15,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,5784,0
+1411450818173,215188,Advisory_New_SaveBuilds_15,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,11080,0
+1411451033365,3509,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25235,0
+1411451036875,341,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411451037216,2694,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411451039911,3391,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411451043315,1681,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24576,0
+1411451044998,198,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411451045201,16558,Advisory_New_FindNewBuild_20,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,6267,0
+1411451061786,290878,Advisory_New_SaveBuilds_20,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,13363,0
+1411451352669,4317,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25310,0
+1411451356987,329,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411451357317,2613,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411451359931,3460,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411451363406,1790,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24583,0
+1411451365197,206,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411451365407,16850,Advisory_New_FindNewBuild_20,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,6268,0
+1411451382284,289771,Advisory_New_SaveBuilds_20,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,13345,0
+1411451672059,3760,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25314,0
+1411451675819,437,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411451676257,2733,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411451678991,3422,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411451682428,1792,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24580,0
+1411451684221,207,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411451684433,16664,Advisory_New_FindNewBuild_20,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,6309,0
+1411451701124,290723,Advisory_New_SaveBuilds_20,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,13422,0
+1411451991852,3714,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25318,0
+1411451995567,440,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411451996008,2581,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411451998589,3408,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411452002011,1760,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24578,0
+1411452003772,209,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411452003986,16708,Advisory_New_FindNewBuild_20,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,6273,0
+1411452020720,286841,Advisory_New_SaveBuilds_20,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,13362,0
+1411452307565,5115,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25308,0
+1411452312681,475,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411452313157,2570,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411452315728,3267,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411452319009,1767,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24581,0
+1411452320777,232,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411452321013,16504,Advisory_New_FindNewBuild_20,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,6262,0
+1411452337542,288865,Advisory_New_SaveBuilds_20,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,13319,0
+1411452626411,4405,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25320,0
+1411452630816,454,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411452631271,2615,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411452633887,3353,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411452637257,1805,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24581,0
+1411452639062,209,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411452639276,20514,Advisory_New_FindNewBuild_25,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,6788,0
+1411452659819,361705,Advisory_New_SaveBuilds_25,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,15664,0
+1411453021528,3638,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25411,0
+1411453025167,451,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411453025618,2529,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411453028148,3431,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411453031592,1664,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24580,0
+1411453033258,212,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411453033474,20885,Advisory_New_FindNewBuild_25,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,6817,0
+1411453054388,366913,Advisory_New_SaveBuilds_25,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,15642,0
+1411453421306,4131,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25420,0
+1411453425438,495,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411453425934,2481,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411453428415,3313,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411453431741,1837,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24580,0
+1411453433579,211,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411453433796,20327,Advisory_New_FindNewBuild_25,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,6784,0
+1411453454152,363261,Advisory_New_SaveBuilds_25,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,15623,0
+1411453817419,4165,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25409,0
+1411453821585,301,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411453821886,2567,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411453824454,3236,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411453827705,1705,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24580,0
+1411453829412,238,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411453829655,20549,Advisory_New_FindNewBuild_25,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,6784,0
+1411453850230,362711,Advisory_New_SaveBuilds_25,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,15694,0
+1411454212945,3997,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25422,0
+1411454216943,261,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411454217204,2563,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411454219769,3259,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411454223042,1712,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24581,0
+1411454224755,240,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411454224999,20769,Advisory_New_FindNewBuild_25,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,6795,0
+1411454245795,364276,Advisory_New_SaveBuilds_25,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,15568,0
+1411454610075,4114,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25415,0
+1411454614191,347,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411454614539,2576,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411454617116,3269,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411454620398,1695,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24581,0
+1411454622094,238,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411454622336,40985,Advisory_New_FindNewBuild_50,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,9150,0
+1411454663368,799128,Advisory_New_SaveBuilds_50,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,27398,0
+1411455462503,4675,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25931,0
+1411455467179,348,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411455467528,2743,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411455470272,3182,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411455473467,1821,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24583,0
+1411455475288,230,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411455475525,42268,Advisory_New_FindNewBuild_50,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,9064,0
+1411455517837,801186,Advisory_New_SaveBuilds_50,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,27174,0
+1411456319030,5688,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25924,0
+1411456324719,379,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411456325099,2693,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411456327792,3323,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411456331128,1811,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24582,0
+1411456332940,263,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411456333207,42001,Advisory_New_FindNewBuild_50,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,9153,0
+1411456375260,790621,Advisory_New_SaveBuilds_50,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,27280,0
+1411457165888,5267,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25918,0
+1411457171156,345,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411457171501,2665,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411457174167,3322,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411457177502,1680,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24579,0
+1411457179183,234,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411457179422,42329,Advisory_New_FindNewBuild_50,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,9064,0
+1411457221798,790665,Advisory_New_SaveBuilds_50,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,27250,0
+1411458012470,5310,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25911,0
+1411458017781,184,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411458017965,2488,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411458020455,3298,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411458023766,1686,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24582,0
+1411458025454,236,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4533,0
+1411458025694,41368,Advisory_New_FindNewBuild_50,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,9162,0
+1411458067112,768666,Advisory_New_SaveBuilds_50,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,27343,0
+1411458835784,5023,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,25922,0
+1411458840807,1555,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411458842362,2585,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411458844949,3211,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411458848172,1714,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24581,0
+1411458849887,238,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411458850129,82346,Advisory_New_FindNewBuild_100,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,13819,0
+1411458932560,1732456,Advisory_New_SaveBuilds_100,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,50031,0
+1411460665027,8843,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,26862,0
+1411460673870,424,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411460674295,4169,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411460678464,3289,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411460681766,1760,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24579,0
+1411460683527,89,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411460683621,83638,Advisory_New_FindNewBuild_100,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,13841,0
+1411460767352,1687651,Advisory_New_SaveBuilds_100,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,50210,0
+1411462455013,7767,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,26872,0
+1411462462780,238,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411462463018,2785,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411462465803,3189,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411462469006,1762,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24579,0
+1411462470769,309,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411462471082,84635,Advisory_New_FindNewBuild_100,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,13827,0
+1411462555799,1698764,Advisory_New_SaveBuilds_100,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,50197,0
+1411464254574,7795,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,26855,0
+1411464262370,283,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411464262654,2376,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411464265031,3070,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411464268115,1794,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24578,0
+1411464269910,275,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411464270189,83848,Advisory_New_FindNewBuild_100,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,13825,0
+1411464354118,1680322,Advisory_New_SaveBuilds_100,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,50020,0
+1411466034451,6708,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,26858,0
+1411466041160,382,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411466041543,2544,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411466044088,3158,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411466047259,1551,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24579,0
+1411466048811,327,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411466049145,82529,Advisory_New_FindNewBuild_100,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,13841,0
+1411466131753,1598806,Advisory_New_SaveBuilds_100,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,50166,0
+1411467730570,7254,Advisory_Drop,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,26858,0
+1411467737825,189,Advisory_New,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,737,0
+1411467738015,2566,Advisory_New_Y-stream,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,1120,0
+1411467740582,3170,Advisory_New_SelectRelease,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,23049,0
+1411467743766,1821,Advisory_New_Y-stream_Go,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,24579,0
+1411467745588,85,Advisory_New_EditBuild(Add/Update Brew Builds),200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,4532,0
+1411467745677,121221,Advisory_New_FindNewBuild_150,200,"Number of samples in transaction : 1, number of failing samples : 0",Thread Group - formal 1-1,,true,18611,0
