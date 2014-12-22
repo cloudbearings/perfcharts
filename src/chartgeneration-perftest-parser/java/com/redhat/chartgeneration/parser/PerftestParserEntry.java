@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.TimeZone;
 
-import com.redhat.chartgeneration.config.AppData;
+import com.redhat.chartgeneration.common.AppData;
 
 public class PerftestParserEntry {
 	private DataParser parser;

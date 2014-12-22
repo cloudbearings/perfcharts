@@ -1,23 +1,17 @@
 package com.redhat.chartgeneration.report;
 
 
-public abstract class StatChart {
+public abstract class Chart {
 	private String title;
 	private String subtitle;
 
-	// private StatChartFormatter formatter;
-
-	public StatChart() {
+	public Chart() {
 
 	}
 
-	public StatChart(String title, String subtitle/*
-												 * , StatChartFormatter
-												 * formatter
-												 */) {
+	public Chart(String title, String subtitle) {
 		this.title = title;
 		this.subtitle = subtitle;
-		// this.setFormatter(formatter);
 	}
 
 	public abstract String format() throws Exception;

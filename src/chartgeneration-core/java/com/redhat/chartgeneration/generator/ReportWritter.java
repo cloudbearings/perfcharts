@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import com.redhat.chartgeneration.report.StatChart;
-import com.redhat.chartgeneration.report.StatReport;
+import com.redhat.chartgeneration.report.Chart;
+import com.redhat.chartgeneration.report.Report;
 
 public class ReportWritter {
 
@@ -18,11 +18,11 @@ public class ReportWritter {
 	 * @param report
 	 * @throws Exception
 	 */
-	public void produce(StatReport report, OutputStream out) throws Exception {
+	public void produce(Report report, OutputStream out) throws Exception {
 		StringBuilder sb = new StringBuilder("{");
 		int validChartCount = 0;
 		sb.append("\"charts\":[");
-		for (StatChart chart : report.getCharts()) {
+		for (Chart chart : report.getCharts()) {
 			String s = chart.format();
 			if (s != null) {
 				sb.append(s);

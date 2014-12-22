@@ -6,12 +6,12 @@ import java.util.List;
 import com.redhat.chartgeneration.common.FieldSelector;
 import com.redhat.chartgeneration.common.IndexFieldSelector;
 import com.redhat.chartgeneration.config.AxisMode;
-import com.redhat.chartgeneration.config.GraphLineConfigRule;
+import com.redhat.chartgeneration.config.GraphSeriesConfigRule;
 import com.redhat.chartgeneration.config.GraphConfig;
 import com.redhat.chartgeneration.graphcalc.AverageCalculation;
 
 public class NMONCPUUtilizationChartTemplate extends
-		BaseChartTemplateWithInterval {
+		BaseGraphTemplateWithInterval {
 
 	@Override
 	public GraphConfig generateChartConfig() {
@@ -21,20 +21,20 @@ public class NMONCPUUtilizationChartTemplate extends
 		FieldSelector waitField = new IndexFieldSelector(4);
 		FieldSelector totalField = new IndexFieldSelector(5);
 		FieldSelector cpusField = new IndexFieldSelector(6);
-		List<GraphLineConfigRule> rules = new ArrayList<GraphLineConfigRule>();
-		rules.add(new GraphLineConfigRule("^CPU$", "User%", "%", getLabelField(),
+		List<GraphSeriesConfigRule> rules = new ArrayList<GraphSeriesConfigRule>();
+		rules.add(new GraphSeriesConfigRule("^CPU$", "User%", "%", getLabelField(),
 				timestampField, userField,
 				new AverageCalculation(getInterval())));
-		rules.add(new GraphLineConfigRule("^CPU$", "System%", "%", getLabelField(),
+		rules.add(new GraphSeriesConfigRule("^CPU$", "System%", "%", getLabelField(),
 				timestampField, systemField, new AverageCalculation(
 						getInterval())));
-		rules.add(new GraphLineConfigRule("^CPU$", "Wait%", "%", getLabelField(),
+		rules.add(new GraphSeriesConfigRule("^CPU$", "Wait%", "%", getLabelField(),
 				timestampField, waitField,
 				new AverageCalculation(getInterval())));
-		rules.add(new GraphLineConfigRule("^CPU$", "Used%", "%", getLabelField(),
+		rules.add(new GraphSeriesConfigRule("^CPU$", "Used%", "%", getLabelField(),
 				timestampField, totalField, new AverageCalculation(
 						getInterval())));
-		rules.add(new GraphLineConfigRule("^CPU$", "CPUs", "", getLabelField(),
+		rules.add(new GraphSeriesConfigRule("^CPU$", "CPUs", "", getLabelField(),
 				timestampField, cpusField,
 				new AverageCalculation(getInterval())));
 		return createConfig("CPU Utilization over Time", "time", "%", rules,

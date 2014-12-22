@@ -5,7 +5,7 @@ import java.util.Set;
 import com.redhat.chartgeneration.common.FieldSelector;
 import com.redhat.chartgeneration.graphcalc.GraphCalculation;
 
-public class GraphLineConfig {
+public class GraphSeriesConfig {
 	private String label;
 	private Comparable<?> startX;
 	private Comparable<?> endX;
@@ -19,10 +19,10 @@ public class GraphLineConfig {
 	private String unit;
 	private boolean showUnit;
 
-	public GraphLineConfig() {
+	public GraphSeriesConfig() {
 	}
 
-	public GraphLineConfig(String label, String unit, FieldSelector labelField,
+	public GraphSeriesConfig(String label, String unit, FieldSelector labelField,
 			FieldSelector xField, FieldSelector yField,
 			GraphCalculation calculation, Set<String> involvedRowLabels,
 			boolean showLines, boolean showBars, boolean showUnit) {
@@ -38,7 +38,7 @@ public class GraphLineConfig {
 		this.showUnit = showUnit;
 	}
 
-	public GraphLineConfig(String label, Comparable<?> startX, Comparable<?> endX,
+	public GraphSeriesConfig(String label, Comparable<?> startX, Comparable<?> endX,
 			String unit, FieldSelector labelField, FieldSelector xField,
 			FieldSelector yField, GraphCalculation calculation,
 			Set<String> involvedRowLabels, boolean showLines, boolean showBars,

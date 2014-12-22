@@ -3,10 +3,9 @@ package com.redhat.chartgeneration.report;
 import java.util.List;
 
 import com.redhat.chartgeneration.formatter.JmeterSummaryChartFormatter;
-import com.redhat.chartgeneration.formatter.JmeterSummaryChartFormatterImpl;
 
-public class JmeterSummaryChart extends StatChart {
-	private JmeterSummaryChartFormatter formatter = new JmeterSummaryChartFormatterImpl();
+public class JmeterSummaryChart extends Chart {
+	private JmeterSummaryChartFormatter formatter;
 	private List<List<Object>> series;
 	private List<String> columnLabels;
 

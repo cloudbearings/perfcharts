@@ -1,4 +1,4 @@
-package com.redhat.chartgeneration.driverprogram;
+package com.redhat.chartgeneration.generator;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,14 +9,15 @@ import java.util.List;
 
 import com.redhat.chartgeneration.config.ChartConfig;
 import com.redhat.chartgeneration.config.ReportConfig;
-import com.redhat.chartgeneration.config.ReportConfigLoader;
 import com.redhat.chartgeneration.configtemplate.ChartConfigTemplate;
 import com.redhat.chartgeneration.generator.ReportGenerator;
 import com.redhat.chartgeneration.generator.ReportWritter;
-import com.redhat.chartgeneration.report.StatReport;
+import com.redhat.chartgeneration.report.Chart;
+import com.redhat.chartgeneration.report.Report;
 
-public class ChartGenerationDriver {
+public class GeneratorEntry {
 
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws Exception {
 		if (args.length < 1) {
 			System.err.println("Usage: \n<config file>");
@@ -27,9 +28,9 @@ public class ChartGenerationDriver {
 		ReportConfigLoader templateLoader = new ReportConfigLoader();
 		ReportConfig config = templateLoader.load(configFilePath);
 
-		List<ChartConfig> chartConfigs = new ArrayList<ChartConfig>();
+		List<ChartConfig<Chart>> chartConfigs = new ArrayList<ChartConfig<Chart>>();
 		for (ChartConfigTemplate template : config.getConfigTemplate()) {
-			chartConfigs.add(template.generateChartConfig());
+			chartConfigs.add((ChartConfig<Chart>)template.generateChartConfig());
 		}
 
 		InputStream in = config.getInputFile() == null
@@ -40,7 +41,7 @@ public class ChartGenerationDriver {
 				: new FileOutputStream(config.getOutputFile());
 
 		ReportGenerator generator = new ReportGenerator(chartConfigs);
-		StatReport report = generator.generate(in);
+		Report report = generator.generate(in);
 		if (config.getTitle() != null && !config.getTitle().isEmpty())
 			report.setTitle(config.getTitle());
 

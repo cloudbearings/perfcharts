@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.redhat.chartgeneration.common.FieldSelector;
-import com.redhat.chartgeneration.report.LineStop;
+import com.redhat.chartgeneration.report.GraphPoint;
 
 public class SumBySeriesCalculation implements GraphCalculation {
 	private int interval = 0;
@@ -35,9 +35,9 @@ public class SumBySeriesCalculation implements GraphCalculation {
 		this.times = times;
 	}
 
-	public List<LineStop> produce(List<List<Object>> rows,
+	public List<GraphPoint> produce(List<List<Object>> rows,
 			FieldSelector xField, FieldSelector yField) {
-		List<LineStop> stops = new LinkedList<LineStop>();
+		List<GraphPoint> stops = new LinkedList<GraphPoint>();
 		long lastX = 0;
 		Map<String, Integer> labelIndexMap = new HashMap<String, Integer>();
 		List<Double> valueList = new ArrayList<Double>();
@@ -84,7 +84,7 @@ public class SumBySeriesCalculation implements GraphCalculation {
 					}
 				}
 				if (count > 0)
-					stops.add(new LineStop(lastX, y * times, count));
+					stops.add(new GraphPoint(lastX, y * times, count));
 				valueList.set(index, value);
 				countList.set(index, 1);
 			}
@@ -100,7 +100,7 @@ public class SumBySeriesCalculation implements GraphCalculation {
 			}
 		}
 		if (count > 0)
-			stops.add(new LineStop(lastX, y * times, count));
+			stops.add(new GraphPoint(lastX, y * times, count));
 		return stops;
 	}
 

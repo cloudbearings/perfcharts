@@ -6,12 +6,12 @@ import java.util.List;
 import com.redhat.chartgeneration.common.FieldSelector;
 import com.redhat.chartgeneration.common.IndexFieldSelector;
 import com.redhat.chartgeneration.config.AxisMode;
-import com.redhat.chartgeneration.config.GraphLineConfigRule;
+import com.redhat.chartgeneration.config.GraphSeriesConfigRule;
 import com.redhat.chartgeneration.config.GraphConfig;
 import com.redhat.chartgeneration.graphcalc.AverageCalculation;
 
 public class NMONMemoryUtilizationChartTemplate extends
-		BaseChartTemplateWithInterval {
+		BaseGraphTemplateWithInterval {
 
 	@Override
 	public GraphConfig generateChartConfig() {
@@ -22,15 +22,15 @@ public class NMONMemoryUtilizationChartTemplate extends
 		FieldSelector freeMemField = new IndexFieldSelector(3);
 		FieldSelector cachedMemField = new IndexFieldSelector(4);
 		FieldSelector buffersMemField = new IndexFieldSelector(5);
-		List<GraphLineConfigRule> rules = new ArrayList<GraphLineConfigRule>();
-		rules.add(new GraphLineConfigRule("^MEM$", "Total", "MiB", labelField,
+		List<GraphSeriesConfigRule> rules = new ArrayList<GraphSeriesConfigRule>();
+		rules.add(new GraphSeriesConfigRule("^MEM$", "Total", "MiB", labelField,
 				timestampField, totalMemField, new AverageCalculation(interval)));
-		rules.add(new GraphLineConfigRule("^MEM$", "Free", "MiB", labelField,
+		rules.add(new GraphSeriesConfigRule("^MEM$", "Free", "MiB", labelField,
 				timestampField, freeMemField, new AverageCalculation(interval)));
-		rules.add(new GraphLineConfigRule("^MEM$", "Cached", "MiB", labelField,
+		rules.add(new GraphSeriesConfigRule("^MEM$", "Cached", "MiB", labelField,
 				timestampField, cachedMemField,
 				new AverageCalculation(interval)));
-		rules.add(new GraphLineConfigRule("^MEM$", "Buffers", "MiB", labelField,
+		rules.add(new GraphSeriesConfigRule("^MEM$", "Buffers", "MiB", labelField,
 				timestampField, buffersMemField, new AverageCalculation(
 						interval)));
 		return createConfig("Memory Utilization over Time", "time",

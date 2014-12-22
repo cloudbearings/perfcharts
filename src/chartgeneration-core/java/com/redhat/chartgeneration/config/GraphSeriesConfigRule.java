@@ -3,7 +3,7 @@ package com.redhat.chartgeneration.config;
 import com.redhat.chartgeneration.common.FieldSelector;
 import com.redhat.chartgeneration.graphcalc.GraphCalculation;
 
-public class GraphLineConfigRule {
+public class GraphSeriesConfigRule {
 	private String labelPattern;
 	private String seriesLabelFormat;
 	private Comparable<?> startX;
@@ -17,18 +17,18 @@ public class GraphLineConfigRule {
 	private String unit;
 	private boolean showUnit;
 
-	public GraphLineConfigRule() {
+	public GraphSeriesConfigRule() {
 
 	}
 
-	public GraphLineConfigRule(String labelPattern, String seriesLabelFormat,
+	public GraphSeriesConfigRule(String labelPattern, String seriesLabelFormat,
 			String unit, FieldSelector labelField, FieldSelector xField,
 			FieldSelector yField, GraphCalculation calculation) {
 		this(labelPattern, seriesLabelFormat, unit, labelField, xField, yField,
 				calculation, true, false, false);
 	}
 
-	public GraphLineConfigRule(String labelPattern, String seriesLabelFormat,
+	public GraphSeriesConfigRule(String labelPattern, String seriesLabelFormat,
 			String unit, FieldSelector labelField, FieldSelector xField,
 			FieldSelector yField, GraphCalculation calculation,
 			boolean showLines, boolean showBars, boolean showUnit) {
@@ -44,7 +44,7 @@ public class GraphLineConfigRule {
 		this.showUnit = showUnit;
 	}
 	
-	public GraphLineConfigRule(String labelPattern, String seriesLabelFormat,
+	public GraphSeriesConfigRule(String labelPattern, String seriesLabelFormat,
 			String unit, Comparable<?> startX, Comparable<?> endX, FieldSelector labelField, FieldSelector xField,
 			FieldSelector yField, GraphCalculation calculation,
 			boolean showLines, boolean showBars, boolean showUnit) {

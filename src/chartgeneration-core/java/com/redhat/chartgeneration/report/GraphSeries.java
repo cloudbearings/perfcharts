@@ -3,23 +3,23 @@ package com.redhat.chartgeneration.report;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GraphLine {
+public class GraphSeries {
 	private String label;
-	private List<LineStop> stops;
+	private List<GraphPoint> stops;
 	private boolean showLines;
 	private boolean showBars;
 	private String unit;
 	private boolean showUnit;
 
-	public GraphLine() {
-		stops = new ArrayList<LineStop>();
+	public GraphSeries() {
+		stops = new ArrayList<GraphPoint>();
 	}
 
-	public GraphLine(String l, String unit, List<LineStop> s) {
+	public GraphSeries(String l, String unit, List<GraphPoint> s) {
 		this(l, unit, s, true, false, false);
 	}
 
-	public GraphLine(String l, String unit, List<LineStop> s,
+	public GraphSeries(String l, String unit, List<GraphPoint> s,
 			boolean showLines, boolean showBars, boolean showUnit) {
 		label = l;
 		stops = s;
@@ -37,11 +37,11 @@ public class GraphLine {
 		this.label = label;
 	}
 
-	public List<LineStop> getStops() {
+	public List<GraphPoint> getStops() {
 		return stops;
 	}
 
-	public void setStops(List<LineStop> stops) {
+	public void setStops(List<GraphPoint> stops) {
 		this.stops = stops;
 	}
 

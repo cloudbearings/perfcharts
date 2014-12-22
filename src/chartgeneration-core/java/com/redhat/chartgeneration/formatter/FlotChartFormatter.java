@@ -1,10 +1,10 @@
 package com.redhat.chartgeneration.formatter;
 
-import com.redhat.chartgeneration.report.GraphLine;
-import com.redhat.chartgeneration.report.LineStop;
-import com.redhat.chartgeneration.report.StatGraph;
+import com.redhat.chartgeneration.report.GraphSeries;
+import com.redhat.chartgeneration.report.GraphPoint;
+import com.redhat.chartgeneration.report.Graph;
 
-public class FlotChartFormatter implements StatGraphFormatter {
+public class FlotChartFormatter implements GraphFormatter {
 	// public String format(StatReport report) {
 	// StringBuilder sb = new StringBuilder("{");
 	// // if (report.getTitle() != null)
@@ -22,7 +22,7 @@ public class FlotChartFormatter implements StatGraphFormatter {
 	// return sb.toString();
 	// }
 
-	public String format(StatGraph graph) throws Exception {
+	public String format(Graph graph) throws Exception {
 		StringBuilder sb = new StringBuilder("\n{\"title\":\"")
 				.append(graph.getTitle().replace("\"", "\\\""))
 				.append("\",\"xLabel\":\"")
@@ -36,7 +36,7 @@ public class FlotChartFormatter implements StatGraphFormatter {
 					graph.getSubtitle().replace("\"", "\\\""));
 		}
 		sb.append("\",\"series\":[");
-		for (GraphLine line : graph.getLines()) {
+		for (GraphSeries line : graph.getLines()) {
 			sb.append("\n{\"label\":\"")
 					.append(line.getLabel().replace("\"", "\\\"")).append("\"");
 			if (line.getUnit() != null) {
@@ -54,7 +54,7 @@ public class FlotChartFormatter implements StatGraphFormatter {
 				sb.append(",\"lines\":{\"show\":false}");
 			}
 			sb.append(",\"data\":[");
-			for (LineStop stop : line.getStops()) {
+			for (GraphPoint stop : line.getStops()) {
 				formatStop(sb, stop);
 				sb.append(",");
 			}
@@ -68,7 +68,7 @@ public class FlotChartFormatter implements StatGraphFormatter {
 		return sb.toString();
 	}
 
-	private static void formatStop(StringBuilder sb, LineStop stop) {
+	private static void formatStop(StringBuilder sb, GraphPoint stop) {
 		Object x = stop.getX();
 		sb.append("[");
 		if (Number.class.isAssignableFrom(x.getClass()))

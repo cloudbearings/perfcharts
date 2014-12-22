@@ -1,15 +1,15 @@
 package com.redhat.chartgeneration.report;
 
-public class LineStop {
+public class GraphPoint {
 	private Object x;
 	private double y;
 	private int weight = 1;
 
-	public LineStop() {
+	public GraphPoint() {
 
 	}
 
-	public LineStop(Object x, double y, int w) {
+	public GraphPoint(Object x, double y, int w) {
 		this.x = x;
 		this.y = y;
 		this.weight = w;

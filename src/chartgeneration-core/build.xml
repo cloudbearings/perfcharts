@@ -2,7 +2,7 @@
 <project name="chartgeneration-core" default="all" basedir=".">
 	<description>core project of Chart Generation Tool</description>
 	<property name="target_name" value="chartgeneration-core.jar"/>
-	<property name="main_class" value="com.redhat.chartgeneration.driverprogram.ChartGenerationDriver"/>
+	<property name="main_class" value="com.redhat.chartgeneration.generator.GeneratorEntry"/>
 	<property name="src" value="java"/>
 	<property name="build" value="build_dir"/>
 	<property name="bin" value="bin"/> 
