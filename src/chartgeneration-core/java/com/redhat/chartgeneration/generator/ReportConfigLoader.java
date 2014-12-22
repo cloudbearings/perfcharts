@@ -1,4 +1,4 @@
-package com.redhat.chartgeneration.config;
+package com.redhat.chartgeneration.generator;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,9 +15,11 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import com.redhat.chartgeneration.common.AppData;
 import com.redhat.chartgeneration.common.FieldSelector;
 import com.redhat.chartgeneration.common.IndexFieldSelector;
 import com.redhat.chartgeneration.common.Utilities;
+import com.redhat.chartgeneration.config.ReportConfig;
 import com.redhat.chartgeneration.configtemplate.ChartConfigTemplate;
 
 public class ReportConfigLoader {
@@ -50,7 +52,6 @@ public class ReportConfigLoader {
 		FieldSelector labelField = null;
 		ChartConfigTemplate configTemplate = null;
 
-		// URLClassLoader customClassLoader = null;
 		try {
 			while (reader.hasNext()) {
 				switch (reader.next()) {
@@ -78,8 +79,6 @@ public class ReportConfigLoader {
 										.info("add config class location '"
 												+ urls[i].toString() + "'");
 							}
-							// customClassLoader = new URLClassLoader(urls,
-							// Thread.currentThread().getContextClassLoader());
 							Thread.currentThread().setContextClassLoader(
 									new URLClassLoader(urls, Thread
 											.currentThread()

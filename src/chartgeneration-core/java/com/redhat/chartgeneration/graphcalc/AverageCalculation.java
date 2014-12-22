@@ -4,9 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.redhat.chartgeneration.common.AppData;
 import com.redhat.chartgeneration.common.FieldSelector;
-import com.redhat.chartgeneration.config.AppData;
-import com.redhat.chartgeneration.report.LineStop;
+import com.redhat.chartgeneration.report.GraphPoint;
 
 public class AverageCalculation implements GraphCalculation {
 	private int interval = 0;
@@ -25,9 +25,9 @@ public class AverageCalculation implements GraphCalculation {
 		this.times = times;
 	}
 
-	public List<LineStop> produce(List<List<Object>> rows,
+	public List<GraphPoint> produce(List<List<Object>> rows,
 			FieldSelector xField, FieldSelector yField) {
-		List<LineStop> stops = new LinkedList<LineStop>();
+		List<GraphPoint> stops = new LinkedList<GraphPoint>();
 		Object lastX = 0;
 		double y = 0.0;
 		int count = 0;
@@ -53,14 +53,14 @@ public class AverageCalculation implements GraphCalculation {
 				++count;
 			} else {
 				if (count > 0)
-					stops.add(new LineStop(lastX, y / count * times, count));
+					stops.add(new GraphPoint(lastX, y / count * times, count));
 				y = ((Number) yField.select(row)).doubleValue();
 				count = 1;
 			}
 			lastX = x;
 		}
 		if (count > 0)
-			stops.add(new LineStop(lastX, y / count * times, count));
+			stops.add(new GraphPoint(lastX, y / count * times, count));
 		return stops;
 	}
 

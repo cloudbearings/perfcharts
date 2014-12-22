@@ -13,26 +13,24 @@ import com.redhat.chartgeneration.common.FieldSelector;
 import com.redhat.chartgeneration.common.IndexFieldSelector;
 import com.redhat.chartgeneration.common.Utilities;
 import com.redhat.chartgeneration.config.JmeterSummaryChartConfig;
+import com.redhat.chartgeneration.model.PerfLog;
 import com.redhat.chartgeneration.report.JmeterSummaryChart;
 
 public class JmeterSummaryChartGenerator implements Generator {
-
+	private JmeterSummaryChartFactory factory;
 	private JmeterSummaryChartConfig config;
 
-	public JmeterSummaryChartGenerator() {
+//	public JmeterSummaryChartGenerator() {
+//
+//	}
 
-	}
-
-	public JmeterSummaryChartGenerator(JmeterSummaryChartConfig config) {
+	public JmeterSummaryChartGenerator(JmeterSummaryChartFactory factory, JmeterSummaryChartConfig config) {
 		this.config = config;
+		this.factory = factory;
 	}
 
 	@Override
 	public JmeterSummaryChart generate(PerfLog log) throws Exception {
-
-		// JmeterSummaryChart chart = new JmeterSummaryChart(config.getTitle(),
-		// config.getSubtitle(), columnLabels, series);
-		// List<List<Object>> involvedRows = new LinkedList<List<Object>>();
 		FieldSelector labelField = new IndexFieldSelector(0);
 		final FieldSelector timestampField = new IndexFieldSelector(1);
 		final FieldSelector rtField = new IndexFieldSelector(5);
@@ -40,38 +38,18 @@ public class JmeterSummaryChartGenerator implements Generator {
 				rtField);
 		final FieldSelector errorField = new IndexFieldSelector(3);
 		final FieldSelector bytesField = new IndexFieldSelector(6);
-		// final FieldSelector timestampField = new IndexFieldSelector(1);
 		final Map<String, List<List<Object>>> involvedRows = new HashMap<String, List<List<Object>>>();
 		Pattern txPattern = Pattern.compile("^TX-(.+)-[SF]$");
-
-		// long minTime = ((Number) xField.select(rows.get(0))).longValue();
-		// long maxTime = ((Number) xField.select(rows.get(rows.size() - 1)))
-		// .longValue();
 
 		for (List<Object> row : log.getRows()) {
 			Matcher m = txPattern.matcher(labelField.select(row).toString());
 			if (m.matches()) {
-//				@SuppressWarnings("unchecked")
-//				Comparable<Object> startX = (Comparable<Object>) config
-//						.getStartX();
-//				@SuppressWarnings("unchecked")
-//				Comparable<Object> endX = (Comparable<Object>) config.getEndX();
-//				Object x = xField.select(row);
-//				if (startX != null && startX.compareTo(x) > 0)
-//					continue;
-//				if (endX != null && endX.compareTo(x) < 0)
-//					continue;
 				String key = m.replaceAll("$1");
 				List<List<Object>> list = involvedRows.get(key);
 				if (list == null)
 					involvedRows
 							.put(key, list = new LinkedList<List<Object>>());
 				list.add(row);
-				// long ts = ((Number) xField.select(row)).longValue();
-				// if (ts < minTimestamp)
-				// minTimestamp = ts;
-				// if (ts > maxTimestamp)
-				// maxTimestamp = ts;
 			}
 		}
 
@@ -195,6 +173,7 @@ public class JmeterSummaryChartGenerator implements Generator {
 
 		JmeterSummaryChart chart = new JmeterSummaryChart(config.getTitle(),
 				config.getSubtitle(), columnLabels, tableRows);
+		chart.setFormatter(factory.createFormatter());
 		return chart;
 	}
 

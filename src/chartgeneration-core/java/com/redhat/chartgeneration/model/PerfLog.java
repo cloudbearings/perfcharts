@@ -1,4 +1,4 @@
-package com.redhat.chartgeneration.generator;
+package com.redhat.chartgeneration.model;
 
 import java.util.List;
 

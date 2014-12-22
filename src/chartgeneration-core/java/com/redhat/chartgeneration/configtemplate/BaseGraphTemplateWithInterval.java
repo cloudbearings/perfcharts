@@ -1,14 +1,14 @@
 package com.redhat.chartgeneration.configtemplate;
 
 
-public abstract class BaseChartTemplateWithInterval extends BaseGraphTemplate {
+public abstract class BaseGraphTemplateWithInterval extends BaseGraphTemplate {
 	private int interval = 0;
 
-	public BaseChartTemplateWithInterval() {
+	public BaseGraphTemplateWithInterval() {
 
 	}
 
-	public BaseChartTemplateWithInterval(int interval) {
+	public BaseGraphTemplateWithInterval(int interval) {
 		this.interval = interval;
 	}
 

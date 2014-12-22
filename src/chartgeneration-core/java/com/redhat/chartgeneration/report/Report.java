@@ -2,24 +2,24 @@ package com.redhat.chartgeneration.report;
 
 import java.util.List;
 
-public class StatReport {
+public class Report {
 	private String title;
-	private List<StatChart> charts;
+	private List<Chart> charts;
 
-	public StatReport() {
+	public Report() {
 
 	}
 
-	public StatReport(String title, List<StatChart> charts) {
+	public Report(String title, List<Chart> charts) {
 		this.title = title;
 		this.charts = charts;
 	}
 
-	public List<StatChart> getCharts() {
+	public List<Chart> getCharts() {
 		return charts;
 	}
 
-	public void setGraphs(List<StatChart> charts) {
+	public void setGraphs(List<Chart> charts) {
 		this.charts = charts;
 	}
 

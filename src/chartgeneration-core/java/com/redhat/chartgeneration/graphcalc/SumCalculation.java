@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.redhat.chartgeneration.common.FieldSelector;
-import com.redhat.chartgeneration.report.LineStop;
+import com.redhat.chartgeneration.report.GraphPoint;
 
 public class SumCalculation implements GraphCalculation {
 	private int interval = 0;
@@ -24,9 +24,9 @@ public class SumCalculation implements GraphCalculation {
 		this.times = times;
 	}
 
-	public List<LineStop> produce(List<List<Object>> rows,
+	public List<GraphPoint> produce(List<List<Object>> rows,
 			FieldSelector xField, FieldSelector yField) {
-		List<LineStop> stops = new LinkedList<LineStop>();
+		List<GraphPoint> stops = new LinkedList<GraphPoint>();
 		Object lastX = 0;
 		double y = 0.0;
 		int count = 0;
@@ -54,7 +54,7 @@ public class SumCalculation implements GraphCalculation {
 				++count;
 			} else {
 				if (count > 0)
-					stops.add(new LineStop(lastX, y * times, count));
+					stops.add(new GraphPoint(lastX, y * times, count));
 //				if (y > 10000)
 //					stops.size();
 				y = ((Number) yField.select(row)).doubleValue();
@@ -64,7 +64,7 @@ public class SumCalculation implements GraphCalculation {
 			//lastY = y;
 		}
 		if (count > 0)
-			stops.add(new LineStop(lastX, y * times, count));
+			stops.add(new GraphPoint(lastX, y * times, count));
 		return stops;
 	}
 

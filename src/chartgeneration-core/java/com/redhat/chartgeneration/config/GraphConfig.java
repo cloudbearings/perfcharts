@@ -2,13 +2,14 @@ package com.redhat.chartgeneration.config;
 
 import java.util.List;
 
-import com.redhat.chartgeneration.generator.Generator;
-import com.redhat.chartgeneration.generator.GraphGenerator;
+import com.redhat.chartgeneration.generator.GraphFactory;
+import com.redhat.chartgeneration.generator.GraphFactoryImpl;
+import com.redhat.chartgeneration.report.Graph;
 
-public class GraphConfig extends StatChartConfig {
+public class GraphConfig extends BaseChartConfig<Graph> {
 	private String xLabel;
 	private String yLabel;
-	private List<GraphLineConfigRule> rules;
+	private List<GraphSeriesConfigRule> rules;
 	private AxisMode xaxisMode = AxisMode.NUMBER;
 
 	public GraphConfig() {
@@ -16,7 +17,7 @@ public class GraphConfig extends StatChartConfig {
 	}
 
 	public GraphConfig(String title, String subtitle, String xLabel,
-			String yLabel, List<GraphLineConfigRule> rules) {
+			String yLabel, List<GraphSeriesConfigRule> rules) {
 		super(title, subtitle);
 		this.xLabel = xLabel;
 		this.yLabel = yLabel;
@@ -24,7 +25,7 @@ public class GraphConfig extends StatChartConfig {
 	}
 
 	public GraphConfig(String title, String subtitle, String xLabel,
-			String yLabel, List<GraphLineConfigRule> rules, AxisMode xaxisMode) {
+			String yLabel, List<GraphSeriesConfigRule> rules, AxisMode xaxisMode) {
 		super(title, subtitle);
 		this.xLabel = xLabel;
 		this.yLabel = yLabel;
@@ -48,11 +49,11 @@ public class GraphConfig extends StatChartConfig {
 		this.yLabel = yLabel;
 	}
 
-	public List<GraphLineConfigRule> getRules() {
+	public List<GraphSeriesConfigRule> getRules() {
 		return rules;
 	}
 
-	public void setRules(List<GraphLineConfigRule> rules) {
+	public void setRules(List<GraphSeriesConfigRule> rules) {
 		this.rules = rules;
 	}
 
@@ -65,8 +66,8 @@ public class GraphConfig extends StatChartConfig {
 	}
 
 	@Override
-	public Generator createGenerator() throws Exception {
-		return new GraphGenerator(this);
+	public GraphFactory createChartFactory() throws Exception {
+		return new GraphFactoryImpl();
 	}
 
 }

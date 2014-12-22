@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.redhat.chartgeneration.common.FieldSelector;
-import com.redhat.chartgeneration.report.LineStop;
+import com.redhat.chartgeneration.report.GraphPoint;
 
 public class CountCalculation implements GraphCalculation {
 	private int interval = 0;
@@ -32,9 +32,9 @@ public class CountCalculation implements GraphCalculation {
 		this.setZeroIfIntervalNoData = setZeroIfIntervalNoData;
 	}
 
-	public List<LineStop> produce(List<List<Object>> rows,
+	public List<GraphPoint> produce(List<List<Object>> rows,
 			FieldSelector xField, FieldSelector yField) {
-		List<LineStop> stops = new LinkedList<LineStop>();
+		List<GraphPoint> stops = new LinkedList<GraphPoint>();
 		long lastX = 0;
 		int count = 0;
 		for (Iterator<List<Object>> it = rows.iterator(); it.hasNext();) {
@@ -61,11 +61,11 @@ public class CountCalculation implements GraphCalculation {
 				++count;
 			} else {
 				if (count > 0) {
-					stops.add(new LineStop(lastX, count * times, count));
+					stops.add(new GraphPoint(lastX, count * times, count));
 					if (setZeroIfIntervalNoData && lastX + interval < x) {
-						stops.add(new LineStop(lastX + interval, 0, 0));
+						stops.add(new GraphPoint(lastX + interval, 0, 0));
 						if (lastX + interval < x - interval)
-							stops.add(new LineStop(x - interval, 0, 0));
+							stops.add(new GraphPoint(x - interval, 0, 0));
 					}
 				}
 				count = 1;
@@ -73,7 +73,7 @@ public class CountCalculation implements GraphCalculation {
 			lastX = x;
 		}
 		if (count > 0)
-			stops.add(new LineStop(lastX, count * times, count));
+			stops.add(new GraphPoint(lastX, count * times, count));
 		return stops;
 	}
 

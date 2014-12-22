@@ -1,4 +1,4 @@
-package com.redhat.chartgeneration.config;
+package com.redhat.chartgeneration.common;
 
 import java.io.File;
 import java.io.IOException;

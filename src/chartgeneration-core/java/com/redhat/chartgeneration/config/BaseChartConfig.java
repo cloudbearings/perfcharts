@@ -1,22 +1,20 @@
 package com.redhat.chartgeneration.config;
 
-import com.redhat.chartgeneration.generator.Generator;
+import com.redhat.chartgeneration.report.Chart;
 
-public abstract class StatChartConfig implements ChartConfig {
+public abstract class BaseChartConfig<T extends Chart> implements ChartConfig<T> {
 	private String title;
 	private String subtitle;
 
-	public StatChartConfig() {
+	public BaseChartConfig() {
 
 	}
 
-	public StatChartConfig(String title, String subtitle) {
+	public BaseChartConfig(String title, String subtitle) {
 		this.title = title;
 		this.subtitle = subtitle;
 	}
 	
-	public abstract Generator createGenerator() throws Exception;
-
 	public String getSubtitle() {
 		return subtitle;
 	}

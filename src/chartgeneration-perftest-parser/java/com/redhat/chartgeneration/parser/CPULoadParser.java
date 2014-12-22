@@ -11,7 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.redhat.chartgeneration.config.AppData;
+import com.redhat.chartgeneration.common.AppData;
 
 public class CPULoadParser implements DataParser {
 	private SimpleDateFormat timeFormat = new SimpleDateFormat("y-M-d H:m:s");

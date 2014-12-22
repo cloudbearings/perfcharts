@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
 
-import com.redhat.chartgeneration.config.AppData;
+import com.redhat.chartgeneration.common.AppData;
 
 public class Settings {
 	private static Settings instance = new Settings();

@@ -5,42 +5,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.redhat.chartgeneration.config.ChartConfig;
-import com.redhat.chartgeneration.report.StatChart;
-import com.redhat.chartgeneration.report.StatReport;
+import com.redhat.chartgeneration.model.PerfLog;
+import com.redhat.chartgeneration.report.Chart;
+import com.redhat.chartgeneration.report.Report;
 
 public class ReportGenerator {
-	private List<ChartConfig> chartConfigs;
+	private List<ChartConfig<Chart>> chartConfigs;
 	//private GraphGenerator generator = new GraphGenerator();
 
 	public ReportGenerator() {
 
 	}
 
-	public ReportGenerator(List<ChartConfig> lineGraphConfigs) {
+	public ReportGenerator(List<ChartConfig<Chart>> lineGraphConfigs) {
 		this.chartConfigs = lineGraphConfigs;
 	}
 
-	public StatReport generate(InputStream in)
+	public Report generate(InputStream in)
 			throws Exception {
-		List<StatChart> charts = new ArrayList<StatChart>();
-		StatReport report = new StatReport(null, charts);
+		List<Chart> charts = new ArrayList<Chart>();
+		Report report = new Report(null, charts);
 
 		LogReader reader = new LogReader();
 		PerfLog log = new PerfLog();
 		log.setRows(reader.read(in));
 
-		for (ChartConfig cfg : chartConfigs) {
-			charts.add(cfg.createGenerator().generate(log));
+		for (ChartConfig<Chart> cfg : chartConfigs) {
+			ChartFactory<Chart> factory = cfg.createChartFactory();
+			Generator generator = factory.createGenerator(cfg);
+			charts.add(generator.generate(log));
 		}
 
 		return report;
 	}
 
-	public List<ChartConfig> getChartConfigs() {
+	public List<ChartConfig<Chart>> getChartConfigs() {
 		return chartConfigs;
 	}
 
-	public void setChartConfigs(List<ChartConfig> lineGraphConfigs) {
+	public void setChartConfigs(List<ChartConfig<Chart>> lineGraphConfigs) {
 		this.chartConfigs = lineGraphConfigs;
 	}
 }

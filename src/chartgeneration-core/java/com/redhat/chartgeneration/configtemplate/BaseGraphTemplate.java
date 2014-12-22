@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.redhat.chartgeneration.config.AxisMode;
 import com.redhat.chartgeneration.config.GraphConfig;
-import com.redhat.chartgeneration.config.GraphLineConfigRule;
+import com.redhat.chartgeneration.config.GraphSeriesConfigRule;
 
 public abstract class BaseGraphTemplate extends BaseChartTemplate {
 	private String xLabel;
@@ -28,14 +28,14 @@ public abstract class BaseGraphTemplate extends BaseChartTemplate {
 
 	protected GraphConfig createConfig(String defaultTitle,
 			String defaultXLabel, String defaultYLabel,
-			List<GraphLineConfigRule> rules, AxisMode xaxisMode) {
+			List<GraphSeriesConfigRule> rules, AxisMode xaxisMode) {
 		return createConfig(defaultTitle, null, defaultXLabel, defaultYLabel,
 				rules, xaxisMode);
 	}
 
 	protected GraphConfig createConfig(String defaultTitle,
 			String defaultSubtitle, String defaultXLabel, String defaultYLabel,
-			List<GraphLineConfigRule> rules, AxisMode xaxisMode) {
+			List<GraphSeriesConfigRule> rules, AxisMode xaxisMode) {
 		String title = getTitle();
 		String subtitle = getSubtitle();
 		return new GraphConfig(title == null ? defaultTitle : title,

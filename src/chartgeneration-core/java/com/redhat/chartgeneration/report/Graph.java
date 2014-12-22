@@ -3,21 +3,27 @@ package com.redhat.chartgeneration.report;
 import java.util.List;
 
 import com.redhat.chartgeneration.config.AxisMode;
-import com.redhat.chartgeneration.formatter.FlotChartFormatter;
-import com.redhat.chartgeneration.formatter.StatGraphFormatter;
+import com.redhat.chartgeneration.formatter.GraphFormatter;
 
-public class StatGraph extends StatChart {
+public class Graph extends Chart {
 	private String xLabel;
 	private String yLabel;
 	private AxisMode xaxisMode;
-	private List<GraphLine> lines;
-	private StatGraphFormatter formatter = new FlotChartFormatter();
-
-	public StatGraph() {
+	private List<GraphSeries> lines;
+	private GraphFormatter formatter;
+	public GraphFormatter getFormatter() {
+		return formatter;
 	}
 
-	public StatGraph(String title, String subtitle, String xLabel,
-			String yLabel, List<GraphLine> lines, AxisMode xaxisMode) {
+	public void setFormatter(GraphFormatter formatter) {
+		this.formatter = formatter;
+	}
+
+	public Graph() {
+	}
+
+	public Graph(String title, String subtitle, String xLabel,
+			String yLabel, List<GraphSeries> lines, AxisMode xaxisMode) {
 		super(title, subtitle);
 		this.xLabel = xLabel;
 		this.yLabel = yLabel;
@@ -41,11 +47,11 @@ public class StatGraph extends StatChart {
 		this.yLabel = yLabel;
 	}
 
-	public List<GraphLine> getLines() {
+	public List<GraphSeries> getLines() {
 		return lines;
 	}
 
-	public void setLines(List<GraphLine> lines) {
+	public void setLines(List<GraphSeries> lines) {
 		this.lines = lines;
 	}
 
@@ -61,15 +67,4 @@ public class StatGraph extends StatChart {
 	public String format() throws Exception {
 		return formatter.format(this);
 	}
-
-	public StatGraphFormatter getFormatter() {
-		return formatter;
-	}
-
-	public void setFormatter(StatGraphFormatter formatter) {
-		this.formatter = formatter;
-	}
-
-	
-
 }

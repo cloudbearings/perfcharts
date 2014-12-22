@@ -6,7 +6,7 @@ public abstract class BaseChartTemplate implements ChartConfigTemplate {
 	private FieldSelector labelField;
 	private String title;
 	private String subtitle;
-	private Object startX, endX;
+	//private Object startX, endX;
 
 	public FieldSelector getLabelField() {
 		return labelField;
@@ -32,20 +32,20 @@ public abstract class BaseChartTemplate implements ChartConfigTemplate {
 		this.subtitle = subtitle;
 	}
 
-	public Object getStartX() {
-		return startX;
-	}
-
-	public void setStartX(Comparable<?> startX) {
-		this.startX = startX;
-	}
-
-	public Object getEndX() {
-		return endX;
-	}
-
-	public void setEndX(Comparable<?> endX) {
-		this.endX = endX;
-	}
+//	public Object getStartX() {
+//		return startX;
+//	}
+//
+//	public void setStartX(Comparable<?> startX) {
+//		this.startX = startX;
+//	}
+//
+//	public Object getEndX() {
+//		return endX;
+//	}
+//
+//	public void setEndX(Comparable<?> endX) {
+//		this.endX = endX;
+//	}
 
 }
