@@ -1,9 +1,9 @@
-package com.redhat.chartgeneration.formatter;
+package com.redhat.chartgeneration.perftest.formatter;
 
 import java.util.List;
 
 import com.redhat.chartgeneration.common.Utilities;
-import com.redhat.chartgeneration.report.JmeterSummaryChart;
+import com.redhat.chartgeneration.perftest.chart.JmeterSummaryChart;
 
 public class JmeterSummaryChartFormatterImpl implements
 		JmeterSummaryChartFormatter {

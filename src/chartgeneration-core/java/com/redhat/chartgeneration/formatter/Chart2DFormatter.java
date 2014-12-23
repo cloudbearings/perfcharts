@@ -1,7 +1,13 @@
 package com.redhat.chartgeneration.formatter;
 
-import com.redhat.chartgeneration.report.Graph;
+import com.redhat.chartgeneration.chart.Chart2D;
 
-public interface GraphFormatter extends ChartFormatter<Graph> {
-	public String format(Graph chart) throws Exception;
+/**
+ * Format a {@link Chart2D} to string.
+ * 
+ * @author Rayson Zhu
+ *
+ */
+public interface Chart2DFormatter extends ChartFormatter<Chart2D> {
+	public String format(Chart2D chart) throws Exception;
 }

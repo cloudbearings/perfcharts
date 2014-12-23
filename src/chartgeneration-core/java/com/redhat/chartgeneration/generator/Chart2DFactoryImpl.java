@@ -1,21 +1,28 @@
 package com.redhat.chartgeneration.generator;
 
+import com.redhat.chartgeneration.chart.Chart2D;
+import com.redhat.chartgeneration.config.Chart2DConfig;
 import com.redhat.chartgeneration.config.ChartConfig;
-import com.redhat.chartgeneration.config.GraphConfig;
+import com.redhat.chartgeneration.formatter.Chart2DFormatter;
 import com.redhat.chartgeneration.formatter.FlotChartFormatter;
-import com.redhat.chartgeneration.formatter.GraphFormatter;
-import com.redhat.chartgeneration.report.Graph;
 
-public class GraphFactoryImpl implements GraphFactory {
+/**
+ * A default {@link Chart2DFactory} implementation.
+ * 
+ * @author Rayson Zhu
+ *
+ */
+public class Chart2DFactoryImpl implements Chart2DFactory {
 
 	@Override
-	public GraphGenerator createGenerator(ChartConfig<Graph> config) throws Exception {
-		GraphConfig cfg = (GraphConfig)config;
-		return new GraphGenerator(this, cfg);
+	public Chart2DGenerator createGenerator(ChartConfig<Chart2D> config)
+			throws Exception {
+		Chart2DConfig cfg = (Chart2DConfig) config;
+		return new Chart2DGenerator(this, cfg);
 	}
 
 	@Override
-	public GraphFormatter createFormatter() throws Exception {
+	public Chart2DFormatter createFormatter() throws Exception {
 		return new FlotChartFormatter();
 	}
 

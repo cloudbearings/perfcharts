@@ -7,55 +7,86 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.redhat.chartgeneration.calc.Chart2DCalculation;
+import com.redhat.chartgeneration.chart.Chart2D;
+import com.redhat.chartgeneration.chart.Chart2DSeries;
+import com.redhat.chartgeneration.chart.Point2D;
 import com.redhat.chartgeneration.common.AppData;
 import com.redhat.chartgeneration.common.FieldSelector;
-import com.redhat.chartgeneration.config.GraphConfig;
-import com.redhat.chartgeneration.config.GraphSeriesConfig;
-import com.redhat.chartgeneration.config.GraphSeriesConfigRule;
-import com.redhat.chartgeneration.graphcalc.GraphCalculation;
-import com.redhat.chartgeneration.model.PerfLog;
-import com.redhat.chartgeneration.report.Graph;
-import com.redhat.chartgeneration.report.GraphPoint;
-import com.redhat.chartgeneration.report.GraphSeries;
+import com.redhat.chartgeneration.config.Chart2DConfig;
+import com.redhat.chartgeneration.config.Chart2DSeriesConfig;
+import com.redhat.chartgeneration.config.Chart2DSeriesConfigRule;
+import com.redhat.chartgeneration.model.DataTable;
 
-public class GraphGenerator implements Generator {
-	private GraphConfig graphConfig;
-	private final static int DEFAULT_POINTS_PER_GRAPH = 100;
-	private GraphFactory factory;
+/**
+ * A generator reads data tables and produces {@link Chart2D} according to
+ * preset configurations.
+ * 
+ * @author Rayson Zhu
+ *
+ */
+public class Chart2DGenerator implements Generator {
+	/**
+	 * the chart configuration
+	 */
+	private Chart2DConfig chart2dConfig;
+	/**
+	 * the default points per chart for automatic interval selection
+	 */
+	private final static int DEFAULT_POINTS = 100;
+	/**
+	 * The factory for creating related objects.
+	 */
+	private Chart2DFactory factory;
 
-	public GraphGenerator() {
+	/**
+	 * constructor
+	 */
+	public Chart2DGenerator() {
 
 	}
 
-	public GraphGenerator(GraphFactory factory, GraphConfig lineGraphConfig) {
-		this.graphConfig = lineGraphConfig;
+	/**
+	 * constructor
+	 * 
+	 * @param factory
+	 *            The factory for creating related objects
+	 * @param chart2dConfig
+	 *            the chart configuration
+	 */
+	public Chart2DGenerator(Chart2DFactory factory, Chart2DConfig chart2dConfig) {
+		this.chart2dConfig = chart2dConfig;
 		this.factory = factory;
 	}
 
-	public Graph generate(final PerfLog log) throws Exception {
+	public Chart2D generate(final DataTable dataTable) throws Exception {
 		Logger logger = AppData.getInstance().getLogger();
 
-		final List<List<Object>> rows = log.getRows();
+		final List<List<Object>> dataRows = dataTable.getRows();
 
-		final GraphSeriesConfigBuilder cfgGenerator = new GraphSeriesConfigBuilder();
-		List<GraphSeriesConfigRule> rules = graphConfig.getRules();
-		final List<GraphSeriesConfig> lineConfigs = new ArrayList<GraphSeriesConfig>();
-		for (GraphSeriesConfigRule rule : rules) {
-			lineConfigs.addAll(cfgGenerator.build(rule, log));
-		}
+		final Chart2DSeriesConfigBuilder seriesConfigBuilder = new Chart2DSeriesConfigBuilder();
+		List<Chart2DSeriesConfigRule> rules = chart2dConfig.getRules();
+		final List<Chart2DSeriesConfig> seriesConfigs = new ArrayList<Chart2DSeriesConfig>();
 
-		final List<GraphSeries> resultLines = new ArrayList<GraphSeries>(
-				lineConfigs.size());
-		for (final GraphSeriesConfig config : lineConfigs) {
-			final LinkedList<List<Object>> involvedRows = new LinkedList<List<Object>>();
-			for (List<Object> row : rows) {
+		// traverse the rules and collect all generated SeriesConfigRules for
+		// this chart
+		for (Chart2DSeriesConfigRule rule : rules)
+			seriesConfigs.addAll(seriesConfigBuilder.build(rule, dataTable));
+
+		final List<Chart2DSeries> series = new ArrayList<Chart2DSeries>(
+				seriesConfigs.size());
+		for (final Chart2DSeriesConfig config : seriesConfigs) {
+			LinkedList<List<Object>> involvedRows = new LinkedList<List<Object>>();
+			// collect involved rows
+			for (List<Object> row : dataRows) {
 				if (config.getInvolvedRowLabels().contains(
-						config.getLabelField().select(row))) {
+						config.getLabelField().select(row)))
 					involvedRows.add(row);
-				}
+
 			}
 			if (involvedRows.isEmpty())
 				continue;
+			// sort involvedRows by x-value
 			Collections.sort(involvedRows, new Comparator<List<Object>>() {
 				@Override
 				public int compare(List<Object> o1, List<Object> o2) {
@@ -68,42 +99,57 @@ public class GraphGenerator implements Generator {
 					return a.compareTo(b);
 				}
 			});
-			GraphCalculation calc = config.getCalculation();
+			Chart2DCalculation calc = config.getCalculation();
 			int interval = calc.getInterval();
+			// If user didn't specify the interval, produce one.
 			if (interval == 0) {
-				FieldSelector xField = config.getxField();
+				FieldSelector xField = config.getXField();
 				long minX = ((Number) xField.select(involvedRows.getFirst()))
 						.longValue();
 				long maxX = ((Number) xField.select(involvedRows.getLast()))
 						.longValue();
-				interval = (int) (maxX - minX) / DEFAULT_POINTS_PER_GRAPH;
+				interval = (int) (maxX - minX) / DEFAULT_POINTS;
 				if (interval < 1)
 					interval = 1;
 				calc.setInterval(interval);
 				logger.info("use automatic interval value " + interval
 						+ " for series '" + config.getLabel() + "' in chart '"
-						+ graphConfig.getTitle() + "'");
+						+ chart2dConfig.getTitle() + "'");
 			}
-			List<GraphPoint> lineStops = calc.produce(involvedRows,
+			// execute the calculation defined by Chart2DSeriesConfig, and
+			// collect generated points
+			List<Point2D> lineStops = calc.produce(involvedRows,
 					config.getXField(), config.getYField());
-			GraphSeries line = new GraphSeries(config.getLabel(),
-					config.getUnit(), lineStops, config.isShowLines(),
-					config.isShowBars(), config.isShowUnit());
-			resultLines.add(line);
+			Chart2DSeries line = new Chart2DSeries(config.getLabel(),
+					config.getUnit(), lineStops, config.isShowLine(),
+					config.isShowBar(), config.isShowUnit());
+			series.add(line);
 		}
-		Graph graph = new Graph(graphConfig.getTitle(), graphConfig.getSubtitle(),
-				graphConfig.getXLabel(), graphConfig.getYLabel(), resultLines,
-				graphConfig.getXaxisMode());
+		Chart2D graph = new Chart2D(chart2dConfig.getTitle(),
+				chart2dConfig.getSubtitle(), chart2dConfig.getXLabel(),
+				chart2dConfig.getYLabel(), series, chart2dConfig.getXaxisMode());
+		// set up appropriate formatter
 		graph.setFormatter(factory.createFormatter());
 		return graph;
 	}
 
-	public GraphConfig getLineGraphConfig() {
-		return graphConfig;
+	/**
+	 * Get the configuration of this chart.
+	 * 
+	 * @return the configuration
+	 */
+	public Chart2DConfig getChart2DConfig() {
+		return chart2dConfig;
 	}
 
-	public void setLineGraphConfig(GraphConfig lineGraphConfig) {
-		this.graphConfig = lineGraphConfig;
+	/**
+	 * Set the configuration of this chart.
+	 * 
+	 * @param chart2DConfig
+	 *            the configuration
+	 */
+	public void setChart2DConfig(Chart2DConfig chart2DConfig) {
+		this.chart2dConfig = chart2DConfig;
 	}
 
 }

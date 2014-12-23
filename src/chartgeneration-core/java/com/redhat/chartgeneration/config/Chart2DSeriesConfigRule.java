@@ -1,150 +1,354 @@
 package com.redhat.chartgeneration.config;
 
-import com.redhat.chartgeneration.common.FieldSelector;
-import com.redhat.chartgeneration.graphcalc.GraphCalculation;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class GraphSeriesConfigRule {
+import com.redhat.chartgeneration.calc.Chart2DCalculation;
+import com.redhat.chartgeneration.common.FieldSelector;
+import com.redhat.chartgeneration.generator.Chart2DSeriesConfigBuilder;
+
+/**
+ * A {@link Chart2DSeriesConfigRule} defines a rule to produce
+ * {@link Chart2DSeriesConfig}s. Instances of this class are usually created by
+ * {@link ChartConfigTemplate}, and used by {@link Chart2DSeriesConfigBuilder} to
+ * create {@link Chart2DSeriesConfig}s.
+ * 
+ * @author Rayson Zhu
+ *
+ */
+public class Chart2DSeriesConfigRule {
+	/**
+	 * The regular expression to filter data rows by row label.
+	 * 
+	 * @see {@link Pattern#compile(String)}
+	 */
 	private String labelPattern;
+	/**
+	 * The format of generated series label. The matched part of row label
+	 * captured by {@link #labelPattern} will be used to replace the $1, $2,
+	 * $3,... marks in {@link #seriesLabelFormat}.
+	 * 
+	 * @see {@link Matcher#replaceAll(String)}
+	 */
 	private String seriesLabelFormat;
-	private Comparable<?> startX;
-	private Comparable<?> endX;
+	/**
+	 * the {@link FieldSelector} for extracting row labels of raw data
+	 */
 	private FieldSelector labelField;
+	/**
+	 * the {@link FieldSelector} for extracting x-value of raw data
+	 */
 	private FieldSelector xField;
+	/**
+	 * the {@link FieldSelector} for extracting y-value of raw data
+	 */
 	private FieldSelector yField;
-	private GraphCalculation calculation;
-	private boolean showLines;
-	private boolean showBars;
+	/**
+	 * specify the calculation to be used for plotted chart
+	 */
+	private Chart2DCalculation calculation;
+
+	/**
+	 * specify whether the line should be shown for this series
+	 */
+	private boolean showLine = true;
+	/**
+	 * specify whether the bar should be shown for this series
+	 */
+	private boolean showBar = false;
+	/**
+	 * The unit of y-value. It is mainly used to share axes for composite
+	 * charts.
+	 */
 	private String unit;
+	/**
+	 * Specify whether the unit should be shown for this series.
+	 */
 	private boolean showUnit;
 
-	public GraphSeriesConfigRule() {
-
+	/**
+	 * constructor
+	 */
+	public Chart2DSeriesConfigRule() {
 	}
 
-	public GraphSeriesConfigRule(String labelPattern, String seriesLabelFormat,
-			String unit, FieldSelector labelField, FieldSelector xField,
-			FieldSelector yField, GraphCalculation calculation) {
+	/**
+	 * constructor
+	 * 
+	 * @param labelPattern
+	 *            The regular expression to filter data rows by row label.
+	 * @see {@link Pattern#compile(String)}
+	 * @param seriesLabelFormat
+	 *            The format of generated series label. The matched part of row
+	 *            label captured by {@link #labelPattern} will be used to
+	 *            replace the $1, $2, $3,... marks in {@link #seriesLabelFormat}
+	 *            .
+	 * 
+	 * @see {@link Matcher#replaceAll(String)}
+	 * @param unit
+	 *            The unit of y-value. It is mainly used to share axes for
+	 *            composite charts.
+	 * @param labelField
+	 *            the {@link FieldSelector} for extracting row labels of raw
+	 *            data
+	 * @param xField
+	 *            the {@link FieldSelector} for extracting x-value of raw data
+	 * @param yField
+	 *            the {@link FieldSelector} for extracting y-value of raw data
+	 * @param calculation
+	 *            specify the calculation to be used for plotted chart
+	 */
+	public Chart2DSeriesConfigRule(String labelPattern,
+			String seriesLabelFormat, String unit, FieldSelector labelField,
+			FieldSelector xField, FieldSelector yField,
+			Chart2DCalculation calculation) {
 		this(labelPattern, seriesLabelFormat, unit, labelField, xField, yField,
 				calculation, true, false, false);
 	}
 
-	public GraphSeriesConfigRule(String labelPattern, String seriesLabelFormat,
-			String unit, FieldSelector labelField, FieldSelector xField,
-			FieldSelector yField, GraphCalculation calculation,
-			boolean showLines, boolean showBars, boolean showUnit) {
+	/**
+	 * constructor
+	 * 
+	 * @param labelPattern
+	 *            The regular expression to filter data rows by row label.
+	 * @see {@link Pattern#compile(String)}
+	 * @param seriesLabelFormat
+	 *            The format of generated series label. The matched part of row
+	 *            label captured by {@link #labelPattern} will be used to
+	 *            replace the $1, $2, $3,... marks in {@link #seriesLabelFormat}
+	 *            .
+	 * 
+	 * @see {@link Matcher#replaceAll(String)}
+	 * @param unit
+	 *            The unit of y-value. It is mainly used to share axes for
+	 *            composite charts.
+	 * @param labelField
+	 *            the {@link FieldSelector} for extracting row labels of raw
+	 *            data
+	 * @param xField
+	 *            the {@link FieldSelector} for extracting x-value of raw data
+	 * @param yField
+	 *            the {@link FieldSelector} for extracting y-value of raw data
+	 * @param calculation
+	 *            specify the calculation to be used for plotted chart
+	 * @param showLines
+	 *            show line?
+	 * @param showBars
+	 *            show bar?
+	 * @param showUnit
+	 *            show unit?
+	 */
+	public Chart2DSeriesConfigRule(String labelPattern,
+			String seriesLabelFormat, String unit, FieldSelector labelField,
+			FieldSelector xField, FieldSelector yField,
+			Chart2DCalculation calculation, boolean showLines, boolean showBars,
+			boolean showUnit) {
 		this.labelPattern = labelPattern;
 		this.seriesLabelFormat = seriesLabelFormat;
 		this.labelField = labelField;
 		this.xField = xField;
 		this.yField = yField;
 		this.calculation = calculation;
-		this.showBars = showBars;
-		this.showLines = showLines;
+		this.showBar = showBars;
+		this.showLine = showLines;
 		this.unit = unit;
 		this.showUnit = showUnit;
 	}
-	
-	public GraphSeriesConfigRule(String labelPattern, String seriesLabelFormat,
-			String unit, Comparable<?> startX, Comparable<?> endX, FieldSelector labelField, FieldSelector xField,
-			FieldSelector yField, GraphCalculation calculation,
-			boolean showLines, boolean showBars, boolean showUnit) {
-		this(labelPattern, seriesLabelFormat, unit, labelField, xField, yField, calculation, showLines, showBars, showUnit);
-		this.startX = startX;
-		this.endX = endX;
-	}
 
-	public Comparable<?> getStartX() {
-		return startX;
-	}
-
-	public void setStartX(Comparable<?> startX) {
-		this.startX = startX;
-	}
-
-	public Comparable<?> getEndX() {
-		return endX;
-	}
-
-	public void setEndX(Comparable<?> endX) {
-		this.endX = endX;
-	}
-
+	/**
+	 * Get the regular expression to filter data rows by row label.
+	 * 
+	 * @see {@link Pattern#compile(String)}
+	 * @return a regular expression
+	 */
 	public String getLabelPattern() {
 		return labelPattern;
 	}
 
+	/**
+	 * Set the regular expression to filter data rows by row label.
+	 * 
+	 * @param labelPattern
+	 *            a regular expression
+	 */
 	public void setLabelPattern(String labelPattern) {
 		this.labelPattern = labelPattern;
 	}
 
+	/**
+	 * Get the format of generated series label. The matched part of row label
+	 * captured by {@link #labelPattern} will be used to replace the $1, $2,
+	 * $3,... marks in {@link #seriesLabelFormat} .
+	 * 
+	 * @see {@link Matcher#replaceAll(String)}
+	 * @return the format of generated series label
+	 */
 	public String getSeriesLabelFormat() {
 		return seriesLabelFormat;
 	}
 
+	/**
+	 * Set the format of generated series label. The matched part of row label
+	 * captured by {@link #labelPattern} will be used to replace the $1, $2,
+	 * $3,... marks in {@link #seriesLabelFormat} .
+	 * 
+	 * @param seriesLabelFormat
+	 *            the format of generated series label
+	 */
 	public void setSeriesLabelFormat(String seriesLabelFormat) {
 		this.seriesLabelFormat = seriesLabelFormat;
 	}
 
-	public FieldSelector getLabelField() {
-		return labelField;
-	}
-
-	public void setLabelField(FieldSelector labelField) {
-		this.labelField = labelField;
-	}
-
+	/**
+	 * get the field of x-value
+	 * 
+	 * @return the field of x-value
+	 */
 	public FieldSelector getXField() {
 		return xField;
 	}
 
+	/**
+	 * set the field of x-value
+	 * 
+	 * @param xField
+	 *            the field of x-value
+	 */
 	public void setXField(FieldSelector xField) {
 		this.xField = xField;
 	}
 
+	/**
+	 * get the field of y-value
+	 * 
+	 * @return the field of y-value
+	 */
 	public FieldSelector getYField() {
 		return yField;
 	}
 
+	/**
+	 * set the field of y-value
+	 * 
+	 * @param yField
+	 *            the field of y-value
+	 */
 	public void setYField(FieldSelector yField) {
 		this.yField = yField;
 	}
 
-	public GraphCalculation getCalculation() {
+	/**
+	 * get the calculation algorithm for plotting
+	 * 
+	 * @return the calculation algorithm
+	 */
+	public Chart2DCalculation getCalculation() {
 		return calculation;
 	}
 
-	public void setCalculation(GraphCalculation calculation) {
+	/**
+	 * set the calculation algorithm for plotting
+	 * 
+	 * @param calculation
+	 *            the calculation algorithm
+	 */
+	public void setCalculation(Chart2DCalculation calculation) {
 		this.calculation = calculation;
 	}
 
-	public boolean isShowLines() {
-		return showLines;
+	/**
+	 * get the label field
+	 * 
+	 * @return the label field
+	 */
+	public FieldSelector getLabelField() {
+		return labelField;
 	}
 
-	public void setShowLines(boolean showLines) {
-		this.showLines = showLines;
+	/**
+	 * set the label field
+	 * 
+	 * @param labelField
+	 *            the label field
+	 */
+	public void setLabelField(FieldSelector labelField) {
+		this.labelField = labelField;
 	}
 
-	public boolean isShowBars() {
-		return showBars;
+	/**
+	 * determine whether the line should be shown for this series
+	 * 
+	 * @return true if yes, otherwise false
+	 */
+	public boolean isShowLine() {
+		return showLine;
 	}
 
-	public void setShowBars(boolean showBars) {
-		this.showBars = showBars;
+	/**
+	 * specify whether the line should be shown for this series
+	 * 
+	 * @param showLine
+	 *            true if yes, otherwise false
+	 */
+	public void setShowLine(boolean showLine) {
+		this.showLine = showLine;
 	}
 
+	/**
+	 * determine whether the bar should be shown for this series
+	 * 
+	 * @return true if yes, otherwise false
+	 */
+	public boolean isShowBar() {
+		return showBar;
+	}
+
+	/**
+	 * specify whether the bar should be shown for this series
+	 * 
+	 * @param showBar
+	 *            true if yes, otherwise false
+	 */
+	public void setShowBar(boolean showBar) {
+		this.showBar = showBar;
+	}
+
+	/**
+	 * Get the unit of y-data. It is mainly used to share axes for composite
+	 * charts.
+	 * 
+	 * @return the unit
+	 */
 	public String getUnit() {
 		return unit;
 	}
 
+	/**
+	 * Set the unit of y-data. It is mainly used to share axes for composite
+	 * charts.
+	 * 
+	 * @param unit
+	 *            the unit
+	 */
 	public void setUnit(String unit) {
 		this.unit = unit;
 	}
 
+	/**
+	 * determine whether the unit of y-data should be shown for this series
+	 * 
+	 * @return true if yes, otherwise false
+	 */
 	public boolean isShowUnit() {
 		return showUnit;
 	}
 
+	/**
+	 * specify whether the unit of y-data should be shown for this series
+	 * 
+	 * @param showUnit
+	 *            true if yes, otherwise false
+	 */
 	public void setShowUnit(boolean showUnit) {
 		this.showUnit = showUnit;
 	}

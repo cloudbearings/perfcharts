@@ -22,11 +22,36 @@ import com.redhat.chartgeneration.common.Utilities;
 import com.redhat.chartgeneration.config.ReportConfig;
 import com.redhat.chartgeneration.configtemplate.ChartConfigTemplate;
 
+/**
+ * Loads specified configuration files into memory
+ * 
+ * @author vfree
+ *
+ */
 public class ReportConfigLoader {
+	/**
+	 * The name of this package (with a appended point for concatenation)
+	 */
 	private final static String CONFIG_TEMPLATE_PACKAGE = ChartConfigTemplate.class
 			.getPackage().getName() + ".";
-	private FieldSelector labelField;
 
+	/**
+	 * Load specified configuration file into memory
+	 * 
+	 * @param fileName
+	 *            a configuration file
+	 * @return the {@link ReportConfig}
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 * @throws NoSuchFieldException
+	 * @throws XMLStreamException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 */
 	public ReportConfig load(String fileName) throws IOException,
 			ClassNotFoundException, InstantiationException,
 			IllegalAccessException, NoSuchMethodException, SecurityException,
@@ -38,6 +63,23 @@ public class ReportConfigLoader {
 		return cfg;
 	}
 
+	/**
+	 * Load specified configuration file into memory
+	 * 
+	 * @param in
+	 *            the {@link InputStream} contains the configuration file
+	 * @return the {@link ReportConfig}
+	 * @throws XMLStreamException
+	 * @throws ClassNotFoundException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 * @throws NoSuchFieldException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 * @throws IOException
+	 */
 	public ReportConfig load(InputStream in) throws XMLStreamException,
 			ClassNotFoundException, InstantiationException,
 			IllegalAccessException, NoSuchMethodException, SecurityException,
@@ -48,16 +90,17 @@ public class ReportConfigLoader {
 		cfg.setConfigTemplate(list);
 		XMLStreamReader reader = XMLInputFactory.newInstance()
 				.createXMLStreamReader(in);
-		int level = 0;
+		int level = 0; // the level in the XML tree when reading the
+						// configuration file
 		FieldSelector labelField = null;
 		ChartConfigTemplate configTemplate = null;
-
 		try {
 			while (reader.hasNext()) {
 				switch (reader.next()) {
 				case XMLStreamReader.START_ELEMENT:
 					switch (++level) {
-					case 1:
+					case 1: // root element
+						// load jars specified by 'classPath' attribute
 						String classPathAttr = reader.getAttributeValue(null,
 								"classPath");
 						if (classPathAttr != null && !classPathAttr.isEmpty()) {
@@ -84,6 +127,7 @@ public class ReportConfigLoader {
 											.currentThread()
 											.getContextClassLoader()));
 						}
+						// load other attributes
 						cfg.setVersion(reader
 								.getAttributeValue(null, "version"));
 						cfg.setTitle(reader.getAttributeValue(null, "title"));
@@ -99,7 +143,7 @@ public class ReportConfigLoader {
 										|| labelFieldAttr.isEmpty() ? 0
 										: Integer.parseInt(labelFieldAttr)));
 						break;
-					case 2:
+					case 2: // the second level
 						if (reader.getLocalName().equals("chartConfigTemplate")) {
 							String className = reader.getAttributeValue(null,
 									"class");
@@ -108,14 +152,6 @@ public class ReportConfigLoader {
 							else
 								className = className.substring(1);
 
-							/*
-							 * Class<? extends ChartConfigTemplate> clazz =
-							 * Class .forName(className).asSubclass(
-							 * ChartConfigTemplate.class);
-							 */
-							// ClassLoader loader = customClassLoader != null ?
-							// customClassLoader
-							// : ReportConfigLoader.class.getClassLoader();
 							ClassLoader loader = Thread.currentThread()
 									.getContextClassLoader();
 							Class<? extends ChartConfigTemplate> clazz = loader
@@ -126,7 +162,8 @@ public class ReportConfigLoader {
 							list.add(configTemplate);
 						}
 						break;
-					case 3:
+					case 3: // the third level are properties to be set for
+							// chartConfigTemplate
 						String fieldName = reader.getLocalName();
 						String valueType = reader.getAttributeValue(null,
 								"type");
@@ -145,19 +182,26 @@ public class ReportConfigLoader {
 				}
 			}
 		} finally {
-//			if (customClassLoader != null)
-//				customClassLoader.close();
+
 		}
 
 		return cfg;
 	}
-
+	/**
+	 * call setXXX method to assign a new property value to an object
+	 * @param obj an object
+	 * @param fieldName the name of property
+	 * @param value the new value
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 */
 	private static void setField(Object obj, String fieldName, Object value)
 			throws IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException {
 		String methodName = "set" + Character.toUpperCase(fieldName.charAt(0))
 				+ fieldName.substring(1);
-		// need to be optimized when free
+		// TODO: need optimization
 		for (Method m : obj.getClass().getMethods()) {
 			if (m.getName().equals(methodName)) {
 				m.invoke(obj, value);
@@ -166,11 +210,4 @@ public class ReportConfigLoader {
 		}
 	}
 
-	public FieldSelector getLabelField() {
-		return labelField;
-	}
-
-	public void setLabelField(FieldSelector labelField) {
-		this.labelField = labelField;
-	}
 }

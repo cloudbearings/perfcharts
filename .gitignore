@@ -9,6 +9,7 @@
 .settings/
 chartgeneration*.jar
 build_dir/
+doc/
 log/
 tmp/
 output/

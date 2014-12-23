@@ -13,6 +13,15 @@ import java.util.Date;
 
 import com.redhat.chartgeneration.common.AppData;
 
+/**
+ * A parser converts CPU load logs to data tables (in CSV format). The raw data
+ * is plain text file, a record per line. The format of record is "
+ * {@code yyyy-MM-dd hh:mm:ss, 1min 5min 15min}" (without quotes), like "
+ * {@code 2014-07-07 17:12:43, 0.73 0.99 1.27}".
+ * 
+ * @author Rayson Zhu
+ *
+ */
 public class CPULoadParser implements DataParser {
 	private SimpleDateFormat timeFormat = new SimpleDateFormat("y-M-d H:m:s");
 
@@ -37,7 +46,8 @@ public class CPULoadParser implements DataParser {
 			} catch (Exception ex) {
 				AppData.getInstance()
 						.getLogger()
-						.warning("CPULoadParser.parse(): Ignore non-data line '"
+						.warning(
+								"CPULoadParser.parse(): Ignore non-data line '"
 										+ lineStr + "'");
 				continue;
 			}

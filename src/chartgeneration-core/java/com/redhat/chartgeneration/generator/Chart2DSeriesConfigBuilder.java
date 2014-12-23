@@ -10,42 +10,60 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.redhat.chartgeneration.common.FieldSelector;
-import com.redhat.chartgeneration.config.GraphSeriesConfig;
-import com.redhat.chartgeneration.config.GraphSeriesConfigRule;
-import com.redhat.chartgeneration.model.PerfLog;
+import com.redhat.chartgeneration.config.Chart2DSeriesConfig;
+import com.redhat.chartgeneration.config.Chart2DSeriesConfigRule;
+import com.redhat.chartgeneration.model.DataTable;
 
-public class GraphSeriesConfigBuilder {
-
-	public List<GraphSeriesConfig> build(final GraphSeriesConfigRule rule, PerfLog log) {
+/**
+ * The {@link Chart2DSeriesConfigBuilder} creates a list of
+ * {@link Chart2DSeriesConfig}s by given {@link Chart2DSeriesConfigRule}.
+ * 
+ * @author Rayson Zhu
+ *
+ */
+public class Chart2DSeriesConfigBuilder {
+	/**
+	 * create a list of {@link Chart2DSeriesConfig}s by given
+	 * {@link Chart2DSeriesConfigRule}.
+	 * 
+	 * @param rule
+	 *            a rule
+	 * @param dataTable
+	 *            a data table
+	 * @return a list of {@link Chart2DSeriesConfig}s
+	 */
+	public List<Chart2DSeriesConfig> build(final Chart2DSeriesConfigRule rule,
+			DataTable dataTable) {
 		FieldSelector labelField = rule.getLabelField();
-		Pattern pattern = Pattern.compile(rule.getLabelPattern());
 		String labelFormat = rule.getSeriesLabelFormat();
-		List<List<Object>> rows = log.getRows();
-
+		List<List<Object>> rows = dataTable.getRows();
+		Pattern pattern = Pattern.compile(rule.getLabelPattern());
+		// define the map from series label to its involved row labels.
 		Map<String, Set<String>> map = new HashMap<String, Set<String>>();
-
+		// traverse all data rows, add labels of rows that matches the patterns
+		// specified by rules to @map.
 		for (List<Object> row : rows) {
-			String label = labelField.select(row).toString();
-			Matcher matcher = pattern.matcher(label);
+			String rowLabel = labelField.select(row).toString();
+			Matcher matcher = pattern.matcher(rowLabel);
 			if (matcher.matches()) {
-				String lineLabel = matcher.replaceAll(labelFormat);
-				Set<String> labels = map.get(lineLabel);
+				String seriesLabel = matcher.replaceAll(labelFormat);
+				Set<String> labels = map.get(seriesLabel);
 				if (labels == null)
-					map.put(lineLabel, labels = new HashSet<String>());
-				labels.add(label);
+					map.put(seriesLabel, labels = new HashSet<String>());
+				labels.add(rowLabel);
 			}
 		}
-
-		final List<GraphSeriesConfig> lineConfigs = new ArrayList<GraphSeriesConfig>(
-				map.size());
-		for (String lineLabels : map.keySet()) {
-			Set<String> seriesLabels = map.get(lineLabels);
-			lineConfigs.add(new GraphSeriesConfig(lineLabels, rule.getUnit(), rule
-					.getLabelField(), rule.getXField(), rule.getYField(), rule
-					.getCalculation(), seriesLabels, rule.isShowLines(), rule
-					.isShowBars(), rule.isShowUnit()));
-		}
 		
-		return lineConfigs;
+		// generate seriesConfigs for each series
+		final List<Chart2DSeriesConfig> seriesConfigs = new ArrayList<Chart2DSeriesConfig>(
+				map.size());
+		for (String seriesLabels : map.keySet()) {
+			Set<String> involvedRowLabels = map.get(seriesLabels);
+			seriesConfigs.add(new Chart2DSeriesConfig(seriesLabels, rule
+					.getUnit(), rule.getLabelField(), rule.getXField(), rule
+					.getYField(), rule.getCalculation(), involvedRowLabels,
+					rule.isShowLine(), rule.isShowBar(), rule.isShowUnit()));
+		}
+		return seriesConfigs;
 	}
 }

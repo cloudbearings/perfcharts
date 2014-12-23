@@ -1,6 +1,6 @@
 package com.redhat.chartgeneration.configtemplate;
 
-import com.redhat.chartgeneration.config.JmeterSummaryChartConfig;
+import com.redhat.chartgeneration.perftest.config.JmeterSummaryChartConfig;
 
 public class JmeterSummaryChartTemplate extends BaseChartTemplate {
 

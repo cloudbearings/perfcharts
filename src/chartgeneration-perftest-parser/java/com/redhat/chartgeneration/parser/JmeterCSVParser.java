@@ -7,6 +7,13 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Date;
 
+/**
+ * The parser converts Jmeter test logs to data tables (in CSV format). The raw
+ * data must be CSV format.
+ * 
+ * @author Rayson Zhu
+ *
+ */
 public class JmeterCSVParser implements DataParser {
 
 	@Override
@@ -18,13 +25,13 @@ public class JmeterCSVParser implements DataParser {
 		Date endTime = Settings.getInstance().getEndTime();
 		long startTimeVal = startTime == null ? -1 : startTime.getTime();
 		long endTimeVal = endTime == null ? -1 : endTime.getTime();
-		
+
 		String line;
 		while ((line = reader.readLine()) != null) {
 			String[] fields = line.split(",");
 			long timestamp = Long.parseLong(fields[0]);
 			int rt = Integer.parseInt(fields[1]);
-			if (startTimeVal > 0 && timestamp < startTimeVal
+			if (startTimeVal > 0 && timestamp + rt < startTimeVal
 					|| endTimeVal > 0 && timestamp + rt > endTimeVal)
 				continue;
 			String label = fields[2];
@@ -33,17 +40,16 @@ public class JmeterCSVParser implements DataParser {
 				++skip;
 			if (fields[skip + 5].startsWith("\""))
 				++skip;
-			int latency =Integer.parseInt(fields[skip + 9]);
+			int latency = Integer.parseInt(fields[skip + 9]);
 			int threads = 0;
 			int bytes = Integer.parseInt(fields[skip + 8]);
 			boolean error = !Boolean.parseBoolean(fields[skip + 7]);
-			JmeterParser.writeFields(writer, "TX-" + label + (error ? "-F" : "-S"),
-					timestamp, threads, error ? '1' : '0', latency, rt,
-					bytes);
+			JmeterParser.writeFields(writer, "TX-" + label
+					+ (error ? "-F" : "-S"), timestamp, threads, error ? '1'
+					: '0', latency, rt, bytes);
 		}
 		writer.flush();
-		
+
 	}
-	
 
 }

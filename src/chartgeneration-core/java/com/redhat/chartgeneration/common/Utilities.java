@@ -6,19 +6,46 @@ import java.util.Collection;
 import java.util.Random;
 import java.util.regex.Pattern;
 
+/**
+ * A class that contains many help functions.
+ * 
+ * @author Rayson Zhu
+ *
+ */
 public class Utilities {
 	private static final Pattern longPattern = Pattern.compile("^\\d+$");
 	private static final Pattern doublePattern = Pattern
 			.compile("^\\d*\\.\\d+$");
 
+	/**
+	 * determine if the string s can be converted to a {@link Double}
+	 * 
+	 * @param s
+	 *            a string
+	 * @return true if can, otherwise false
+	 */
 	public static boolean isDouble(String s) {
 		return doublePattern.matcher(s).matches();
 	}
 
+	/**
+	 * determine if the string s can be converted to a {@link Long}
+	 * 
+	 * @param s
+	 *            a string
+	 * @return true if can, otherwise false
+	 */
 	public static boolean isLong(String s) {
 		return longPattern.matcher(s).matches();
 	}
 
+	/**
+	 * parse a string to an Java object
+	 * 
+	 * @param s
+	 *            a string
+	 * @return the parsed object
+	 */
 	public static Object parseString(String s) {
 		if (Utilities.isDouble(s))
 			return Double.parseDouble(s);
@@ -30,6 +57,15 @@ public class Utilities {
 		return s;
 	}
 
+	/**
+	 * parse a string to an Java object
+	 * 
+	 * @param s
+	 *            a string
+	 * @param clazz
+	 *            the destination type
+	 * @return the parsed object
+	 */
 	public static Object parseString(String s, Class<?> clazz) {
 		Object value;
 		if (clazz == Integer.class || clazz == int.class)
@@ -45,6 +81,15 @@ public class Utilities {
 		return value;
 	}
 
+	/**
+	 * parse a string to an Java object
+	 * 
+	 * @param s
+	 *            a string
+	 * @param type
+	 *            the destination type
+	 * @return the parsed object
+	 */
 	public static Object parseString(String s, String type) {
 		Object value;
 		if (type.equals("int"))
@@ -60,6 +105,13 @@ public class Utilities {
 		return value;
 	}
 
+	/**
+	 * convert a Java object to JSON value
+	 * 
+	 * @param o
+	 *            an object
+	 * @return a JSON value
+	 */
 	public static String commonConvertToJsonValue(Object o) {
 		if (o == null)
 			return "null";
@@ -67,18 +119,31 @@ public class Utilities {
 			return o.toString();
 		if (o instanceof Double || o instanceof Float)
 			return String.format("%.2f", o);
+		if (o instanceof Boolean)
+			return ((Boolean) o).booleanValue() ? "true" : "false";
 		return "\"" + o.toString().replace("\"", "\\\"") + "\"";
 	}
 
+	/**
+	 * An implementation of randomized partition based selection algorithm
+	 * 
+	 * @param collection
+	 *            a collection
+	 * @param targetRank
+	 *            a index
+	 * @return the selected element
+	 * @see http 
+	 *      ://en.wikipedia.org/wiki/Selection_algorithm#Partition-based_selection
+	 */
 	public static Number fastSelect(Collection<Long> collection, int targetRank) {
 		if (collection.isEmpty())
 			return null;
-		// Comparable<Object> obj = null;
 		ArrayList<Long> copy = new ArrayList<Long>(collection);
 		int start = 0, end = copy.size();
+		// do partitioning and check the position of returned pivot, until
+		// getting the one we want.
 		while (start < end) {
 			int pivot = partition(copy, start, end);
-			//System.err.println("call partition:" + start + "," + end + "," + pivot + "," + targetRank);
 			if (pivot < targetRank) {
 				start = pivot + 1;
 			} else if (pivot > targetRank) {
@@ -92,13 +157,30 @@ public class Utilities {
 
 	private static Random random = new Random();
 
+	/**
+	 * the classical partition function (used by #fastSelect(Collection, int))
+	 * 
+	 * @param arr
+	 *            an array
+	 * @param start
+	 *            that start index of arr (inclusive)
+	 * @param end
+	 *            that end index of arr (exclusive)
+	 * @return the index of pivot
+	 * @see #fastSelect(Collection, int)
+	 */
 	private static <T> int partition(ArrayList<Long> arr, int start, int end) {
 		if (end <= start || start < 0 || end > arr.size() || arr.isEmpty())
-			throw new InvalidParameterException("The precondition does not meet: 0<=start<end<=arr.size()");
+			throw new InvalidParameterException(
+					"The precondition does not meet: 0<=start<end<=arr.size()");
+		// the left and right boundaries default to start and end - 1
 		int left = start, right = end - 1;
-		int rnd = start + random.nextInt(end - start);
-		Long pivotValue = arr.get(rnd);
-		arr.set(rnd, arr.get(left));
+		// choose a pivot in [start, end)
+		int pivot = start + random.nextInt(end - start);
+		// swap arr[left] with arr[pivot]
+		Long pivotValue = arr.get(pivot);
+		arr.set(pivot, arr.get(left));
+		// do the partitioning
 		while (left < right) {
 			while (left < right && arr.get(right) >= pivotValue)
 				--right;
@@ -108,7 +190,6 @@ public class Utilities {
 			arr.set(right, arr.get(left));
 		}
 		arr.set(left, pivotValue);
-		//System.err.println("arr," + start + "," + end + "," + left);
 		return left;
 	}
 
