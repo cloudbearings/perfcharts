@@ -2,7 +2,7 @@
 <project name="chartgeneration-perftest-parser" default="all" basedir=".">
 	<description>Data Parsers for Perf-test business support - Chart Generation Tool</description>
 	<property name="target_name" value="chartgeneration-perftest-parser.jar"/>
-	<property name="main_class" value="com.redhat.chartgeneration.parser.PerftestParserEntry" />
+	<property name="main_class" value="chartgeneration.parser.PerftestParserEntry" />
 	<property name="src" value="java"/>
 	<property name="build" value="build_dir"/>
 	<property name="bin" value="bin"/> 
