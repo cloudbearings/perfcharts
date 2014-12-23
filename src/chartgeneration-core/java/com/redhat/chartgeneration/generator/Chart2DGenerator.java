@@ -33,7 +33,7 @@ public class Chart2DGenerator implements Generator {
 	/**
 	 * the default points per chart for automatic interval selection
 	 */
-	private final static int DEFAULT_POINTS = 100;
+	private final static int DEFAULT_POINTS = 150;
 	/**
 	 * The factory for creating related objects.
 	 */
@@ -75,12 +75,12 @@ public class Chart2DGenerator implements Generator {
 
 		final List<Chart2DSeries> series = new ArrayList<Chart2DSeries>(
 				seriesConfigs.size());
-		for (final Chart2DSeriesConfig config : seriesConfigs) {
+		for (final Chart2DSeriesConfig seriesConfig : seriesConfigs) {
 			LinkedList<List<Object>> involvedRows = new LinkedList<List<Object>>();
 			// collect involved rows
 			for (List<Object> row : dataRows) {
-				if (config.getInvolvedRowLabels().contains(
-						config.getLabelField().select(row)))
+				if (seriesConfig.getInvolvedRowLabels().contains(
+						seriesConfig.getLabelField().select(row)))
 					involvedRows.add(row);
 
 			}
@@ -91,19 +91,20 @@ public class Chart2DGenerator implements Generator {
 				@Override
 				public int compare(List<Object> o1, List<Object> o2) {
 					@SuppressWarnings("unchecked")
-					Comparable<Object> a = (Comparable<Object>) config
+					Comparable<Object> a = (Comparable<Object>) seriesConfig
 							.getXField().select(o1);
 					@SuppressWarnings("unchecked")
-					Comparable<Object> b = (Comparable<Object>) config
+					Comparable<Object> b = (Comparable<Object>) seriesConfig
 							.getXField().select(o2);
 					return a.compareTo(b);
 				}
 			});
-			Chart2DCalculation calc = config.getCalculation();
+			Chart2DCalculation calc = seriesConfig.getCalculation();
+			
 			int interval = calc.getInterval();
 			// If user didn't specify the interval, produce one.
 			if (interval == 0) {
-				FieldSelector xField = config.getXField();
+				FieldSelector xField = seriesConfig.getXField();
 				long minX = ((Number) xField.select(involvedRows.getFirst()))
 						.longValue();
 				long maxX = ((Number) xField.select(involvedRows.getLast()))
@@ -113,16 +114,16 @@ public class Chart2DGenerator implements Generator {
 					interval = 1;
 				calc.setInterval(interval);
 				logger.info("use automatic interval value " + interval
-						+ " for series '" + config.getLabel() + "' in chart '"
+						+ " for series '" + seriesConfig.getLabel() + "' in chart '"
 						+ chart2dConfig.getTitle() + "'");
 			}
 			// execute the calculation defined by Chart2DSeriesConfig, and
 			// collect generated points
 			List<Point2D> lineStops = calc.produce(involvedRows,
-					config.getXField(), config.getYField());
-			Chart2DSeries line = new Chart2DSeries(config.getLabel(),
-					config.getUnit(), lineStops, config.isShowLine(),
-					config.isShowBar(), config.isShowUnit());
+					seriesConfig.getXField(), seriesConfig.getYField());
+			Chart2DSeries line = new Chart2DSeries(seriesConfig.getLabel(),
+					seriesConfig.getUnit(), lineStops, seriesConfig.isShowLine(),
+					seriesConfig.isShowBar(), seriesConfig.isShowUnit());
 			series.add(line);
 		}
 		Chart2D graph = new Chart2D(chart2dConfig.getTitle(),
