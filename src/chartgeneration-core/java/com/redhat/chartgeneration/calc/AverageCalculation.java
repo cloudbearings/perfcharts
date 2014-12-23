@@ -1,16 +1,24 @@
-package com.redhat.chartgeneration.graphcalc;
+package com.redhat.chartgeneration.calc;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
-import com.redhat.chartgeneration.common.AppData;
+import com.redhat.chartgeneration.chart.Point2D;
 import com.redhat.chartgeneration.common.FieldSelector;
-import com.redhat.chartgeneration.report.GraphPoint;
 
-public class AverageCalculation implements GraphCalculation {
+/**
+ * This calculation groups data rows by their x-fields, calculates the average
+ * among their y-fields of each group, and makes the average values as result
+ * y-values.
+ * 
+ * @author Rayson Zhu
+ *
+ */
+public class AverageCalculation implements Chart2DCalculation {
+	/**
+	 * the interval for point merging
+	 */
 	private int interval = 0;
-	private int times = 1;
 
 	public AverageCalculation() {
 
@@ -20,32 +28,20 @@ public class AverageCalculation implements GraphCalculation {
 		this.interval = interval;
 	}
 
-	public AverageCalculation(int interval, int times) {
-		this.interval = interval;
-		this.times = times;
-	}
-
-	public List<GraphPoint> produce(List<List<Object>> rows,
-			FieldSelector xField, FieldSelector yField) {
-		List<GraphPoint> stops = new LinkedList<GraphPoint>();
-		Object lastX = 0;
+	public List<Point2D> produce(List<List<Object>> rows, FieldSelector xField,
+			FieldSelector yField) {
+		List<Point2D> stops = new LinkedList<Point2D>();
+		if (rows.isEmpty())
+			return stops;
+		Number firstX = (Number) xField.select(rows.get(0));
+		Number lastX = 0;
 		double y = 0.0;
 		int count = 0;
 		for (List<Object> row : rows) {
-			Object x = xField.select(row);
+			Number x = (Number) xField.select(row);
 			if (interval > 1) {
-				if (Long.class.isAssignableFrom(x.getClass())) {
-					Number num = (Number) x;
-					x = num.longValue() / interval * interval;
-				} else if (Double.class.isAssignableFrom(x.getClass())) {
-					Number num = (Number) x;
-					x = (long) (Math.floor(num.doubleValue() / interval) * interval);
-				} else {
-					Logger logger = AppData.getInstance().getLogger();
-					logger.warning("'interval' is omitted because '"
-							+ x.toString() + "' (whose type is '"
-							+ x.getClass().toString() + "') is not a number.");
-				}
+				x = firstX.longValue() + (x.longValue() - firstX.longValue())
+						/ interval * interval;
 			}
 
 			if (lastX.equals(x)) {
@@ -53,14 +49,14 @@ public class AverageCalculation implements GraphCalculation {
 				++count;
 			} else {
 				if (count > 0)
-					stops.add(new GraphPoint(lastX, y / count * times, count));
+					stops.add(new Point2D(lastX, y / count, count));
 				y = ((Number) yField.select(row)).doubleValue();
 				count = 1;
 			}
 			lastX = x;
 		}
 		if (count > 0)
-			stops.add(new GraphPoint(lastX, y / count * times, count));
+			stops.add(new Point2D(lastX, y / count, count));
 		return stops;
 	}
 
@@ -70,14 +66,6 @@ public class AverageCalculation implements GraphCalculation {
 
 	public void setInterval(int interval) {
 		this.interval = interval;
-	}
-
-	public int getTimes() {
-		return times;
-	}
-
-	public void setTimes(int times) {
-		this.times = times;
 	}
 
 }

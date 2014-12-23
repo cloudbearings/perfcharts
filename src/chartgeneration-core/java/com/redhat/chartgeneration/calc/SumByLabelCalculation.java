@@ -1,64 +1,95 @@
-package com.redhat.chartgeneration.graphcalc;
+package com.redhat.chartgeneration.calc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.redhat.chartgeneration.chart.Point2D;
 import com.redhat.chartgeneration.common.FieldSelector;
-import com.redhat.chartgeneration.report.GraphPoint;
 
-public class SumBySeriesCalculation implements GraphCalculation {
+/**
+ * This calculation groups data rows by their x-fields, sum up the the average
+ * of y-fields having the same row label, and makes the result as y-values.
+ * 
+ * @author Rayson Zhu
+ *
+ */
+public class SumByLabelCalculation implements Chart2DCalculation {
+	/**
+	 * the interval for point merging
+	 */
 	private int interval = 0;
+	/**
+	 * the times to multiply on y-value of each point
+	 */
 	private int times = 1;
+	/**
+	 * the label field selector
+	 */
 	private FieldSelector labelSelector;
 
-	public SumBySeriesCalculation() {
+	/**
+ * 
+ */
+	public SumByLabelCalculation() {
 
 	}
 
-	public SumBySeriesCalculation(FieldSelector labelSelector) {
+	/**
+	 * 
+	 * @param labelSelector
+	 *            the label field selector
+	 */
+	public SumByLabelCalculation(FieldSelector labelSelector) {
 		this.labelSelector = labelSelector;
 	}
 
-	public SumBySeriesCalculation(FieldSelector labelSelector, int interval) {
+	/**
+	 * 
+	 * @param labelSelector
+	 *            the label field selector
+	 * @param interval
+	 *            the interval for point merging
+	 */
+	public SumByLabelCalculation(FieldSelector labelSelector, int interval) {
 		this.labelSelector = labelSelector;
 		this.interval = interval;
 	}
 
-	public SumBySeriesCalculation(FieldSelector labelSelector, int interval,
+	/**
+	 * constructor
+	 * 
+	 * @param labelSelector
+	 *            the label field selector
+	 * @param interval
+	 *            the interval for point merging
+	 * @param times
+	 *            the times to multiply on y-value of each point
+	 */
+	public SumByLabelCalculation(FieldSelector labelSelector, int interval,
 			int times) {
 		this.labelSelector = labelSelector;
 		this.interval = interval;
 		this.times = times;
 	}
 
-	public List<GraphPoint> produce(List<List<Object>> rows,
-			FieldSelector xField, FieldSelector yField) {
-		List<GraphPoint> stops = new LinkedList<GraphPoint>();
-		long lastX = 0;
+	public List<Point2D> produce(List<List<Object>> rows, FieldSelector xField,
+			FieldSelector yField) {
+		List<Point2D> stops = new LinkedList<Point2D>();
+		if (rows.isEmpty())
+			return stops;
 		Map<String, Integer> labelIndexMap = new HashMap<String, Integer>();
 		List<Double> valueList = new ArrayList<Double>();
 		List<Integer> countList = new ArrayList<Integer>();
-		for (Iterator<List<Object>> it = rows.iterator(); it.hasNext();) {
-			List<Object> row = it.next();
-			Object rawX = xField.select(row);
-			long x = 0;
+		Number firstX = (Number) xField.select(rows.get(0));
+		Number lastX = 0;
+		for (List<Object> row : rows) {
+			Number x = (Number) xField.select(row);
 			if (interval > 1) {
-				if (Number.class.isAssignableFrom(rawX.getClass())) {
-					Number num = (Number) rawX;
-					x = num.longValue() / interval * interval;
-				} else {
-					Number num = (Number) rawX;
-					x = num.longValue();
-					System.out
-							.println("Warning: SumCalculation.produce: cannot merge");
-				}
-			} else {
-				Number num = (Number) rawX;
-				x = num.longValue();
+				x = firstX.longValue() + (x.longValue() - firstX.longValue())
+						/ interval * interval;
 			}
 			String label = labelSelector.select(row).toString();
 			Integer indexWrapper = labelIndexMap.get(label);
@@ -70,7 +101,7 @@ public class SumBySeriesCalculation implements GraphCalculation {
 				countList.add(0);
 				valueList.add(0.0);
 			}
-			if (x == lastX) {
+			if (x.equals(lastX)) {
 				valueList.set(index, valueList.get(index) + value);
 				countList.set(index, countList.get(index) + 1);
 			} else {
@@ -84,7 +115,7 @@ public class SumBySeriesCalculation implements GraphCalculation {
 					}
 				}
 				if (count > 0)
-					stops.add(new GraphPoint(lastX, y * times, count));
+					stops.add(new Point2D(lastX, y * times, count));
 				valueList.set(index, value);
 				countList.set(index, 1);
 			}
@@ -100,7 +131,7 @@ public class SumBySeriesCalculation implements GraphCalculation {
 			}
 		}
 		if (count > 0)
-			stops.add(new GraphPoint(lastX, y * times, count));
+			stops.add(new Point2D(lastX, y * times, count));
 		return stops;
 	}
 
@@ -112,18 +143,40 @@ public class SumBySeriesCalculation implements GraphCalculation {
 		this.interval = interval;
 	}
 
+	/**
+	 * Get the times to multiply on y-value of each point.
+	 * 
+	 * @return the times
+	 */
 	public int getTimes() {
 		return times;
 	}
 
+	/**
+	 * Set the times to multiply on y-value of each point.
+	 * 
+	 * @param times
+	 *            the times
+	 */
 	public void setTimes(int times) {
 		this.times = times;
 	}
 
+	/**
+	 * Get the label field selector
+	 * 
+	 * @return the label field selector
+	 */
 	public FieldSelector getLabelSelector() {
 		return labelSelector;
 	}
 
+	/**
+	 * Set the label field selector
+	 * 
+	 * @param labelSelector
+	 *            the label field selector
+	 */
 	public void setLabelSelector(FieldSelector labelSelector) {
 		this.labelSelector = labelSelector;
 	}

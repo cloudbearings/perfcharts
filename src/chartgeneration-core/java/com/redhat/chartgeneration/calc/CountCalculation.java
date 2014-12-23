@@ -1,30 +1,73 @@
-package com.redhat.chartgeneration.graphcalc;
+package com.redhat.chartgeneration.calc;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.redhat.chartgeneration.chart.Point2D;
 import com.redhat.chartgeneration.common.FieldSelector;
-import com.redhat.chartgeneration.report.GraphPoint;
 
-public class CountCalculation implements GraphCalculation {
+/**
+ * This calculation groups data rows by their x-fields, counts the number of
+ * them, and makes the count as result y-values.
+ * 
+ * @author Rayson Zhu
+ *
+ */
+public class CountCalculation implements Chart2DCalculation {
+	/**
+	 * the interval for point merging
+	 */
 	private int interval = 0;
+	/**
+	 * the times to multiply on y-value of each point
+	 */
 	private double times = 1;
+	/**
+	 * whether set y-value to zero when there is no data in that interval
+	 */
 	private boolean setZeroIfIntervalNoData = false;
 
+	/**
+	 * constructor
+	 */
 	public CountCalculation() {
 
 	}
 
+	/**
+	 * constructor
+	 * 
+	 * @param interval
+	 *            the interval for point merging
+	 */
 	public CountCalculation(int interval) {
 		this.interval = interval;
 	}
 
+	/**
+	 * constructor
+	 * 
+	 * @param interval
+	 *            the interval for point merging
+	 * @param times
+	 *            the times to multiply on y-value of each point
+	 */
 	public CountCalculation(int interval, double times) {
 		this.interval = interval;
 		this.times = times;
 	}
 
+	/**
+	 * constructor
+	 * 
+	 * @param interval
+	 *            the interval for point merging
+	 * @param times
+	 *            the times to multiply on y-value of each point
+	 * @param setZeroIfIntervalNoData
+	 *            whether set y-value to zero when there is no data in that
+	 *            interval
+	 */
 	public CountCalculation(int interval, double times,
 			boolean setZeroIfIntervalNoData) {
 		this.interval = interval;
@@ -32,40 +75,33 @@ public class CountCalculation implements GraphCalculation {
 		this.setZeroIfIntervalNoData = setZeroIfIntervalNoData;
 	}
 
-	public List<GraphPoint> produce(List<List<Object>> rows,
-			FieldSelector xField, FieldSelector yField) {
-		List<GraphPoint> stops = new LinkedList<GraphPoint>();
-		long lastX = 0;
+	public List<Point2D> produce(List<List<Object>> rows, FieldSelector xField,
+			FieldSelector yField) {
+		List<Point2D> stops = new LinkedList<Point2D>();
+		if (rows.isEmpty())
+			return stops;
+		Number firstX = (Number) xField.select(rows.get(0));
+		Number lastX = 0;
 		int count = 0;
-		for (Iterator<List<Object>> it = rows.iterator(); it.hasNext();) {
-			List<Object> row = it.next();
-			Object rawX = xField.select(row);
-			long x = 0;
-
+		for (List<Object> row : rows) {
+			Number x = (Number) xField.select(row);
 			if (interval > 1) {
-				if (Number.class.isAssignableFrom(rawX.getClass())) {
-					Number num = (Number) rawX;
-					x = num.longValue() / interval * interval;
-				} else {
-					Number num = (Number) rawX;
-					x = num.longValue();
-					System.out
-							.println("Warning: CountCalculation.produce: cannot merge");
-				}
-			} else {
-				Number num = (Number) rawX;
-				x = num.longValue();
+				x = firstX.longValue() + (x.longValue() - firstX.longValue())
+						/ interval * interval;
 			}
-
-			if (x == lastX) {
+			if (lastX.equals(x)) {
 				++count;
 			} else {
 				if (count > 0) {
-					stops.add(new GraphPoint(lastX, count * times, count));
-					if (setZeroIfIntervalNoData && lastX + interval < x) {
-						stops.add(new GraphPoint(lastX + interval, 0, 0));
-						if (lastX + interval < x - interval)
-							stops.add(new GraphPoint(x - interval, 0, 0));
+					stops.add(new Point2D(lastX, count * times, count));
+					if (setZeroIfIntervalNoData
+							&& lastX.doubleValue() + interval < x.doubleValue()) {
+						stops.add(new Point2D(lastX.doubleValue() + interval,
+								0, 0));
+						if (lastX.doubleValue() + interval < x.doubleValue()
+								- interval)
+							stops.add(new Point2D(x.doubleValue() - interval,
+									0, 0));
 					}
 				}
 				count = 1;
@@ -73,25 +109,50 @@ public class CountCalculation implements GraphCalculation {
 			lastX = x;
 		}
 		if (count > 0)
-			stops.add(new GraphPoint(lastX, count * times, count));
+			stops.add(new Point2D(lastX, count * times, count));
 		return stops;
 	}
 
+	/**
+	 * Get the times to multiply on y-value of each point.
+	 * 
+	 * @return the times
+	 */
 	public double getTimes() {
 		return times;
 	}
 
+	/**
+	 * Set the times to multiply on y-value of each point.
+	 * 
+	 * @param times
+	 *            the times
+	 */
 	public void setTimes(double times) {
 		this.times = times;
 	}
 
+	/**
+	 * Determine whether set y-value to zero when there is no data in that
+	 * interval.
+	 * 
+	 * @return true if yes, otherwise false
+	 */
 	public boolean isSetZeroIfIntervalNoData() {
 		return setZeroIfIntervalNoData;
 	}
 
+	/**
+	 * Specify whether set y-value to zero when there is no data in that
+	 * interval.
+	 * 
+	 * @param setZeroIfIntervalNoData
+	 *            true if yes, otherwise false
+	 */
 	public void setSetZeroIfIntervalNoData(boolean setZeroIfIntervalNoData) {
 		this.setZeroIfIntervalNoData = setZeroIfIntervalNoData;
 	}
+
 	public int getInterval() {
 		return interval;
 	}

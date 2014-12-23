@@ -2,40 +2,50 @@ package com.redhat.chartgeneration.model;
 
 import java.util.List;
 
-public class PerfLog {
-	// private List<Class<?>> fieldTypes;
+/**
+ * Represents a data table
+ * 
+ * @author Rayson Zhu
+ *
+ */
+public class DataTable {
+	/**
+	 * rows
+	 */
 	private List<List<Object>> rows;
 
-	public PerfLog() {
-		// this.fieldTypes = new ArrayList<Class<?>>(7);
-		// this.fieldTypes.add(String.class);
-		// this.fieldTypes.add(Long.class);
-		// this.fieldTypes.add(Integer.class);
-		// this.fieldTypes.add(Integer.class);
-		// this.fieldTypes.add(Integer.class);
-		// this.fieldTypes.add(Integer.class);
-		// this.fieldTypes.add(Integer.class);
-		// this.fieldTypes.add(String.class);
-		// this.fieldTypes.add(Long.class);
-		// this.fieldTypes.add(Float.class);
-		// this.fieldTypes.add(Float.class);
-		// this.fieldTypes.add(Float.class);
-		// this.fieldTypes.add(Float.class);
-		// this.fieldTypes.add(Integer.class);
+	/**
+	 * constructor
+	 */
+	public DataTable() {
+
 	}
 
-	// public List<Class<?>> getFieldTypes() {
-	// return fieldTypes;
-	// }
-	//
-	// public void setFieldTypes(List<Class<?>> fieldTypes) {
-	// this.fieldTypes = fieldTypes;
-	// }
+	/**
+	 * constructor
+	 * 
+	 * @param rows
+	 *            rows
+	 */
+	public DataTable(List<List<Object>> rows) {
+		this.rows = rows;
+	}
 
+	/**
+	 * Get rows.
+	 * 
+	 * @return rows
+	 */
 	public List<List<Object>> getRows() {
 		return rows;
 	}
 
+	/**
+	 * Set rows
+	 * 
+	 * @param rows
+	 *            new rows
+	 */
 	public void setRows(List<List<Object>> rows) {
 		this.rows = rows;
 	}

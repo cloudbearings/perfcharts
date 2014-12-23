@@ -2,30 +2,94 @@ package com.redhat.chartgeneration.config;
 
 import java.util.Set;
 
+import com.redhat.chartgeneration.calc.Chart2DCalculation;
 import com.redhat.chartgeneration.common.FieldSelector;
-import com.redhat.chartgeneration.graphcalc.GraphCalculation;
 
-public class GraphSeriesConfig {
+/**
+ * Represents the configuration for a chart series.
+ * 
+ * @author Rayson Zhu
+ *
+ */
+public class Chart2DSeriesConfig {
+	/**
+	 * the series label
+	 */
 	private String label;
-	private Comparable<?> startX;
-	private Comparable<?> endX;
+	/**
+	 * the {@link FieldSelector} for extracting row labels of raw data
+	 */
 	private FieldSelector labelField;
+	/**
+	 * the {@link FieldSelector} for extracting x-value of raw data
+	 */
 	private FieldSelector xField;
+	/**
+	 * the {@link FieldSelector} for extracting y-value of raw data
+	 */
 	private FieldSelector yField;
-	private GraphCalculation calculation;
+	/**
+	 * specify the calculation to be used for plotted chart
+	 */
+	private Chart2DCalculation calculation;
+	/**
+	 * involvedRowLabels contains labels of data rows that the series involves.
+	 */
 	private Set<String> involvedRowLabels;
-	private boolean showLines = true;
-	private boolean showBars = false;
+	/**
+	 * specify whether the line should be shown for this series
+	 */
+	private boolean showLine = true;
+	/**
+	 * specify whether the bar should be shown for this series
+	 */
+	private boolean showBar = false;
+	/**
+	 * The unit of y-value. It is mainly used to share axes for composite
+	 * charts.
+	 */
 	private String unit;
+	/**
+	 * Specify whether the unit should be shown for this series.
+	 */
 	private boolean showUnit;
 
-	public GraphSeriesConfig() {
+	/**
+	 * constructor
+	 */
+	public Chart2DSeriesConfig() {
 	}
 
-	public GraphSeriesConfig(String label, String unit, FieldSelector labelField,
-			FieldSelector xField, FieldSelector yField,
-			GraphCalculation calculation, Set<String> involvedRowLabels,
-			boolean showLines, boolean showBars, boolean showUnit) {
+	/**
+	 * constructor
+	 * 
+	 * @param label
+	 *            series label
+	 * @param unit
+	 *            unit of y-value
+	 * @param labelField
+	 *            the field of row label
+	 * @param xField
+	 *            the field of x-value
+	 * @param yField
+	 *            the field of y-value
+	 * @param calculation
+	 *            specify the calculation algorithm for plotting
+	 * @param involvedRowLabels
+	 *            specify the labels of which rows should be involved in this
+	 *            series
+	 * @param showLines
+	 *            show line?
+	 * @param showBars
+	 *            show bar?
+	 * @param showUnit
+	 *            show unit?
+	 */
+	public Chart2DSeriesConfig(String label, String unit,
+			FieldSelector labelField, FieldSelector xField,
+			FieldSelector yField, Chart2DCalculation calculation,
+			Set<String> involvedRowLabels, boolean showLines, boolean showBars,
+			boolean showUnit) {
 		this.label = label;
 		this.unit = unit;
 		this.labelField = labelField;
@@ -33,132 +97,202 @@ public class GraphSeriesConfig {
 		this.yField = yField;
 		this.calculation = calculation;
 		this.involvedRowLabels = involvedRowLabels;
-		this.showBars = showBars;
-		this.showLines = showLines;
+		this.showBar = showBars;
+		this.showLine = showLines;
 		this.showUnit = showUnit;
 	}
 
-	public GraphSeriesConfig(String label, Comparable<?> startX, Comparable<?> endX,
-			String unit, FieldSelector labelField, FieldSelector xField,
-			FieldSelector yField, GraphCalculation calculation,
-			Set<String> involvedRowLabels, boolean showLines, boolean showBars,
-			boolean showUnit) {
-		this(label, unit, labelField, xField, yField, calculation,
-				involvedRowLabels, showLines, showBars, showUnit);
-		this.startX = startX;
-		this.endX = endX;
-	}
-
+	/**
+	 * get the series label
+	 * 
+	 * @return the series label
+	 */
 	public String getLabel() {
 		return label;
 	}
 
+	/**
+	 * set the series label
+	 * 
+	 * @param label
+	 *            the series label
+	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
+	/**
+	 * get the field of x-value
+	 * 
+	 * @return the field of x-value
+	 */
 	public FieldSelector getXField() {
 		return xField;
 	}
 
+	/**
+	 * set the field of x-value
+	 * 
+	 * @param xField
+	 *            the field of x-value
+	 */
 	public void setXField(FieldSelector xField) {
 		this.xField = xField;
 	}
 
+	/**
+	 * get the field of y-value
+	 * 
+	 * @return the field of y-value
+	 */
 	public FieldSelector getYField() {
 		return yField;
 	}
 
+	/**
+	 * set the field of y-value
+	 * 
+	 * @param yField
+	 *            the field of y-value
+	 */
 	public void setYField(FieldSelector yField) {
 		this.yField = yField;
 	}
 
-	public GraphCalculation getCalculation() {
+	/**
+	 * get the calculation algorithm for plotting
+	 * 
+	 * @return the calculation algorithm
+	 */
+	public Chart2DCalculation getCalculation() {
 		return calculation;
 	}
 
-	public void setCalculation(GraphCalculation calculation) {
+	/**
+	 * set the calculation algorithm for plotting
+	 * 
+	 * @param calculation
+	 *            the calculation algorithm
+	 */
+	public void setCalculation(Chart2DCalculation calculation) {
 		this.calculation = calculation;
 	}
 
+	/**
+	 * get the label field
+	 * 
+	 * @return the label field
+	 */
 	public FieldSelector getLabelField() {
 		return labelField;
 	}
 
+	/**
+	 * set the label field
+	 * 
+	 * @param labelField
+	 *            the label field
+	 */
 	public void setLabelField(FieldSelector labelField) {
 		this.labelField = labelField;
 	}
 
+	/**
+	 * Get the set of involved row labels. The set contains the labels of which
+	 * rows should be involved in this series.
+	 * 
+	 * @return involved row labels
+	 */
 	public Set<String> getInvolvedRowLabels() {
 		return involvedRowLabels;
 	}
 
+	/**
+	 * Set the set of involved row labels. The set contains the labels of which
+	 * rows should be involved in this series.
+	 * 
+	 * @param involvedRowLabels
+	 *            involved row labels
+	 */
 	public void setInvolvedRowLabels(Set<String> involvedRowLabels) {
 		this.involvedRowLabels = involvedRowLabels;
 	}
 
-	public FieldSelector getxField() {
-		return xField;
+	/**
+	 * determine whether the line should be shown for this series
+	 * 
+	 * @return true if yes, otherwise false
+	 */
+	public boolean isShowLine() {
+		return showLine;
 	}
 
-	public void setxField(FieldSelector xField) {
-		this.xField = xField;
+	/**
+	 * specify whether the line should be shown for this series
+	 * 
+	 * @param showLine
+	 *            true if yes, otherwise false
+	 */
+	public void setShowLine(boolean showLine) {
+		this.showLine = showLine;
 	}
 
-	public FieldSelector getyField() {
-		return yField;
+	/**
+	 * determine whether the bar should be shown for this series
+	 * 
+	 * @return true if yes, otherwise false
+	 */
+	public boolean isShowBar() {
+		return showBar;
 	}
 
-	public void setyField(FieldSelector yField) {
-		this.yField = yField;
+	/**
+	 * specify whether the bar should be shown for this series
+	 * 
+	 * @param showBar
+	 *            true if yes, otherwise false
+	 */
+	public void setShowBar(boolean showBar) {
+		this.showBar = showBar;
 	}
 
-	public boolean isShowLines() {
-		return showLines;
-	}
-
-	public void setShowLines(boolean showLines) {
-		this.showLines = showLines;
-	}
-
-	public boolean isShowBars() {
-		return showBars;
-	}
-
-	public void setShowBars(boolean showBars) {
-		this.showBars = showBars;
-	}
-
+	/**
+	 * Get the unit of y-data. It is mainly used to share axes for composite
+	 * charts.
+	 * 
+	 * @return the unit
+	 */
 	public String getUnit() {
 		return unit;
 	}
 
+	/**
+	 * Set the unit of y-data. It is mainly used to share axes for composite
+	 * charts.
+	 * 
+	 * @param unit
+	 *            the unit
+	 */
 	public void setUnit(String unit) {
 		this.unit = unit;
 	}
 
+	/**
+	 * determine whether the unit of y-data should be shown for this series
+	 * 
+	 * @return true if yes, otherwise false
+	 */
 	public boolean isShowUnit() {
 		return showUnit;
 	}
 
+	/**
+	 * specify whether the unit of y-data should be shown for this series
+	 * 
+	 * @param showUnit
+	 *            true if yes, otherwise false
+	 */
 	public void setShowUnit(boolean showUnit) {
 		this.showUnit = showUnit;
 	}
-
-	public Comparable<?> getStartX() {
-		return startX;
-	}
-
-	public void setStartX(Comparable<?> startX) {
-		this.startX = startX;
-	}
-
-	public Comparable<?> getEndX() {
-		return endX;
-	}
-
-	public void setEndX(Comparable<?> endX) {
-		this.endX = endX;
-	}
-
 }

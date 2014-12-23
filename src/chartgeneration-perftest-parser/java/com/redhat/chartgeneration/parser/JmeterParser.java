@@ -7,6 +7,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+/**
+ * The parser converts Jmeter test logs to data tables (in CSV format). The raw
+ * data is can be XML or CSV format.
+ * 
+ * @author Rayson Zhu
+ *
+ */
 public class JmeterParser implements DataParser {
 
 	@Override

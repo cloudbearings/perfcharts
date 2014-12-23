@@ -17,6 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+/**
+ * The parser converts NMON monitoring logs to data tables (in CSV format).
+ * 
+ * @author Rayson Zhu
+ *
+ */
 public class NMONParser implements DataParser {
 	public void parse(InputStream in, OutputStream out) throws IOException,
 			ParseException {

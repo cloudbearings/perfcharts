@@ -1,4 +1,4 @@
-package com.redhat.chartgeneration.generator;
+package com.redhat.chartgeneration.perftest.generator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,25 +12,51 @@ import com.redhat.chartgeneration.common.AddTransformSelector;
 import com.redhat.chartgeneration.common.FieldSelector;
 import com.redhat.chartgeneration.common.IndexFieldSelector;
 import com.redhat.chartgeneration.common.Utilities;
-import com.redhat.chartgeneration.config.JmeterSummaryChartConfig;
-import com.redhat.chartgeneration.model.PerfLog;
-import com.redhat.chartgeneration.report.JmeterSummaryChart;
+import com.redhat.chartgeneration.generator.Generator;
+import com.redhat.chartgeneration.model.DataTable;
+import com.redhat.chartgeneration.perftest.chart.JmeterSummaryChart;
+import com.redhat.chartgeneration.perftest.config.JmeterSummaryChartConfig;
 
+/**
+ * A generator reads data tables and produces {@link JmeterSummaryChart}
+ * according to preset configurations.
+ * 
+ * @author Rayson Zhu
+ *
+ */
 public class JmeterSummaryChartGenerator implements Generator {
+	/**
+	 * The factory for creating related objects.
+	 */
 	private JmeterSummaryChartFactory factory;
+	/**
+	 * the chart configuration
+	 */
 	private JmeterSummaryChartConfig config;
 
-//	public JmeterSummaryChartGenerator() {
-//
-//	}
+	/**
+	 * constructor
+	 */
+	public JmeterSummaryChartGenerator() {
 
-	public JmeterSummaryChartGenerator(JmeterSummaryChartFactory factory, JmeterSummaryChartConfig config) {
+	}
+
+	/**
+	 * constructor
+	 * 
+	 * @param factory
+	 *            The factory for creating related objects
+	 * @param config
+	 *            the chart configuration
+	 */
+	public JmeterSummaryChartGenerator(JmeterSummaryChartFactory factory,
+			JmeterSummaryChartConfig config) {
 		this.config = config;
 		this.factory = factory;
 	}
 
 	@Override
-	public JmeterSummaryChart generate(PerfLog log) throws Exception {
+	public JmeterSummaryChart generate(DataTable log) throws Exception {
 		FieldSelector labelField = new IndexFieldSelector(0);
 		final FieldSelector timestampField = new IndexFieldSelector(1);
 		final FieldSelector rtField = new IndexFieldSelector(5);
@@ -38,9 +64,10 @@ public class JmeterSummaryChartGenerator implements Generator {
 				rtField);
 		final FieldSelector errorField = new IndexFieldSelector(3);
 		final FieldSelector bytesField = new IndexFieldSelector(6);
+		// map table row label to related data rows
 		final Map<String, List<List<Object>>> involvedRows = new HashMap<String, List<List<Object>>>();
 		Pattern txPattern = Pattern.compile("^TX-(.+)-[SF]$");
-
+		// filter involved rows
 		for (List<Object> row : log.getRows()) {
 			Matcher m = txPattern.matcher(labelField.select(row).toString());
 			if (m.matches()) {
@@ -52,7 +79,7 @@ public class JmeterSummaryChartGenerator implements Generator {
 				list.add(row);
 			}
 		}
-
+		// generate table column labels
 		List<String> columnLabels = new ArrayList<String>();
 		columnLabels.add("Transation");
 		columnLabels.add("#Samples");
@@ -67,6 +94,7 @@ public class JmeterSummaryChartGenerator implements Generator {
 		columnLabels.add("Avg. Bytes");
 		List<List<Object>> tableRows = new ArrayList<List<Object>>();
 
+		// variables for the TOTAL row
 		long minTimestampTotal = Long.MAX_VALUE;
 		long maxTimestampTotal = Long.MIN_VALUE;
 		long sumRTTotal = 0;
@@ -78,6 +106,7 @@ public class JmeterSummaryChartGenerator implements Generator {
 		long bytesSumTotal = 0;
 		List<Long> RTsTotal = new LinkedList<Long>();
 
+		// for each series (table row), do calculations
 		for (Map.Entry<String, List<List<Object>>> series : involvedRows
 				.entrySet()) {
 			List<List<Object>> rows = series.getValue();
@@ -129,6 +158,7 @@ public class JmeterSummaryChartGenerator implements Generator {
 			tableRow.add(maxRT);
 			tableRow.add(Utilities.fastSelect(RTs,
 					(int) Math.round((RTs.size() - 1) * 0.9)).doubleValue());
+			// std. dev. = sqrt(average of (x^2) - (average of x)^2)
 			tableRow.add(Math.sqrt(sumRTSquared / numRTsuccess - avgRT * avgRT));
 			tableRow.add(100.0 * numRTfailure / samples);
 			tableRow.add(formatThroughput(1.0 * samples / duration));
@@ -152,6 +182,7 @@ public class JmeterSummaryChartGenerator implements Generator {
 			bytesSumTotal += bytesSum;
 			RTsTotal.addAll(RTs);
 		}
+		// generate the TOTAL row
 		List<Object> totalRow = new ArrayList<Object>();
 		totalRow.add("TOTAL");
 		long samplesTotal = numRTsuccessTotal + numRTfailureTotal;
@@ -160,8 +191,9 @@ public class JmeterSummaryChartGenerator implements Generator {
 		totalRow.add(avgRTTotal);
 		totalRow.add(minRTTotal);
 		totalRow.add(maxRTTotal);
-		totalRow.add(Utilities.fastSelect(RTsTotal,
-				(int) Math.round((RTsTotal.size() - 1) * 0.9)).doubleValue());
+		totalRow.add(RTsTotal.isEmpty() ? Double.NaN : Utilities.fastSelect(
+				RTsTotal, (int) Math.round((RTsTotal.size() - 1) * 0.9))
+				.doubleValue());
 		totalRow.add(Math.sqrt(sumRTSquaredTotal / numRTsuccessTotal
 				- avgRTTotal * avgRTTotal));
 		totalRow.add(100.0 * numRTfailureTotal / samplesTotal);
@@ -170,13 +202,20 @@ public class JmeterSummaryChartGenerator implements Generator {
 		totalRow.add(bytesSumTotal / 1.024 / durationTotal);
 		totalRow.add(1.0 * bytesSumTotal / numRTsuccessTotal);
 		tableRows.add(totalRow);
-
+		// complete the chart
 		JmeterSummaryChart chart = new JmeterSummaryChart(config.getTitle(),
 				config.getSubtitle(), columnLabels, tableRows);
 		chart.setFormatter(factory.createFormatter());
 		return chart;
 	}
 
+	/**
+	 * format the throughput data
+	 * 
+	 * @param throughput
+	 *            throughput
+	 * @return a string
+	 */
 	private String formatThroughput(double throughput) {
 		if (throughput >= 1.0)
 			return String.format("%.2f/ms", throughput);
@@ -190,10 +229,21 @@ public class JmeterSummaryChartGenerator implements Generator {
 		return String.format("%.2f/h", throughput);
 	}
 
+	/**
+	 * Get the configuration of this chart.
+	 * 
+	 * @return the configuration
+	 */
 	public JmeterSummaryChartConfig getConfig() {
 		return config;
 	}
 
+	/**
+	 * Set the configuration of this chart.
+	 * 
+	 * @param config
+	 *            the configuration
+	 */
 	public void setConfig(JmeterSummaryChartConfig config) {
 		this.config = config;
 	}

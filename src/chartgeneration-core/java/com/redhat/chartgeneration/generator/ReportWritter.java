@@ -1,24 +1,34 @@
 package com.redhat.chartgeneration.generator;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import com.redhat.chartgeneration.report.Chart;
-import com.redhat.chartgeneration.report.Report;
+import com.redhat.chartgeneration.chart.Chart;
+import com.redhat.chartgeneration.chart.Report;
 
+/**
+ * Converts a report to JSON string
+ * 
+ * @author Rayson Zhu
+ *
+ */
 public class ReportWritter {
-
+	/**
+ * 
+ */
 	public ReportWritter() {
 	}
 
 	/**
-	 * !!! this code is only for test purpose
+	 * format a report to JSON string
 	 * 
 	 * @param report
+	 *            a report
+	 * @param out
+	 *            the {@link OutputStream} for writing
 	 * @throws Exception
 	 */
-	public void produce(Report report, OutputStream out) throws Exception {
+	public void write(Report report, OutputStream out) throws Exception {
 		StringBuilder sb = new StringBuilder("{");
 		int validChartCount = 0;
 		sb.append("\"charts\":[");
@@ -33,17 +43,10 @@ public class ReportWritter {
 		if (validChartCount > 0)
 			sb.deleteCharAt(sb.length() - 1);
 		sb.append("]}");
-		String s = sb.toString();
-		writeToStream(s, out);
+
+		OutputStreamWriter writer = new OutputStreamWriter(out);
+		writer.write(sb.toString());
+		writer.flush();
 	}
 
-	private void writeToStream(String s, OutputStream out) {
-		try {
-			OutputStreamWriter writer = new OutputStreamWriter(out);
-			writer.write(s);
-			writer.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 }

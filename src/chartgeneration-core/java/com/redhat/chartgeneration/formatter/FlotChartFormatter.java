@@ -1,28 +1,20 @@
 package com.redhat.chartgeneration.formatter;
 
-import com.redhat.chartgeneration.report.GraphSeries;
-import com.redhat.chartgeneration.report.GraphPoint;
-import com.redhat.chartgeneration.report.Graph;
+import com.redhat.chartgeneration.chart.Chart2D;
+import com.redhat.chartgeneration.chart.Chart2DSeries;
+import com.redhat.chartgeneration.chart.Point2D;
+import com.redhat.chartgeneration.common.Utilities;
 
-public class FlotChartFormatter implements GraphFormatter {
-	// public String format(StatReport report) {
-	// StringBuilder sb = new StringBuilder("{");
-	// // if (report.getTitle() != null)
-	// // sb.append("\"title\":\"")
-	// // .append(report.getTitle().replace("\"", "\\\""))
-	// // .append("\",");
-	// sb.append("\"charts\":[");
-	// List<LineGraph> charts = report.getGraphs();
-	// for (LineGraph graph : charts) {
-	// sb.append(format(graph)).append(",");
-	// }
-	// if (!charts.isEmpty())
-	// sb.deleteCharAt(sb.length() - 1);
-	// sb.append("]}");
-	// return sb.toString();
-	// }
-
-	public String format(Graph graph) throws Exception {
+/**
+ * Provides the support for formatting a {@link Chart2D} to JSON string that
+ * specially optimized for JQuery Flot plotting library.
+ * 
+ * @see {@linkplain http://www.flotcharts.org/}
+ * @author Rayson Zhu
+ *
+ */
+public class FlotChartFormatter implements Chart2DFormatter {
+	public String format(Chart2D graph) throws Exception {
 		StringBuilder sb = new StringBuilder("\n{\"title\":\"")
 				.append(graph.getTitle().replace("\"", "\\\""))
 				.append("\",\"xLabel\":\"")
@@ -36,7 +28,7 @@ public class FlotChartFormatter implements GraphFormatter {
 					graph.getSubtitle().replace("\"", "\\\""));
 		}
 		sb.append("\",\"series\":[");
-		for (GraphSeries line : graph.getLines()) {
+		for (Chart2DSeries line : graph.getLines()) {
 			sb.append("\n{\"label\":\"")
 					.append(line.getLabel().replace("\"", "\\\"")).append("\"");
 			if (line.getUnit() != null) {
@@ -50,11 +42,11 @@ public class FlotChartFormatter implements GraphFormatter {
 			if (line.isShowBars()) {
 				sb.append(",\"bars\":{\"show\":true,\"align\":\"center\",\"barWidth\":0.8}");
 			}
-			if (!line.isShowLines()) {
+			if (!line.isShowLine()) {
 				sb.append(",\"lines\":{\"show\":false}");
 			}
 			sb.append(",\"data\":[");
-			for (GraphPoint stop : line.getStops()) {
+			for (Point2D stop : line.getStops()) {
 				formatStop(sb, stop);
 				sb.append(",");
 			}
@@ -68,16 +60,10 @@ public class FlotChartFormatter implements GraphFormatter {
 		return sb.toString();
 	}
 
-	private static void formatStop(StringBuilder sb, GraphPoint stop) {
+	private static void formatStop(StringBuilder sb, Point2D stop) {
 		Object x = stop.getX();
-		sb.append("[");
-		if (Number.class.isAssignableFrom(x.getClass()))
-			sb.append(x);
-		else
-			sb.append("\"").append(x.toString().replace("\"", "\"\""))
-					.append("\"");
-		sb.append(",").append(stop.getY())/* .append(",").append(stop.getWeight()) */
-		.append("]");
+		sb.append("[").append(Utilities.commonConvertToJsonValue(x));
+		sb.append(",").append(stop.getY()).append("]");
 	}
 
 }

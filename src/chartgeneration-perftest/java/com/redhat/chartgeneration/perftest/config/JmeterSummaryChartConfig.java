@@ -1,9 +1,16 @@
-package com.redhat.chartgeneration.config;
+package com.redhat.chartgeneration.perftest.config;
 
-import com.redhat.chartgeneration.generator.JmeterSummaryChartFactory;
-import com.redhat.chartgeneration.generator.JmeterSummaryChartFactoryImpl;
-import com.redhat.chartgeneration.report.JmeterSummaryChart;
+import com.redhat.chartgeneration.config.BaseChartConfig;
+import com.redhat.chartgeneration.perftest.chart.JmeterSummaryChart;
+import com.redhat.chartgeneration.perftest.generator.JmeterSummaryChartFactory;
+import com.redhat.chartgeneration.perftest.generator.JmeterSummaryChartFactoryImpl;
 
+/**
+ * The configuration for Jmeter summary chart
+ * 
+ * @author Rayson Zhu
+ *
+ */
 public class JmeterSummaryChartConfig extends
 		BaseChartConfig<JmeterSummaryChart> {
 	@Override

@@ -1,80 +1,108 @@
-package com.redhat.chartgeneration.graphcalc;
+package com.redhat.chartgeneration.calc;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.redhat.chartgeneration.chart.Point2D;
 import com.redhat.chartgeneration.common.FieldSelector;
-import com.redhat.chartgeneration.report.GraphPoint;
 
-public class SumCalculation implements GraphCalculation {
+/**
+ * This calculation groups data rows by their x-fields, calculate the sum of
+ * their y-fields, and makes the sum as result y-values.
+ * 
+ * @author Rayson Zhu
+ *
+ */
+public class SumCalculation implements Chart2DCalculation {
+	/**
+	 * the interval for point merging
+	 */
 	private int interval = 0;
+	/**
+	 * the times to multiply on y-value of each point
+	 */
 	private int times = 1;
 
+	/**
+	 * constructor
+	 */
 	public SumCalculation() {
 
 	}
 
+	/**
+	 * constructor
+	 * 
+	 * @param interval
+	 *            the interval for point merging
+	 */
 	public SumCalculation(int interval) {
 		this.interval = interval;
 	}
 
+	/**
+	 * constructor
+	 * 
+	 * @param interval
+	 *            the interval for point merging
+	 * @param times
+	 *            the times to multiply on y-value of each point
+	 */
 	public SumCalculation(int interval, int times) {
 		this.interval = interval;
 		this.times = times;
 	}
 
-	public List<GraphPoint> produce(List<List<Object>> rows,
+	public List<Point2D> produce(List<List<Object>> rows,
 			FieldSelector xField, FieldSelector yField) {
-		List<GraphPoint> stops = new LinkedList<GraphPoint>();
-		Object lastX = 0;
+		List<Point2D> stops = new LinkedList<Point2D>();
+		if (rows.isEmpty())
+			return stops;
+		Number firstX = (Number) xField.select(rows.get(0));
+		Number lastX = 0;
 		double y = 0.0;
 		int count = 0;
-		//double lastY = 0.0;
-		for (Iterator<List<Object>> it = rows.iterator(); it.hasNext();) {
-			List<Object> row = it.next();
-			Object x = xField.select(row);
+		for (List<Object> row : rows) {
+			Number x = (Number) xField.select(row);
 			if (interval > 1) {
-				if (Long.class.isAssignableFrom(x.getClass())) {
-					Number num = (Number) x;
-					x = num.longValue() / interval * interval;
-				} else if (Double.class.isAssignableFrom(x.getClass())) {
-					Number num = (Number) x;
-					x = (long) (Math.floor(num.doubleValue() / interval) * interval);
-				} else {
-					// interval is omitted
-					System.err
-							.println("[Warning] SumCalculation.produce: interval is omitted");
-				}
+				x = firstX.longValue() + (x.longValue() - firstX.longValue())
+						/ interval * interval;
 			}
 			if (lastX.equals(x)) {
 				y += ((Number) yField.select(row)).doubleValue();
-//				if (y > 10000)
-//					stops.size();
 				++count;
 			} else {
 				if (count > 0)
-					stops.add(new GraphPoint(lastX, y * times, count));
-//				if (y > 10000)
-//					stops.size();
+					stops.add(new Point2D(lastX, y * times, count));
 				y = ((Number) yField.select(row)).doubleValue();
 				count = 1;
 			}
 			lastX = x;
-			//lastY = y;
 		}
 		if (count > 0)
-			stops.add(new GraphPoint(lastX, y * times, count));
+			stops.add(new Point2D(lastX, y * times, count));
 		return stops;
 	}
 
+	/**
+	 * Get the times to multiply on y-value of each point
+	 * 
+	 * @return the times
+	 */
 	public int getTimes() {
 		return times;
 	}
 
+	/**
+	 * Set the times to multiply on y-value of each point
+	 * 
+	 * @param times
+	 *            the times
+	 */
 	public void setTimes(int times) {
 		this.times = times;
 	}
+
 	public int getInterval() {
 		return interval;
 	}

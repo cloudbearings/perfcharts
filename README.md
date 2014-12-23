@@ -24,30 +24,13 @@ The tool contains three main components: Parser, Generator, and Driver Program.
 * _Generator_ generates charts from data tables according to configuration files that is defined by users and specifies which charts should be produced.
 * _Driver Program_ controls the overall progress of running.
 
-Build
------------
-1. This software uses [Apache Ant](http://ant.apache.org/) for compiling and packaging. Please install Apache Ant first.
-
-- for RHEL/CentOS/Fedora users
-		
-		sudo yum install ant
-
-- for Debian/Ubuntu users
-		
-		sudo aptitude install ant
-
-2. Enter src directory, and build.
-
-		cd src
-		ant
-
 Steps to Generate Perf-test Charts
 ----------------------------------
 ### Use cgt-perf ###
-We provide a shell script (cgt-perf.sh) to simplify the process for perf-test chart generation.
+We provide a shell script (cgt-perf) to simplify the process for perf-test chart generation.
 
 	Usage:
-		cgt-perf.sh [-d OUTPUT_DIR] [-o OUTPUT_FILE] [INPUT_DIR]
+		cgt-perf [-d OUTPUT_DIR] [-o OUTPUT_FILE] [-z TIME_ZONE] [-f FROM_TIME] [-t TO_TIME] [INPUT_DIR]
 
 #### Step 1 ####
 Create a new directory, and put all related perf-test logs into the directory. 
@@ -115,15 +98,50 @@ Here is the format of output JSON:
 
 The detailed guidelines for customize reports is out of the section, and will be discussed in a separated document.
 
+Build
+-----------
+1. This software uses [Apache Ant](http://ant.apache.org/) for compiling and packaging. Please install Apache Ant first.
+
+- for RHEL/CentOS/Fedora users
+		
+		sudo yum install ant
+
+- for Debian/Ubuntu users
+		
+		sudo aptitude install ant
+
+2. Enter src directory, and build.
+
+		cd src
+		ant
+
+
 Release Log
 -----------
+* v0.3.2
+- some bugfixes
+- reorganize some code
+- add comments
+
+* v0.3.1
+- new feature: support for specifying time duration
+- new feature: automatic interval choosing
+- new feature: Jmeter CSV log support
+- change: new rules for generating Jmeter charts
+- bugfix: the time zone issue
+- bugfix: incorrect calculation of summary chart when a transaction only has one sample
+
+* v0.3.0
+- new features: summary chart for Jmeter Test logs
+- bugfix: mismatching between CPU load logs and its parser
+
 * v0.2.0
-1. add support for subtitles
-2. add support for the number of cores in CPU load charts
-3. rewrite the driver program in Bash shell script
-4. new document
-5. some bugfixes
+- add support for subtitles
+- add support for the number of cores in CPU load charts
+- rewrite the driver program in Bash shell script
+- new document
+- some bugfixes
 
 * v0.1.0
-1. first release
+- first release
 
