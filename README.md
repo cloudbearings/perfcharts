@@ -118,7 +118,7 @@ Build
 
 Release Log
 -----------
-* v0.3.2
+* v0.3.3
 - support for customizing title and subtitle of composite chart
 - change the unit of response time to 'ms'
 - change the series name format in composite chart
