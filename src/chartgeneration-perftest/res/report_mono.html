@@ -25,7 +25,6 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 
 (function($){var options={crosshair:{mode:null,color:"rgba(170, 0, 0, 0.80)",lineWidth:1}};function init(plot){var crosshair={x:-1,y:-1,locked:false};plot.setCrosshair=function setCrosshair(pos){if(!pos)crosshair.x=-1;else{var o=plot.p2c(pos);crosshair.x=Math.max(0,Math.min(o.left,plot.width()));crosshair.y=Math.max(0,Math.min(o.top,plot.height()))}plot.triggerRedrawOverlay()};plot.clearCrosshair=plot.setCrosshair;plot.lockCrosshair=function lockCrosshair(pos){if(pos)plot.setCrosshair(pos);crosshair.locked=true};plot.unlockCrosshair=function unlockCrosshair(){crosshair.locked=false};function onMouseOut(e){if(crosshair.locked)return;if(crosshair.x!=-1){crosshair.x=-1;plot.triggerRedrawOverlay()}}function onMouseMove(e){if(crosshair.locked)return;if(plot.getSelection&&plot.getSelection()){crosshair.x=-1;return}var offset=plot.offset();crosshair.x=Math.max(0,Math.min(e.pageX-offset.left,plot.width()));crosshair.y=Math.max(0,Math.min(e.pageY-offset.top,plot.height()));plot.triggerRedrawOverlay()}plot.hooks.bindEvents.push(function(plot,eventHolder){if(!plot.getOptions().crosshair.mode)return;eventHolder.mouseout(onMouseOut);eventHolder.mousemove(onMouseMove)});plot.hooks.drawOverlay.push(function(plot,ctx){var c=plot.getOptions().crosshair;if(!c.mode)return;var plotOffset=plot.getPlotOffset();ctx.save();ctx.translate(plotOffset.left,plotOffset.top);if(crosshair.x!=-1){var adj=plot.getOptions().crosshair.lineWidth%2?.5:0;ctx.strokeStyle=c.color;ctx.lineWidth=c.lineWidth;ctx.lineJoin="round";ctx.beginPath();if(c.mode.indexOf("x")!=-1){var drawX=Math.floor(crosshair.x)+adj;ctx.moveTo(drawX,0);ctx.lineTo(drawX,plot.height())}if(c.mode.indexOf("y")!=-1){var drawY=Math.floor(crosshair.y)+adj;ctx.moveTo(0,drawY);ctx.lineTo(plot.width(),drawY)}ctx.stroke()}ctx.restore()});plot.hooks.shutdown.push(function(plot,eventHolder){eventHolder.unbind("mouseout",onMouseOut);eventHolder.unbind("mousemove",onMouseMove)})}$.plot.plugins.push({init:init,options:options,name:"crosshair",version:"1.0"})})(jQuery);
 </script>
-<!-- <script type="text/javascript" src="lib/flot/jquery.flot.resize.min.js"></script> -->
 <script type="text/javascript">
 	var ChartGeneration = function() {
 	};
@@ -87,6 +86,7 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 			drawReport($(".report"), report);
 			var $control_pad = $(".control_pad");
 			var $placeholder = $(".placeholder");
+			$(".chart").addClass("composite_chart");
 			setupControlPadForCompositeChart($placeholder, $control_pad);
 		}
 
@@ -111,8 +111,10 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 					yaxesMap[unit] = yaxes.length;
 				}
 				series.push({
-					label : tag.report.title + "<br/>" + tag.chart.title
-							+ "<br/>" + line.label,
+					// 					label : tag.report.title + "<br/>" + tag.chart.title
+					// 							+ "<br/>" + line.label,
+					label : tag.chart.subtitle ? tag.chart.subtitle + "-"
+							+ line.label : line.label,
 					data : line.data,
 					yaxis : yaxesMap[unit],
 					color : tag.index
@@ -143,9 +145,26 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 
 		function setupControlPadForCompositeChart($placeholder, $control_pad) {
 			var reports = ChartGeneration.data;
+			var $topDiv = $("<div/>").appendTo($control_pad);
 			$("<button>Clear Selection</button>").data("$placeholder",
 					$placeholder).click(on_clearSelection_click).appendTo(
-					$control_pad);
+					$topDiv);
+			$("<input type='text' placeholder='title'/>")
+					.change(
+							function() {
+								$(".composite_chart .chart_title")
+										.text(
+												this.value ? this.value
+														: ChartGeneration.compositeReport.title);
+							}).appendTo($topDiv);
+			$("<input type='text' placeholder='subtitle' />")
+					.change(
+							function() {
+								$(".composite_chart .chart_subtitle")
+										.text(
+												this.value ? this.value
+														: ChartGeneration.compositeReport.subtitle);
+							}).appendTo($topDiv);
 			var $rootList = $("<dl/>").appendTo($control_pad);
 			var indexOfSeries = 0;
 			for (var i = 0; i < reports.length; ++i) {
@@ -266,7 +285,7 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 				legend : {
 					position : "nw",
 					margin : [ 0, 0 ],
-					noColumns : 4,
+					noColumns : 5,
 					container : $legend
 				},
 				selection : {
@@ -358,11 +377,12 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 							function(event, pos, item) {
 								var plot = $placeholder.data("plot");
 								if (item) {
-									var x = item.series.xaxis.options.mode === "time" ? new Date(item.datapoint[0])
-											.toUTCString() : item.datapoint[0];
-									var y = item.datapoint[1]
-											.toFixed(2);
-									if (item.series._unit && item.series._unit.value)
+									var x = item.series.xaxis.options.mode === "time" ? new Date(
+											item.datapoint[0]).toUTCString()
+											: item.datapoint[0];
+									var y = item.datapoint[1].toFixed(2);
+									if (item.series._unit
+											&& item.series._unit.value)
 										y += " " + item.series._unit.value;
 									$("#tooltip").html(
 											"<b>" + item.series.label
@@ -515,6 +535,7 @@ html {
 	text-align: left;
 	max-width: 200px;
 }
+
 .JmeterSummaryChart_error {
 	color: red;
 }
@@ -522,7 +543,7 @@ html {
 </head>
 <body>
 	<header>
-		<h1>Empty Report</h1>
+		<h1>Loading...</h1>
 		<nav>
 			<ul id="report_nav">
 			</ul>
@@ -538,7 +559,8 @@ html {
 		<hr />
 	</section>
 	<footer>
-		<p>Powered by Chart Generation Tool from HSS</p>
+		<p>Powered by Chart Generation Tool</p>
 	</footer>
 </body>
 </html>
+

@@ -96,7 +96,7 @@ public abstract class BaseChart2DTemplate extends BaseChartTemplate {
 		return new Chart2DConfig(title == null ? defaultTitle : title,
 				subtitle == null ? defaultSubtitle : subtitle,
 				xLabel == null ? defaultXLabel : xLabel,
-				yLabel == null ? defaultYLabel : yLabel, rules, xaxisMode);
+				yLabel == null ? defaultYLabel : yLabel, rules, xaxisMode, 0);
 	}
 
 	public abstract Chart2DConfig generateChartConfig();

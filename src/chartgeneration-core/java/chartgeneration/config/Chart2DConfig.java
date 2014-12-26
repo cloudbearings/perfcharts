@@ -30,6 +30,11 @@ public class Chart2DConfig extends BaseChartConfig<Chart2D> {
 	 */
 	private AxisMode xaxisMode = AxisMode.NUMBER;
 
+	/**
+	 * the interval value. 0 means do not merge.
+	 */
+	private int interval = 0;
+
 	public Chart2DConfig() {
 
 	}
@@ -48,11 +53,12 @@ public class Chart2DConfig extends BaseChartConfig<Chart2D> {
 	 *            for generating elements of the chart
 	 */
 	public Chart2DConfig(String title, String subtitle, String xLabel,
-			String yLabel, List<Chart2DSeriesConfigRule> rules) {
+			String yLabel, List<Chart2DSeriesConfigRule> rules, int interval) {
 		super(title, subtitle);
 		this.xLabel = xLabel;
 		this.yLabel = yLabel;
 		this.rules = rules;
+		this.interval = interval;
 	}
 
 	/**
@@ -71,12 +77,14 @@ public class Chart2DConfig extends BaseChartConfig<Chart2D> {
 	 *            the x-axis mode
 	 */
 	public Chart2DConfig(String title, String subtitle, String xLabel,
-			String yLabel, List<Chart2DSeriesConfigRule> rules, AxisMode xaxisMode) {
+			String yLabel, List<Chart2DSeriesConfigRule> rules,
+			AxisMode xaxisMode, int interval) {
 		super(title, subtitle);
 		this.xLabel = xLabel;
 		this.yLabel = yLabel;
 		this.rules = rules;
 		this.xaxisMode = xaxisMode;
+		this.interval = interval;
 	}
 
 	/**
@@ -153,6 +161,25 @@ public class Chart2DConfig extends BaseChartConfig<Chart2D> {
 	 */
 	public void setXaxisMode(AxisMode xaxisMode) {
 		this.xaxisMode = xaxisMode;
+	}
+
+	/**
+	 * Get the interval value.
+	 * 
+	 * @return the interval value. 0 means do not merge.
+	 */
+	public int getInterval() {
+		return interval;
+	}
+
+	/**
+	 * Set the interval value.
+	 * 
+	 * @param interval
+	 *            the interval value. 0 means do not merge.
+	 */
+	public void setInterval(int interval) {
+		this.interval = interval;
 	}
 
 	@Override

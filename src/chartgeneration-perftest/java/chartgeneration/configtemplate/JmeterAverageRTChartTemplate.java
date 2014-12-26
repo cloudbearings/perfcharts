@@ -21,7 +21,7 @@ public class JmeterAverageRTChartTemplate extends BaseChart2DTemplateWithInterva
 		FieldSelector rtField = new IndexFieldSelector(5);
 		FieldSelector xField = new AddTransformSelector(timestampField, rtField);
 		rules = new ArrayList<Chart2DSeriesConfigRule>();
-		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-S$", "average", "RT",
+		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-S$", "average", "ms",
 				getLabelField(), xField, rtField, new AverageCalculation(
 						getInterval())));
 		return createConfig("Average Response Times over Time", "time",
