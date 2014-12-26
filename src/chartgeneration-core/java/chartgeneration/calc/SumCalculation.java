@@ -7,7 +7,7 @@ import chartgeneration.chart.Point2D;
 import chartgeneration.common.FieldSelector;
 
 /**
- * This calculation groups data rows by their x-fields, calculate the sum of
+ * This calculation groups data rows by their x-fields, calculates the sum of
  * their y-fields, and makes the sum as result y-values.
  * 
  * @author Rayson Zhu

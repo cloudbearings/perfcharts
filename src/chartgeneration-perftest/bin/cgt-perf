@@ -7,7 +7,7 @@ show_usage() {
 	echo "Usage: $base_name [OPTION...] [INPUT DIRECTORY]"
 	echo 'Examples:'
 	echo "	$base_name	# Generate a report from current directory"
-	echo "	$base_name -z GMT+8	# Generate a report from current directory with specifying the timezone to China Standard Time (GMT+8)"
+	echo "	$base_name -z GMT+8	# Generate a report from current directory with specifying the time zone China Standard Time (GMT+8)"
 	echo "	$base_name input/	# Generate a report from directory 'input/'"
 	echo "	$base_name -d output/ -o report.html input/	# Generate report 'report.html' from 'input/', and place generated files into 'output/'"
 	echo

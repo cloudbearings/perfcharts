@@ -10,7 +10,7 @@ import chartgeneration.chart.Point2D;
 import chartgeneration.common.FieldSelector;
 
 /**
- * This calculation groups data rows by their x-fields, sum up the the average
+ * This calculation groups data rows by their x-fields, sums up the the average
  * of y-fields having the same row label, and makes the result as y-values.
  * 
  * @author Rayson Zhu
