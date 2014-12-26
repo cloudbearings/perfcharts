@@ -33,7 +33,7 @@ public class Chart2DGenerator implements Generator {
 	/**
 	 * the default points per chart for automatic interval selection
 	 */
-	private final static int DEFAULT_POINTS = 150;
+	private final static int DEFAULT_POINTS = 300;
 	/**
 	 * The factory for creating related objects.
 	 */
@@ -101,7 +101,7 @@ public class Chart2DGenerator implements Generator {
 			});
 			Chart2DCalculation calc = seriesConfig.getCalculation();
 			
-			int interval = calc.getInterval();
+			int interval = chart2dConfig.getInterval();
 			// If user didn't specify the interval, produce one.
 			if (interval == 0) {
 				FieldSelector xField = seriesConfig.getXField();

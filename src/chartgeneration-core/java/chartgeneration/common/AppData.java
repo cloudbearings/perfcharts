@@ -62,7 +62,7 @@ public class AppData {
 		if (cgt_log == null)
 			cgt_log = cgt_home + File.separator + "log";
 		// create a logger for this application
-		logger = Logger.getLogger("com.redhat.chartgeneration.generator");
+		logger = Logger.getLogger("Generator");
 		// read the specified log level from system property "logLevel"
 		String logLevel = System.getProperty("logLevel");
 		if (logLevel != null && !logLevel.isEmpty()) {

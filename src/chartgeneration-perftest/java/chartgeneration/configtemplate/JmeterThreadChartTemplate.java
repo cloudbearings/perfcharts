@@ -21,7 +21,7 @@ public class JmeterThreadChartTemplate extends BaseChart2DTemplateWithInterval {
 				getLabelField(), timestampField, threadsField, new AverageCalculation(
 						getInterval())));
 		return createConfig("Concurrent Virtual Users",
-				"time", "virtual users (threads)", rules, AxisMode.TIME);
+				"time", "virtual users", rules, AxisMode.TIME);
 
 	}
 }

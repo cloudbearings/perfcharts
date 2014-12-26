@@ -74,6 +74,7 @@
 			drawReport($(".report"), report);
 			var $control_pad = $(".control_pad");
 			var $placeholder = $(".placeholder");
+			$(".chart").addClass("composite_chart");
 			setupControlPadForCompositeChart($placeholder, $control_pad);
 		}
 
@@ -98,8 +99,10 @@
 					yaxesMap[unit] = yaxes.length;
 				}
 				series.push({
-					label : tag.report.title + "<br/>" + tag.chart.title
-							+ "<br/>" + line.label,
+					// 					label : tag.report.title + "<br/>" + tag.chart.title
+					// 							+ "<br/>" + line.label,
+					label : tag.chart.subtitle ? tag.chart.subtitle + "-"
+							+ line.label : line.label,
 					data : line.data,
 					yaxis : yaxesMap[unit],
 					color : tag.index
@@ -130,9 +133,26 @@
 
 		function setupControlPadForCompositeChart($placeholder, $control_pad) {
 			var reports = ChartGeneration.data;
+			var $topDiv = $("<div/>").appendTo($control_pad);
 			$("<button>Clear Selection</button>").data("$placeholder",
 					$placeholder).click(on_clearSelection_click).appendTo(
-					$control_pad);
+					$topDiv);
+			$("<input type='text' placeholder='title'/>")
+					.change(
+							function() {
+								$(".composite_chart .chart_title")
+										.text(
+												this.value ? this.value
+														: ChartGeneration.compositeReport.title);
+							}).appendTo($topDiv);
+			$("<input type='text' placeholder='subtitle' />")
+					.change(
+							function() {
+								$(".composite_chart .chart_subtitle")
+										.text(
+												this.value ? this.value
+														: ChartGeneration.compositeReport.subtitle);
+							}).appendTo($topDiv);
 			var $rootList = $("<dl/>").appendTo($control_pad);
 			var indexOfSeries = 0;
 			for (var i = 0; i < reports.length; ++i) {
@@ -253,7 +273,7 @@
 				legend : {
 					position : "nw",
 					margin : [ 0, 0 ],
-					noColumns : 4,
+					noColumns : 5,
 					container : $legend
 				},
 				selection : {
@@ -345,11 +365,12 @@
 							function(event, pos, item) {
 								var plot = $placeholder.data("plot");
 								if (item) {
-									var x = item.series.xaxis.options.mode === "time" ? new Date(item.datapoint[0])
-											.toUTCString() : item.datapoint[0];
-									var y = item.datapoint[1]
-											.toFixed(2);
-									if (item.series._unit && item.series._unit.value)
+									var x = item.series.xaxis.options.mode === "time" ? new Date(
+											item.datapoint[0]).toUTCString()
+											: item.datapoint[0];
+									var y = item.datapoint[1].toFixed(2);
+									if (item.series._unit
+											&& item.series._unit.value)
 										y += " " + item.series._unit.value;
 									$("#tooltip").html(
 											"<b>" + item.series.label
@@ -502,6 +523,7 @@ html {
 	text-align: left;
 	max-width: 200px;
 }
+
 .JmeterSummaryChart_error {
 	color: red;
 }
@@ -509,7 +531,7 @@ html {
 </head>
 <body>
 	<header>
-		<h1>Empty Report</h1>
+		<h1>Loading...</h1>
 		<nav>
 			<ul id="report_nav">
 			</ul>
@@ -525,7 +547,7 @@ html {
 		<hr />
 	</section>
 	<footer>
-		<p>Powered by Chart Generation Tool from HSS</p>
+		<p>Powered by Chart Generation Tool</p>
 	</footer>
 </body>
 </html>
