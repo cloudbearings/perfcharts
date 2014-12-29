@@ -23,23 +23,23 @@ public class NMONCPUUtilizationChartTemplate extends
 		FieldSelector totalField = new IndexFieldSelector(5);
 		FieldSelector cpusField = new IndexFieldSelector(6);
 		List<Chart2DSeriesConfigRule> rules = new ArrayList<Chart2DSeriesConfigRule>();
-		rules.add(new Chart2DSeriesConfigRule("^CPU$", "User%", "%", getLabelField(),
-				timestampField, userField,
+		rules.add(new Chart2DSeriesConfigRule("^CPU$", "User%", "%",
+				getLabelField(), timestampField, userField,
 				new AverageCalculation(getInterval())));
-		rules.add(new Chart2DSeriesConfigRule("^CPU$", "System%", "%", getLabelField(),
-				timestampField, systemField, new AverageCalculation(
-						getInterval())));
-		rules.add(new Chart2DSeriesConfigRule("^CPU$", "Wait%", "%", getLabelField(),
-				timestampField, waitField,
+		rules.add(new Chart2DSeriesConfigRule("^CPU$", "System%", "%",
+				getLabelField(), timestampField, systemField,
 				new AverageCalculation(getInterval())));
-		rules.add(new Chart2DSeriesConfigRule("^CPU$", "Used%", "%", getLabelField(),
-				timestampField, totalField, new AverageCalculation(
-						getInterval())));
-		rules.add(new Chart2DSeriesConfigRule("^CPU$", "CPUs", "", getLabelField(),
-				timestampField, cpusField,
+		rules.add(new Chart2DSeriesConfigRule("^CPU$", "Wait%", "%",
+				getLabelField(), timestampField, waitField,
 				new AverageCalculation(getInterval())));
-		return createConfig("CPU Utilization over Time", "time", "%", rules,
-				AxisMode.TIME);
+		rules.add(new Chart2DSeriesConfigRule("^CPU$", "Used%", "%",
+				getLabelField(), timestampField, totalField,
+				new AverageCalculation(getInterval())));
+		rules.add(new Chart2DSeriesConfigRule("^CPU$", "CPUs", "cores",
+				getLabelField(), timestampField, cpusField,
+				new AverageCalculation(getInterval())));
+		return createConfig("CPU Utilization over Time", "Time",
+				"CPU Utilization", rules, AxisMode.TIME);
 	}
 
 }

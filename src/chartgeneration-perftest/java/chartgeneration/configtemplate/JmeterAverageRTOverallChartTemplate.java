@@ -22,7 +22,7 @@ public class JmeterAverageRTOverallChartTemplate extends BaseChart2DTemplate {
 		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-S$", "$1", "ms",
 				getLabelField(), new ConstantSelector(1), rtField,
 				new AverageCalculation(), false, true, false));
-		return createConfig("Transactions Average Response Times Overall", "", "response time / ms",
+		return createConfig("Transactions Average Response Time Overall", "", "Response Time",
 				rules, AxisMode.CATEGORIES);
 	}
 

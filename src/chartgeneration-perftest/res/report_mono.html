@@ -24,6 +24,473 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 (function($){function init(plot){var selection={first:{x:-1,y:-1},second:{x:-1,y:-1},show:false,active:false};var savedhandlers={};var mouseUpHandler=null;function onMouseMove(e){if(selection.active){updateSelection(e);plot.getPlaceholder().trigger("plotselecting",[getSelection()])}}function onMouseDown(e){if(e.which!=1)return;document.body.focus();if(document.onselectstart!==undefined&&savedhandlers.onselectstart==null){savedhandlers.onselectstart=document.onselectstart;document.onselectstart=function(){return false}}if(document.ondrag!==undefined&&savedhandlers.ondrag==null){savedhandlers.ondrag=document.ondrag;document.ondrag=function(){return false}}setSelectionPos(selection.first,e);selection.active=true;mouseUpHandler=function(e){onMouseUp(e)};$(document).one("mouseup",mouseUpHandler)}function onMouseUp(e){mouseUpHandler=null;if(document.onselectstart!==undefined)document.onselectstart=savedhandlers.onselectstart;if(document.ondrag!==undefined)document.ondrag=savedhandlers.ondrag;selection.active=false;updateSelection(e);if(selectionIsSane())triggerSelectedEvent();else{plot.getPlaceholder().trigger("plotunselected",[]);plot.getPlaceholder().trigger("plotselecting",[null])}return false}function getSelection(){if(!selectionIsSane())return null;if(!selection.show)return null;var r={},c1=selection.first,c2=selection.second;$.each(plot.getAxes(),function(name,axis){if(axis.used){var p1=axis.c2p(c1[axis.direction]),p2=axis.c2p(c2[axis.direction]);r[name]={from:Math.min(p1,p2),to:Math.max(p1,p2)}}});return r}function triggerSelectedEvent(){var r=getSelection();plot.getPlaceholder().trigger("plotselected",[r]);if(r.xaxis&&r.yaxis)plot.getPlaceholder().trigger("selected",[{x1:r.xaxis.from,y1:r.yaxis.from,x2:r.xaxis.to,y2:r.yaxis.to}])}function clamp(min,value,max){return value<min?min:value>max?max:value}function setSelectionPos(pos,e){var o=plot.getOptions();var offset=plot.getPlaceholder().offset();var plotOffset=plot.getPlotOffset();pos.x=clamp(0,e.pageX-offset.left-plotOffset.left,plot.width());pos.y=clamp(0,e.pageY-offset.top-plotOffset.top,plot.height());if(o.selection.mode=="y")pos.x=pos==selection.first?0:plot.width();if(o.selection.mode=="x")pos.y=pos==selection.first?0:plot.height()}function updateSelection(pos){if(pos.pageX==null)return;setSelectionPos(selection.second,pos);if(selectionIsSane()){selection.show=true;plot.triggerRedrawOverlay()}else clearSelection(true)}function clearSelection(preventEvent){if(selection.show){selection.show=false;plot.triggerRedrawOverlay();if(!preventEvent)plot.getPlaceholder().trigger("plotunselected",[])}}function extractRange(ranges,coord){var axis,from,to,key,axes=plot.getAxes();for(var k in axes){axis=axes[k];if(axis.direction==coord){key=coord+axis.n+"axis";if(!ranges[key]&&axis.n==1)key=coord+"axis";if(ranges[key]){from=ranges[key].from;to=ranges[key].to;break}}}if(!ranges[key]){axis=coord=="x"?plot.getXAxes()[0]:plot.getYAxes()[0];from=ranges[coord+"1"];to=ranges[coord+"2"]}if(from!=null&&to!=null&&from>to){var tmp=from;from=to;to=tmp}return{from:from,to:to,axis:axis}}function setSelection(ranges,preventEvent){var axis,range,o=plot.getOptions();if(o.selection.mode=="y"){selection.first.x=0;selection.second.x=plot.width()}else{range=extractRange(ranges,"x");selection.first.x=range.axis.p2c(range.from);selection.second.x=range.axis.p2c(range.to)}if(o.selection.mode=="x"){selection.first.y=0;selection.second.y=plot.height()}else{range=extractRange(ranges,"y");selection.first.y=range.axis.p2c(range.from);selection.second.y=range.axis.p2c(range.to)}selection.show=true;plot.triggerRedrawOverlay();if(!preventEvent&&selectionIsSane())triggerSelectedEvent()}function selectionIsSane(){var minSize=plot.getOptions().selection.minSize;return Math.abs(selection.second.x-selection.first.x)>=minSize&&Math.abs(selection.second.y-selection.first.y)>=minSize}plot.clearSelection=clearSelection;plot.setSelection=setSelection;plot.getSelection=getSelection;plot.hooks.bindEvents.push(function(plot,eventHolder){var o=plot.getOptions();if(o.selection.mode!=null){eventHolder.mousemove(onMouseMove);eventHolder.mousedown(onMouseDown)}});plot.hooks.drawOverlay.push(function(plot,ctx){if(selection.show&&selectionIsSane()){var plotOffset=plot.getPlotOffset();var o=plot.getOptions();ctx.save();ctx.translate(plotOffset.left,plotOffset.top);var c=$.color.parse(o.selection.color);ctx.strokeStyle=c.scale("a",.8).toString();ctx.lineWidth=1;ctx.lineJoin=o.selection.shape;ctx.fillStyle=c.scale("a",.4).toString();var x=Math.min(selection.first.x,selection.second.x)+.5,y=Math.min(selection.first.y,selection.second.y)+.5,w=Math.abs(selection.second.x-selection.first.x)-1,h=Math.abs(selection.second.y-selection.first.y)-1;ctx.fillRect(x,y,w,h);ctx.strokeRect(x,y,w,h);ctx.restore()}});plot.hooks.shutdown.push(function(plot,eventHolder){eventHolder.unbind("mousemove",onMouseMove);eventHolder.unbind("mousedown",onMouseDown);if(mouseUpHandler)$(document).unbind("mouseup",mouseUpHandler)})}$.plot.plugins.push({init:init,options:{selection:{mode:null,color:"#e8cfac",shape:"round",minSize:5}},name:"selection",version:"1.1"})})(jQuery);
 
 (function($){var options={crosshair:{mode:null,color:"rgba(170, 0, 0, 0.80)",lineWidth:1}};function init(plot){var crosshair={x:-1,y:-1,locked:false};plot.setCrosshair=function setCrosshair(pos){if(!pos)crosshair.x=-1;else{var o=plot.p2c(pos);crosshair.x=Math.max(0,Math.min(o.left,plot.width()));crosshair.y=Math.max(0,Math.min(o.top,plot.height()))}plot.triggerRedrawOverlay()};plot.clearCrosshair=plot.setCrosshair;plot.lockCrosshair=function lockCrosshair(pos){if(pos)plot.setCrosshair(pos);crosshair.locked=true};plot.unlockCrosshair=function unlockCrosshair(){crosshair.locked=false};function onMouseOut(e){if(crosshair.locked)return;if(crosshair.x!=-1){crosshair.x=-1;plot.triggerRedrawOverlay()}}function onMouseMove(e){if(crosshair.locked)return;if(plot.getSelection&&plot.getSelection()){crosshair.x=-1;return}var offset=plot.offset();crosshair.x=Math.max(0,Math.min(e.pageX-offset.left,plot.width()));crosshair.y=Math.max(0,Math.min(e.pageY-offset.top,plot.height()));plot.triggerRedrawOverlay()}plot.hooks.bindEvents.push(function(plot,eventHolder){if(!plot.getOptions().crosshair.mode)return;eventHolder.mouseout(onMouseOut);eventHolder.mousemove(onMouseMove)});plot.hooks.drawOverlay.push(function(plot,ctx){var c=plot.getOptions().crosshair;if(!c.mode)return;var plotOffset=plot.getPlotOffset();ctx.save();ctx.translate(plotOffset.left,plotOffset.top);if(crosshair.x!=-1){var adj=plot.getOptions().crosshair.lineWidth%2?.5:0;ctx.strokeStyle=c.color;ctx.lineWidth=c.lineWidth;ctx.lineJoin="round";ctx.beginPath();if(c.mode.indexOf("x")!=-1){var drawX=Math.floor(crosshair.x)+adj;ctx.moveTo(drawX,0);ctx.lineTo(drawX,plot.height())}if(c.mode.indexOf("y")!=-1){var drawY=Math.floor(crosshair.y)+adj;ctx.moveTo(0,drawY);ctx.lineTo(plot.width(),drawY)}ctx.stroke()}ctx.restore()});plot.hooks.shutdown.push(function(plot,eventHolder){eventHolder.unbind("mouseout",onMouseOut);eventHolder.unbind("mousemove",onMouseMove)})}$.plot.plugins.push({init:init,options:options,name:"crosshair",version:"1.0"})})(jQuery);
+
+/*
+Axis Labels Plugin for flot.
+http://github.com/markrcote/flot-axislabels
+
+Original code is Copyright (c) 2010 Xuan Luo.
+Original code was released under the GPLv3 license by Xuan Luo, September 2010.
+Original code was rereleased under the MIT license by Xuan Luo, April 2012.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+(function ($) {
+    var options = {
+      axisLabels: {
+        show: true
+      }
+    };
+
+    function canvasSupported() {
+        return !!document.createElement('canvas').getContext;
+    }
+
+    function canvasTextSupported() {
+        if (!canvasSupported()) {
+            return false;
+        }
+        var dummy_canvas = document.createElement('canvas');
+        var context = dummy_canvas.getContext('2d');
+        return typeof context.fillText == 'function';
+    }
+
+    function css3TransitionSupported() {
+        var div = document.createElement('div');
+        return typeof div.style.MozTransition != 'undefined'    // Gecko
+            || typeof div.style.OTransition != 'undefined'      // Opera
+            || typeof div.style.webkitTransition != 'undefined' // WebKit
+            || typeof div.style.transition != 'undefined';
+    }
+
+
+    function AxisLabel(axisName, position, padding, plot, opts) {
+        this.axisName = axisName;
+        this.position = position;
+        this.padding = padding;
+        this.plot = plot;
+        this.opts = opts;
+        this.width = 0;
+        this.height = 0;
+    }
+
+    AxisLabel.prototype.cleanup = function() {
+    };
+
+
+    CanvasAxisLabel.prototype = new AxisLabel();
+    CanvasAxisLabel.prototype.constructor = CanvasAxisLabel;
+    function CanvasAxisLabel(axisName, position, padding, plot, opts) {
+        AxisLabel.prototype.constructor.call(this, axisName, position, padding,
+                                             plot, opts);
+    }
+
+    CanvasAxisLabel.prototype.calculateSize = function() {
+        if (!this.opts.axisLabelFontSizePixels)
+            this.opts.axisLabelFontSizePixels = 14;
+        if (!this.opts.axisLabelFontFamily)
+            this.opts.axisLabelFontFamily = 'sans-serif';
+
+        var textWidth = this.opts.axisLabelFontSizePixels + this.padding;
+        var textHeight = this.opts.axisLabelFontSizePixels + this.padding;
+        if (this.position == 'left' || this.position == 'right') {
+            this.width = this.opts.axisLabelFontSizePixels + this.padding;
+            this.height = 0;
+        } else {
+            this.width = 0;
+            this.height = this.opts.axisLabelFontSizePixels + this.padding;
+        }
+    };
+
+    CanvasAxisLabel.prototype.draw = function(box) {
+        if (!this.opts.axisLabelColour)
+            this.opts.axisLabelColour = 'black';
+        var ctx = this.plot.getCanvas().getContext('2d');
+        ctx.save();
+        ctx.font = this.opts.axisLabelFontSizePixels + 'px ' +
+            this.opts.axisLabelFontFamily;
+        ctx.fillStyle = this.opts.axisLabelColour;
+        var width = ctx.measureText(this.opts.axisLabel).width;
+        var height = this.opts.axisLabelFontSizePixels;
+        var x, y, angle = 0;
+        if (this.position == 'top') {
+            x = box.left + box.width/2 - width/2;
+            y = box.top + height*0.72;
+        } else if (this.position == 'bottom') {
+            x = box.left + box.width/2 - width/2;
+            y = box.top + box.height - height*0.72;
+        } else if (this.position == 'left') {
+            x = box.left + height*0.72;
+            y = box.height/2 + box.top + width/2;
+            angle = -Math.PI/2;
+        } else if (this.position == 'right') {
+            x = box.left + box.width - height*0.72;
+            y = box.height/2 + box.top - width/2;
+            angle = Math.PI/2;
+        }
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.fillText(this.opts.axisLabel, 0, 0);
+        ctx.restore();
+    };
+
+
+    HtmlAxisLabel.prototype = new AxisLabel();
+    HtmlAxisLabel.prototype.constructor = HtmlAxisLabel;
+    function HtmlAxisLabel(axisName, position, padding, plot, opts) {
+        AxisLabel.prototype.constructor.call(this, axisName, position,
+                                             padding, plot, opts);
+        this.elem = null;
+    }
+
+    HtmlAxisLabel.prototype.calculateSize = function() {
+        var elem = $('<div class="axisLabels" style="position:absolute;">' +
+                     this.opts.axisLabel + '</div>');
+        this.plot.getPlaceholder().append(elem);
+        // store height and width of label itself, for use in draw()
+        this.labelWidth = elem.outerWidth(true);
+        this.labelHeight = elem.outerHeight(true);
+        elem.remove();
+
+        this.width = this.height = 0;
+        if (this.position == 'left' || this.position == 'right') {
+            this.width = this.labelWidth + this.padding;
+        } else {
+            this.height = this.labelHeight + this.padding;
+        }
+    };
+
+    HtmlAxisLabel.prototype.cleanup = function() {
+        if (this.elem) {
+            this.elem.remove();
+        }
+    };
+
+    HtmlAxisLabel.prototype.draw = function(box) {
+        this.plot.getPlaceholder().find('#' + this.axisName + 'Label').remove();
+        this.elem = $('<div id="' + this.axisName +
+                      'Label" " class="axisLabels" style="position:absolute;">'
+                      + this.opts.axisLabel + '</div>');
+        this.plot.getPlaceholder().append(this.elem);
+        if (this.position == 'top') {
+            this.elem.css('left', box.left + box.width/2 - this.labelWidth/2 +
+                          'px');
+            this.elem.css('top', box.top + 'px');
+        } else if (this.position == 'bottom') {
+            this.elem.css('left', box.left + box.width/2 - this.labelWidth/2 +
+                          'px');
+            this.elem.css('top', box.top + box.height - this.labelHeight +
+                          'px');
+        } else if (this.position == 'left') {
+            this.elem.css('top', box.top + box.height/2 - this.labelHeight/2 +
+                          'px');
+            this.elem.css('left', box.left + 'px');
+        } else if (this.position == 'right') {
+            this.elem.css('top', box.top + box.height/2 - this.labelHeight/2 +
+                          'px');
+            this.elem.css('left', box.left + box.width - this.labelWidth +
+                          'px');
+        }
+    };
+
+
+    CssTransformAxisLabel.prototype = new HtmlAxisLabel();
+    CssTransformAxisLabel.prototype.constructor = CssTransformAxisLabel;
+    function CssTransformAxisLabel(axisName, position, padding, plot, opts) {
+        HtmlAxisLabel.prototype.constructor.call(this, axisName, position,
+                                                 padding, plot, opts);
+    }
+
+    CssTransformAxisLabel.prototype.calculateSize = function() {
+        HtmlAxisLabel.prototype.calculateSize.call(this);
+        this.width = this.height = 0;
+        if (this.position == 'left' || this.position == 'right') {
+            this.width = this.labelHeight + this.padding;
+        } else {
+            this.height = this.labelHeight + this.padding;
+        }
+    };
+
+    CssTransformAxisLabel.prototype.transforms = function(degrees, x, y) {
+        var stransforms = {
+            '-moz-transform': '',
+            '-webkit-transform': '',
+            '-o-transform': '',
+            '-ms-transform': ''
+        };
+        if (x != 0 || y != 0) {
+            var stdTranslate = ' translate(' + x + 'px, ' + y + 'px)';
+            stransforms['-moz-transform'] += stdTranslate;
+            stransforms['-webkit-transform'] += stdTranslate;
+            stransforms['-o-transform'] += stdTranslate;
+            stransforms['-ms-transform'] += stdTranslate;
+        }
+        if (degrees != 0) {
+            var rotation = degrees / 90;
+            var stdRotate = ' rotate(' + degrees + 'deg)';
+            stransforms['-moz-transform'] += stdRotate;
+            stransforms['-webkit-transform'] += stdRotate;
+            stransforms['-o-transform'] += stdRotate;
+            stransforms['-ms-transform'] += stdRotate;
+        }
+        var s = 'top: 0; left: 0; ';
+        for (var prop in stransforms) {
+            if (stransforms[prop]) {
+                s += prop + ':' + stransforms[prop] + ';';
+            }
+        }
+        s += ';';
+        return s;
+    };
+
+    CssTransformAxisLabel.prototype.calculateOffsets = function(box) {
+        var offsets = { x: 0, y: 0, degrees: 0 };
+        if (this.position == 'bottom') {
+            offsets.x = box.left + box.width/2 - this.labelWidth/2;
+            offsets.y = box.top + box.height - this.labelHeight;
+        } else if (this.position == 'top') {
+            offsets.x = box.left + box.width/2 - this.labelWidth/2;
+            offsets.y = box.top;
+        } else if (this.position == 'left') {
+            offsets.degrees = -90;
+            offsets.x = box.left - this.labelWidth/2 + this.labelHeight/2;
+            offsets.y = box.height/2 + box.top;
+        } else if (this.position == 'right') {
+            offsets.degrees = 90;
+            offsets.x = box.left + box.width - this.labelWidth/2
+                        - this.labelHeight/2;
+            offsets.y = box.height/2 + box.top;
+        }
+        offsets.x = Math.round(offsets.x);
+        offsets.y = Math.round(offsets.y);
+
+        return offsets;
+    };
+
+    CssTransformAxisLabel.prototype.draw = function(box) {
+        this.plot.getPlaceholder().find("." + this.axisName + "Label").remove();
+        var offsets = this.calculateOffsets(box);
+        this.elem = $('<div class="axisLabels ' + this.axisName +
+                      'Label" style="position:absolute; ' +
+                      this.transforms(offsets.degrees, offsets.x, offsets.y) +
+                      '">' + this.opts.axisLabel + '</div>');
+        this.plot.getPlaceholder().append(this.elem);
+    };
+
+
+    IeTransformAxisLabel.prototype = new CssTransformAxisLabel();
+    IeTransformAxisLabel.prototype.constructor = IeTransformAxisLabel;
+    function IeTransformAxisLabel(axisName, position, padding, plot, opts) {
+        CssTransformAxisLabel.prototype.constructor.call(this, axisName,
+                                                         position, padding,
+                                                         plot, opts);
+        this.requiresResize = false;
+    }
+
+    IeTransformAxisLabel.prototype.transforms = function(degrees, x, y) {
+        // I didn't feel like learning the crazy Matrix stuff, so this uses
+        // a combination of the rotation transform and CSS positioning.
+        var s = '';
+        if (degrees != 0) {
+            var rotation = degrees/90;
+            while (rotation < 0) {
+                rotation += 4;
+            }
+            s += ' filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=' + rotation + '); ';
+            // see below
+            this.requiresResize = (this.position == 'right');
+        }
+        if (x != 0) {
+            s += 'left: ' + x + 'px; ';
+        }
+        if (y != 0) {
+            s += 'top: ' + y + 'px; ';
+        }
+        return s;
+    };
+
+    IeTransformAxisLabel.prototype.calculateOffsets = function(box) {
+        var offsets = CssTransformAxisLabel.prototype.calculateOffsets.call(
+                          this, box);
+        // adjust some values to take into account differences between
+        // CSS and IE rotations.
+        if (this.position == 'top') {
+            // FIXME: not sure why, but placing this exactly at the top causes
+            // the top axis label to flip to the bottom...
+            offsets.y = box.top + 1;
+        } else if (this.position == 'left') {
+            offsets.x = box.left;
+            offsets.y = box.height/2 + box.top - this.labelWidth/2;
+        } else if (this.position == 'right') {
+            offsets.x = box.left + box.width - this.labelHeight;
+            offsets.y = box.height/2 + box.top - this.labelWidth/2;
+        }
+        return offsets;
+    };
+
+    IeTransformAxisLabel.prototype.draw = function(box) {
+        CssTransformAxisLabel.prototype.draw.call(this, box);
+        if (this.requiresResize) {
+            this.elem = this.plot.getPlaceholder().find("." + this.axisName +
+                                                        "Label");
+            // Since we used CSS positioning instead of transforms for
+            // translating the element, and since the positioning is done
+            // before any rotations, we have to reset the width and height
+            // in case the browser wrapped the text (specifically for the
+            // y2axis).
+            this.elem.css('width', this.labelWidth);
+            this.elem.css('height', this.labelHeight);
+        }
+    };
+
+
+    function init(plot) {
+        plot.hooks.processOptions.push(function (plot, options) {
+
+            if (!options.axisLabels.show)
+                return;
+
+            // This is kind of a hack. There are no hooks in Flot between
+            // the creation and measuring of the ticks (setTicks, measureTickLabels
+            // in setupGrid() ) and the drawing of the ticks and plot box
+            // (insertAxisLabels in setupGrid() ).
+            //
+            // Therefore, we use a trick where we run the draw routine twice:
+            // the first time to get the tick measurements, so that we can change
+            // them, and then have it draw it again.
+            var secondPass = false;
+
+            var axisLabels = {};
+            var axisOffsetCounts = { left: 0, right: 0, top: 0, bottom: 0 };
+
+            var defaultPadding = 2;  // padding between axis and tick labels
+            plot.hooks.draw.push(function (plot, ctx) {
+                var hasAxisLabels = false;
+                if (!secondPass) {
+                    // MEASURE AND SET OPTIONS
+                    $.each(plot.getAxes(), function(axisName, axis) {
+                        var opts = axis.options // Flot 0.7
+                            || plot.getOptions()[axisName]; // Flot 0.6
+
+                        // Handle redraws initiated outside of this plug-in.
+                        if (axisName in axisLabels) {
+                            axis.labelHeight = axis.labelHeight -
+                                axisLabels[axisName].height;
+                            axis.labelWidth = axis.labelWidth -
+                                axisLabels[axisName].width;
+                            opts.labelHeight = axis.labelHeight;
+                            opts.labelWidth = axis.labelWidth;
+                            axisLabels[axisName].cleanup();
+                            delete axisLabels[axisName];
+                        }
+
+                        if (!opts || !opts.axisLabel || !axis.show)
+                            return;
+
+                        hasAxisLabels = true;
+                        var renderer = null;
+
+                        if (!opts.axisLabelUseHtml &&
+                            navigator.appName == 'Microsoft Internet Explorer') {
+                            var ua = navigator.userAgent;
+                            var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+                            if (re.exec(ua) != null) {
+                                rv = parseFloat(RegExp.$1);
+                            }
+                            if (rv >= 9 && !opts.axisLabelUseCanvas && !opts.axisLabelUseHtml) {
+                                renderer = CssTransformAxisLabel;
+                            } else if (!opts.axisLabelUseCanvas && !opts.axisLabelUseHtml) {
+                                renderer = IeTransformAxisLabel;
+                            } else if (opts.axisLabelUseCanvas) {
+                                renderer = CanvasAxisLabel;
+                            } else {
+                                renderer = HtmlAxisLabel;
+                            }
+                        } else {
+                            if (opts.axisLabelUseHtml || (!css3TransitionSupported() && !canvasTextSupported()) && !opts.axisLabelUseCanvas) {
+                                renderer = HtmlAxisLabel;
+                            } else if (opts.axisLabelUseCanvas || !css3TransitionSupported()) {
+                                renderer = CanvasAxisLabel;
+                            } else {
+                                renderer = CssTransformAxisLabel;
+                            }
+                        }
+
+                        var padding = opts.axisLabelPadding === undefined ?
+                                      defaultPadding : opts.axisLabelPadding;
+
+                        axisLabels[axisName] = new renderer(axisName,
+                                                            axis.position, padding,
+                                                            plot, opts);
+
+                        // flot interprets axis.labelHeight and .labelWidth as
+                        // the height and width of the tick labels. We increase
+                        // these values to make room for the axis label and
+                        // padding.
+
+                        axisLabels[axisName].calculateSize();
+
+                        // AxisLabel.height and .width are the size of the
+                        // axis label and padding.
+                        // Just set opts here because axis will be sorted out on
+                        // the redraw.
+
+                        opts.labelHeight = axis.labelHeight +
+                            axisLabels[axisName].height;
+                        opts.labelWidth = axis.labelWidth +
+                            axisLabels[axisName].width;
+                    });
+
+                    // If there are axis labels, re-draw with new label widths and
+                    // heights.
+
+                    if (hasAxisLabels) {
+                        secondPass = true;
+                        plot.setupGrid();
+                        plot.draw();
+                    }
+                } else {
+                    secondPass = false;
+                    // DRAW
+                    $.each(plot.getAxes(), function(axisName, axis) {
+                        var opts = axis.options // Flot 0.7
+                            || plot.getOptions()[axisName]; // Flot 0.6
+                        if (!opts || !opts.axisLabel || !axis.show)
+                            return;
+
+                        axisLabels[axisName].draw(axis.box);
+                    });
+                }
+            });
+        });
+    }
+
+
+    $.plot.plugins.push({
+        init: init,
+        options: options,
+        name: 'axisLabels',
+        version: '2.0'
+    });
+})(jQuery);
 </script>
 <script type="text/javascript">
 	var ChartGeneration = function() {
@@ -98,17 +565,15 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 			var yaxesMap = compositeChart.yaxesMap;
 			var yaxes = compositeChart.yaxes;
 			var line = tag.line;
-			var unit;
 			if ($this.is(":checked")) {
-				unit = line._unit ? line._unit.value : "";
-				if (!yaxesMap[unit]) {
+				var yLabel = line._unit && line._unit.value ? tag.chart.yLabel
+						+ " (" + line._unit.value + ")" : tag.chart.yLabel
+				if (!yaxesMap[yLabel]) {
 					yaxes.push({
 						position : yaxes.length & 1 ? "right" : "left",
-						tickFormatter : function(num, _) {
-							return yTickFormatter(num, _) + unit;
-						}
+						axisLabel : yLabel
 					});
-					yaxesMap[unit] = yaxes.length;
+					yaxesMap[yLabel] = yaxes.length;
 				}
 				series.push({
 					// 					label : tag.report.title + "<br/>" + tag.chart.title
@@ -116,7 +581,7 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 					label : tag.chart.subtitle ? tag.chart.subtitle + "-"
 							+ line.label : line.label,
 					data : line.data,
-					yaxis : yaxesMap[unit],
+					yaxis : yaxesMap[yLabel],
 					color : tag.index
 				});
 			} else {
@@ -215,6 +680,7 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 					drawChart($chart, chart);
 			}
 		}
+		
 		function drawJmeterSummaryChart($chart, chart) {
 			$chart.append($("<h3 class='chart_title'/>").text(chart.title))
 					.append(
@@ -244,8 +710,7 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 			$chart.append($("<h3 class='chart_title'/>").text(chart.title))
 					.append(
 							$("<h4 class='chart_subtitle'/>").text(
-									chart.subtitle)).append(
-							$("<div class='y_label'/>").text(chart.yLabel));
+									chart.subtitle));
 			var $placeholder = $("<div class='placeholder'/>").appendTo($chart);
 			$("<div class='x_label'/>").text(chart.xLabel).appendTo($chart);
 			var $legend = $("<div class='legend'/>").appendTo($chart);
@@ -276,9 +741,32 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 			return r;
 		}
 		function draw($placeholder, $legend, chart, optionsHook) {
+			if (!chart.yaxes) {
+				chart.yaxes = [];
+				chart.yaxesMap = [];
+				for (var i = 0; i < chart.series.length; ++i) {
+					var line = chart.series[i];
+					//var yLabel = line._unit && line._unit.value ? chart.yLabel
+					//+ " / " + line._unit.value : chart.yLabel;
+					var yLabel = line._unit && line._unit.value ? line._unit.value
+							: chart.yLabel;
+					if (!chart.yaxesMap[yLabel]) {
+						chart.yaxes.push({
+							position : chart.yaxes.length & 1 ? "right"
+									: "left",
+							axisLabel : yLabel
+						});
+						line.yaxis = chart.yaxesMap[yLabel] = chart.yaxes.length;
+					} else {
+						line.yaxis = chart.yaxesMap[yLabel];
+					}
+				}
+			}
+
 			var options = {
 				yaxes : chart.yaxes,
 				yaxis : {
+					axisLabel : chart.yLabel,
 					minTickSize : 0.1,
 					tickFormatter : yTickFormatter
 				},
@@ -339,6 +827,8 @@ if(yrange.from==null)yrange.from=yrange.axis.min;if(yrange.to==null)yrange.to=yr
 			// plot
 			var plot = $.plot($placeholder, chart.series, options);
 			$placeholder.data("plot", plot);
+			var axes = plot.getYAxes();
+			axes.box;
 			return plot;
 		}
 
@@ -501,7 +991,7 @@ html {
 
 .x_label {
 	margin: 5px 60px;
-	text-align: right;
+	text-align: center;
 }
 
 .y_label {

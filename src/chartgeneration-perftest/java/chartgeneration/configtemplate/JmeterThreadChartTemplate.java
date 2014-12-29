@@ -17,11 +17,11 @@ public class JmeterThreadChartTemplate extends BaseChart2DTemplateWithInterval {
 		FieldSelector timestampField = new IndexFieldSelector(1);
 		FieldSelector threadsField = new IndexFieldSelector(2);
 		List<Chart2DSeriesConfigRule> rules = new ArrayList<Chart2DSeriesConfigRule>();
-		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-[SF]$", "virtual users", "VU",
-				getLabelField(), timestampField, threadsField, new AverageCalculation(
-						getInterval())));
-		return createConfig("Concurrent Virtual Users",
-				"time", "virtual users", rules, AxisMode.TIME);
+		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-[SF]$",
+				"Virtual Users", "", getLabelField(), timestampField,
+				threadsField, new AverageCalculation(getInterval())));
+		return createConfig("Concurrent Virtual Users", "Time",
+				"Concurrent Virtual Users", rules, AxisMode.TIME);
 
 	}
 }

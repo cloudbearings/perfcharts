@@ -21,19 +21,19 @@ public class NMONDiskIOChartTemplate extends BaseChart2DTemplateWithInterval {
 		FieldSelector labelField = getLabelField();
 		FieldSelector diskIOField = new IndexFieldSelector(2);
 		List<Chart2DSeriesConfigRule> rules = new ArrayList<Chart2DSeriesConfigRule>();
-		rules.add(new Chart2DSeriesConfigRule("^DISKREAD-(.+)$", "Read-$1", "KiB/s",
+		rules.add(new Chart2DSeriesConfigRule("^DISKREAD-(.+)$", "Disk-$1-Read", "KiB/s",
 				labelField, timestampField, diskIOField,
 				new AverageCalculation(interval)));
-		rules.add(new Chart2DSeriesConfigRule("^DISKREAD-(.+)$", "Total Read", "KiB/s",
+		rules.add(new Chart2DSeriesConfigRule("^DISKREAD-(.+)$", "Disk-Total-Read", "KiB/s",
 				labelField, timestampField, diskIOField, new SumByLabelCalculation(
 						labelField, interval)));
-		rules.add(new Chart2DSeriesConfigRule("^DISKWRITE-(.+)$", "Write-$1", "KiB/s",
+		rules.add(new Chart2DSeriesConfigRule("^DISKWRITE-(.+)$", "Disk-$1-Write", "KiB/s",
 				labelField, timestampField, diskIOField,
 				new AverageCalculation(interval)));
-		rules.add(new Chart2DSeriesConfigRule("^DISKWRITE-(.+)$", "Total Write", "KiB/s",
+		rules.add(new Chart2DSeriesConfigRule("^DISKWRITE-(.+)$", "Disk-Total-Write", "KiB/s",
 				labelField, timestampField, diskIOField, new SumByLabelCalculation(
 						labelField, interval)));
-		return createConfig("Disk IO over Time / (KiB/s)", "time", "KiB/s", rules, AxisMode.TIME);
+		return createConfig("Disk IO over Time / (KiB/s)", "Time", "Disk IO", rules, AxisMode.TIME);
 	}
 
 }

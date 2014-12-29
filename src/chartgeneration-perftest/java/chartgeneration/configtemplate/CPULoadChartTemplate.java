@@ -22,15 +22,15 @@ public class CPULoadChartTemplate extends BaseChart2DTemplateWithInterval {
 		FieldSelector cpuload15min = new IndexFieldSelector(4);
 		FieldSelector coresField = new IndexFieldSelector(5);
 		List<Chart2DSeriesConfigRule> rules = new ArrayList<Chart2DSeriesConfigRule>();
-		rules.add(new Chart2DSeriesConfigRule("^CPULOAD$", "1 min", "LD", labelField,
+		rules.add(new Chart2DSeriesConfigRule("^CPULOAD$", "CPU load-1 min", "", labelField,
 				timestampField, cpuload1min, new AverageCalculation(interval)));
-		rules.add(new Chart2DSeriesConfigRule("^CPULOAD$", "5 min", "LD", labelField,
+		rules.add(new Chart2DSeriesConfigRule("^CPULOAD$", "CPU load-5 min", "", labelField,
 				timestampField, cpuload5min, new AverageCalculation(interval)));
-		rules.add(new Chart2DSeriesConfigRule("^CPULOAD$", "15 min", "LD", labelField,
+		rules.add(new Chart2DSeriesConfigRule("^CPULOAD$", "CPU load-15 min", "", labelField,
 				timestampField, cpuload15min, new AverageCalculation(interval)));
-		rules.add(new Chart2DSeriesConfigRule("^CPULOAD$", "CPUs", "LD", labelField,
+		rules.add(new Chart2DSeriesConfigRule("^CPULOAD$", "CPUs", "", labelField,
 				timestampField, coresField, new AverageCalculation(interval)));
-		return createConfig("CPU Load over Time", "time", "load", rules,
+		return createConfig("CPU Load over Time", "Time", "CPU load", rules,
 				AxisMode.TIME);
 	}
 

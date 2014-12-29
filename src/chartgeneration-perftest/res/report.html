@@ -10,6 +10,7 @@
 	src="lib/flot/jquery.flot.categories.min.js"></script>
 <script type="text/javascript"
 	src="lib/flot/jquery.flot.selection.min.js"></script>
+<script type="text/javascript" src="lib/flot/jquery.flot.axislabels.js"></script>
 <script type="text/javascript"
 	src="lib/flot/jquery.flot.crosshair.min.js"></script>
 <!-- <script type="text/javascript" src="lib/flot/jquery.flot.resize.min.js"></script> -->
@@ -86,17 +87,15 @@
 			var yaxesMap = compositeChart.yaxesMap;
 			var yaxes = compositeChart.yaxes;
 			var line = tag.line;
-			var unit;
 			if ($this.is(":checked")) {
-				unit = line._unit ? line._unit.value : "";
-				if (!yaxesMap[unit]) {
+				var yLabel = line._unit && line._unit.value ? tag.chart.yLabel
+						+ " (" + line._unit.value + ")" : tag.chart.yLabel
+				if (!yaxesMap[yLabel]) {
 					yaxes.push({
 						position : yaxes.length & 1 ? "right" : "left",
-						tickFormatter : function(num, _) {
-							return yTickFormatter(num, _) + unit;
-						}
+						axisLabel : yLabel
 					});
-					yaxesMap[unit] = yaxes.length;
+					yaxesMap[yLabel] = yaxes.length;
 				}
 				series.push({
 					// 					label : tag.report.title + "<br/>" + tag.chart.title
@@ -104,7 +103,7 @@
 					label : tag.chart.subtitle ? tag.chart.subtitle + "-"
 							+ line.label : line.label,
 					data : line.data,
-					yaxis : yaxesMap[unit],
+					yaxis : yaxesMap[yLabel],
 					color : tag.index
 				});
 			} else {
@@ -203,6 +202,7 @@
 					drawChart($chart, chart);
 			}
 		}
+		
 		function drawJmeterSummaryChart($chart, chart) {
 			$chart.append($("<h3 class='chart_title'/>").text(chart.title))
 					.append(
@@ -232,8 +232,7 @@
 			$chart.append($("<h3 class='chart_title'/>").text(chart.title))
 					.append(
 							$("<h4 class='chart_subtitle'/>").text(
-									chart.subtitle)).append(
-							$("<div class='y_label'/>").text(chart.yLabel));
+									chart.subtitle));
 			var $placeholder = $("<div class='placeholder'/>").appendTo($chart);
 			$("<div class='x_label'/>").text(chart.xLabel).appendTo($chart);
 			var $legend = $("<div class='legend'/>").appendTo($chart);
@@ -264,9 +263,32 @@
 			return r;
 		}
 		function draw($placeholder, $legend, chart, optionsHook) {
+			if (!chart.yaxes) {
+				chart.yaxes = [];
+				chart.yaxesMap = [];
+				for (var i = 0; i < chart.series.length; ++i) {
+					var line = chart.series[i];
+					//var yLabel = line._unit && line._unit.value ? chart.yLabel
+					//+ " / " + line._unit.value : chart.yLabel;
+					var yLabel = line._unit && line._unit.value ? line._unit.value
+							: chart.yLabel;
+					if (!chart.yaxesMap[yLabel]) {
+						chart.yaxes.push({
+							position : chart.yaxes.length & 1 ? "right"
+									: "left",
+							axisLabel : yLabel
+						});
+						line.yaxis = chart.yaxesMap[yLabel] = chart.yaxes.length;
+					} else {
+						line.yaxis = chart.yaxesMap[yLabel];
+					}
+				}
+			}
+
 			var options = {
 				yaxes : chart.yaxes,
 				yaxis : {
+					axisLabel : chart.yLabel,
 					minTickSize : 0.1,
 					tickFormatter : yTickFormatter
 				},
@@ -327,6 +349,8 @@
 			// plot
 			var plot = $.plot($placeholder, chart.series, options);
 			$placeholder.data("plot", plot);
+			var axes = plot.getYAxes();
+			axes.box;
 			return plot;
 		}
 
@@ -489,7 +513,7 @@ html {
 
 .x_label {
 	margin: 5px 60px;
-	text-align: right;
+	text-align: center;
 }
 
 .y_label {

@@ -23,10 +23,10 @@ public class NMONDiskBusyChartTemplate extends BaseChart2DTemplateWithInterval {
 		List<Chart2DSeriesConfigRule> rules = new ArrayList<Chart2DSeriesConfigRule>();
 		rules.add(new Chart2DSeriesConfigRule("^DISKBUSY-(.+)$", "Disk-$1", "%", labelField,
 				timestampField, diskBusyField, new AverageCalculation(interval)));
-		rules.add(new Chart2DSeriesConfigRule("^DISKBUSY-(.+)$", "Total", "%", labelField,
+		rules.add(new Chart2DSeriesConfigRule("^DISKBUSY-(.+)$", "Disk-Total", "%", labelField,
 				timestampField, diskBusyField, new SumByLabelCalculation(labelField,
 						interval)));
-		return createConfig("Disk Busy% Over Time", "time", "%", rules, AxisMode.TIME);
+		return createConfig("Disk Busy% Over Time", "Time", "Disk Busy", rules, AxisMode.TIME);
 	}
 
 }

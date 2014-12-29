@@ -25,13 +25,13 @@ public class JmeterTotalTPSChartTemplate extends
 		FieldSelector rtField = new IndexFieldSelector(5);
 		FieldSelector xField = new AddTransformSelector(timestampField, rtField);
 		rules = new ArrayList<Chart2DSeriesConfigRule>();
-		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-S$", "Success", "TPS",
+		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-S$", "Transations-Success", "",
 				getLabelField(), xField, null, new CountCalculation(
 						interval, 1000.0 / interval, false)));
-		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-F$", "Failure", "TPS",
+		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-F$", "Transations-Failure", "",
 				getLabelField(), xField, null, new CountCalculation(
 						interval, 1000.0 / interval, true)));
-		return createConfig("Total TPS over Time", "time", "TPS", rules,
+		return createConfig("Total TPS over Time", "Time", "TPS", rules,
 				AxisMode.TIME);
 	}
 

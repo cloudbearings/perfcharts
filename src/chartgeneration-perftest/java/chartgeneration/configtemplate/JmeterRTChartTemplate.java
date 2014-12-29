@@ -23,8 +23,8 @@ public class JmeterRTChartTemplate extends BaseChart2DTemplateWithInterval {
 		rules = new ArrayList<Chart2DSeriesConfigRule>();
 		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-S$", "$1", "ms",  getLabelField(),
 				xField, rtField, new AverageCalculation(getInterval())));
-		return createConfig("Response Times over Time",
-				"time", "response time / ms", rules, AxisMode.TIME);
+		return createConfig("Response Time over Time",
+				"Time", "Response Time", rules, AxisMode.TIME);
 	}
 
 }

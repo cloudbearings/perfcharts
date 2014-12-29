@@ -24,11 +24,11 @@ public class JmeterTPSChartTemplate extends BaseChart2DTemplateWithInterval {
 		FieldSelector rtField = new IndexFieldSelector(5);
 		FieldSelector xField = new AddTransformSelector(timestampField, rtField);
 		rules = new ArrayList<Chart2DSeriesConfigRule>();
-		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-S$", "$1-Success", "TPS", getLabelField(),
+		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-S$", "$1-Success", "", getLabelField(),
 				xField, null, new CountCalculation(interval, 1000.0 / interval), true, false, false));
-		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-F$", "$1-Failure", "TPS", getLabelField(),
+		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-F$", "$1-Failure", "", getLabelField(),
 				xField, null, new CountCalculation(interval, 1000.0 / interval), true, false, false));
-		return createConfig("TPS over Time", "time", "TPS", rules, AxisMode.TIME);
+		return createConfig("TPS over Time", "Time", "TPS", rules, AxisMode.TIME);
 	}
 
 }
