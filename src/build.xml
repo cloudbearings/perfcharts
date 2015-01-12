@@ -24,18 +24,18 @@
 		</ant>
 	</target>
 	<target name="copy" depends="build">
-		<copy todir="${bin}">
+		<!--copy todir="${bin}">
 			<fileset dir="chartgeneration-core/bin" />
-		</copy>
+		</copy-->
 		<copy todir="${bin}">
 			<fileset dir="chartgeneration-perftest/bin" />
 		</copy>
 		<copy todir="${res}">
 			<fileset dir="chartgeneration-perftest/res" />
 		</copy>
-		<copy todir="${examples}">
+		<!--copy todir="${examples}">
 			<fileset dir="chartgeneration-perftest/examples" />
-		</copy>
+		</copy-->
 	</target>
 	<target name="all" depends="copy">
 	</target>
