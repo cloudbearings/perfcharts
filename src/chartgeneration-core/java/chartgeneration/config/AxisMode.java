@@ -7,5 +7,5 @@ package chartgeneration.config;
  *
  */
 public enum AxisMode {
-	NUMBER, TIME, CATEGORIES
+	NUMBER, TIME, CATEGORIES,INTEGER
 }

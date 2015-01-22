@@ -3,7 +3,7 @@
 # show usage of the script
 show_usage() {
 	local base_name=`basename $0`
-	echo 'Performance Test Report Generator - Chart Generation Tool'
+	echo 'This tool is used to generate a Performance & Resource Monitoring Report.'
 	echo "Usage: $base_name [OPTION...] [INPUT DIRECTORY]"
 	echo 'Examples:'
 	echo "	$base_name	# Generate a report from current directory"
@@ -20,8 +20,9 @@ show_usage() {
 }
 
 # initialize global variables
-if ! [ -n "$CGT_HOME" ]; then export CGT_HOME=$(cd `dirname $0`; cd ..; pwd); fi
+if ! [ -n "$CGT_HOME" ]; then export CGT_HOME=$(cd `dirname "$0"`; cd ..; pwd); fi
 if ! [ -n "$CGT_LIB" ]; then export CGT_LIB=$CGT_HOME/lib; fi
+if ! [ -n "$CGT_LOG" ]; then export CGT_LOG=$CGT_HOME/log; fi
 if ! [ -n "$CGT_JAVA_COMMAND" ]; then export CGT_JAVA_COMMAND=java; fi
 input_dir=\.
 # deal with arguments
@@ -50,13 +51,16 @@ fi
 if ! [ -n "$output_dir" ]; then output_dir=$input_dir/output; fi
 if ! [ -n "$report_file" ]; then report_file=$output_dir/report.html; fi
 
-tmp_dir=$output_dir/tmp
+bin_dir=$CGT_HOME/bin
+cgt_js=$bin_dir/cgt-js
+cgt_monoreport=$bin_dir/cgt-monoreport
 perftest_parser=$CGT_LIB/chartgeneration-perftest-parser.jar
 perftest_generator=$CGT_LIB/chartgeneration-core.jar
 jmeter_default_config_file=$CGT_HOME/res/jmeter.conf
 rm_default_config_file=$CGT_HOME/res/res.template.conf
 report_template=$CGT_HOME/res/report_mono.html
 
+tmp_dir=$output_dir/tmp
 jmeter_dir=$tmp_dir/jmeter
 jmeter_data_table=$jmeter_dir/jmeter.csv
 resource_monitoring_dir=$tmp_dir/resource_monitoring
@@ -64,10 +68,12 @@ json_dir=$tmp_dir/subreports
 jmeter_json_file=$json_dir/Performance.json
 
 # parse raw data to data tables
+echo "remove tmp directory '$tmp_dir'" >&2
 rm "$tmp_dir" -Rf
-for file in $input_dir/*; do
+for file in "$input_dir"/*; do
 if [ -f "$file" ]; then
-	file_base_name=`basename $file`
+	echo "parsing input file '$file'..." >&2
+	file_base_name=`basename "$file"`
 	file_extension=${file_base_name##*.}
 	file_bare_name=${file_base_name%%.*}
 	#echo ext of $file_base_name is $file_extension
@@ -107,13 +113,15 @@ if [ -f "$jmeter_data_table" ]; then
 	else
 		cp "$jmeter_default_config_file" "$jmeter_dir/jmeter.conf"
 	fi
-	$CGT_JAVA_COMMAND -jar "$perftest_generator" "$jmeter_dir/jmeter.conf" < "$jmeter_data_table" > "$jmeter_json_file"
+	if ! $CGT_JAVA_COMMAND -jar "$perftest_generator" "$jmeter_dir/jmeter.conf" < "$jmeter_data_table" > "$jmeter_json_file"; then
+		exit 1
+	fi
 fi
 
 # generate system resource monitoring charts
-for res_data_table in $resource_monitoring_dir/*.csv; do
+for res_data_table in "$resource_monitoring_dir"/*.csv; do
 if [ -f "$res_data_table" ]; then
-	file_base_name=`basename $res_data_table`
+	file_base_name=`basename "$res_data_table"`
 	file_bare_name=${file_base_name%%.*}
 	server_name=${file_bare_name%%_*}
 	unset config_file_template
@@ -125,27 +133,15 @@ if [ -f "$res_data_table" ]; then
 		config_file_template=$rm_default_config_file
 	fi
 	sed "s/<!--{server_name}-->/${server_name}/g" "$config_file_template" > "$resource_monitoring_dir/$server_name.conf"
-	$CGT_JAVA_COMMAND -jar "$perftest_generator" "$resource_monitoring_dir/$server_name.conf" < "$res_data_table" > "$json_dir/Resource-$server_name.json"
+	if ! $CGT_JAVA_COMMAND -jar "$perftest_generator" "$resource_monitoring_dir/$server_name.conf" < "$res_data_table" > "$json_dir/Resource-$server_name.json"; then
+		exit 1
+	fi
 fi
 done
 
 # generate final report
-js_file=$tmp_dir/data.js
-echo '(function(){var d=ChartGeneration.data,j;' > "$js_file"
-for json_file in $json_dir/*.json; do
-if [ -f "$json_file" ]; then
-	file_base_name=`basename $json_file`
-	file_bare_name=${file_base_name%%.*}
-	echo -n 'j=' >> "$js_file"
-	cat "$json_file" >> "$js_file"
-	echo ";if(!j.title)j.title='$file_bare_name';d.push(j);" >> "$js_file"
-fi
-done
-echo '})();' >> "$js_file"
-
-cp "$report_template" "$report_file" -f
-echo '<script type="text/javascript">' >> "$report_file"
-cat $js_file >> "$report_file"
-echo '</script>' >> "$report_file"
+js_file="$tmp_dir"/data.js
+"$cgt_js" "$json_dir" "$js_file"
+"$cgt_monoreport" "$js_file" "$report_template" "$report_file"
 
 
