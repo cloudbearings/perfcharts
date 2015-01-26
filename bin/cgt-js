@@ -1,0 +1,21 @@
+#!/bin/bash
+if [ $# -lt 2 ]; then
+	echo 'Usage: '
+	echo "	<INPUT_PATH> <OUTPUT_JS>"
+	exit -1
+fi
+js_file="$2"
+json_files="$1"
+echo -n "generating JS file '$js_file' from '$json_files'..." >&2
+echo '(function(){var d=ChartGeneration.data,j;' > "$js_file"
+for json_file in "$json_files"/*.json; do
+if [ -f "$json_file" ]; then
+	file_base_name=`basename "$json_file"`
+	file_bare_name=${file_base_name%%.*}
+	echo -n 'j=' >> "$js_file"
+	cat "$json_file" >> "$js_file"
+	echo ";if(!j.title)j.title='$file_bare_name';d.push(j);" >> "$js_file"
+fi
+done
+echo '})();' >> "$js_file"
+echo '	done' >&2

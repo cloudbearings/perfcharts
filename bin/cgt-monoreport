@@ -1,0 +1,15 @@
+#!/bin/bash
+if [ $# -lt 3 ]; then
+	echo 'Usage: '
+	echo "	<INPUT_JS> <INPUT_HTML> <OUTPUT_HTML>"
+	exit -1
+fi
+js_file="$1"
+report_template="$2"
+report_file="$3"
+echo -n "generating mono report file '$report_file'..." >&2
+cp "$report_template" "$report_file" -f
+echo '<script type="text/javascript">' >> "$report_file"
+cat "$js_file" >> "$report_file"
+echo '</script>' >> "$report_file"
+echo '	done' >&2
