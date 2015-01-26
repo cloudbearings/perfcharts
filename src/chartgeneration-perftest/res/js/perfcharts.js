@@ -2,7 +2,7 @@ ChartGeneration = function() {
 };
 ChartGeneration.data = [];
 ChartGeneration.compositeReport = {};
-(function() {
+(function($) {
 	function setupUI() {
 		// set up tooltip
 		$("<div id='tooltip'></div>").css({
@@ -37,6 +37,8 @@ ChartGeneration.compositeReport = {};
 
 	function showReport(index) {
 		var data = ChartGeneration.data;
+		if (index >= data.length)
+			return;
 		drawReport($(".report"), data[index]);
 	}
 
@@ -131,14 +133,14 @@ ChartGeneration.compositeReport = {};
 											this.value ? this.value
 													: ChartGeneration.compositeReport.subtitle);
 						}).appendTo($topDiv);
-		$(
-				"<select><option value='TIME' selected>time</option><option value='INTEGER'>integer</option></select>")
+		var $select = $("<select><option value='TIME'>time</option><option value='INTEGER'>integer</option></select>")
 				.change(
 						function() {
 							var compositeChart = ChartGeneration.compositeReport.charts[0];
 							compositeChart.xaxisMode = this.value;
 							showCompositeReport();
 						}).appendTo($topDiv);
+		$select.val(ChartGeneration.compositeReport.charts[0].xaxisMode);
 
 		var $rootList = $("<dl/>").appendTo($control_pad);
 		var indexOfSeries = 0;
@@ -431,4 +433,4 @@ ChartGeneration.compositeReport = {};
 		// showCompositeReport();
 	});
 
-})();
+})(jQuery);
