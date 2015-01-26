@@ -1,0 +1,350 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Perfcharts by vfreex</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Perfcharts</h1>
+        <p>Perfcharts is a free software written in Java, which reads performance testing and system monitoring results from Jmeter, NMON, and/or other applications to produce charts for further analysis. It can generate any line and bar chart from any kind of data with appropriate extensions, but now is specially designed for performance tesing business.  With this tool, you can get analysis charts by just putting a Jmeter result file (.jtl), some NMON resource monitoring logs (.nmon), and CPU load monitoring logs (.load) into a directory then just running the tool. This tool make it possible to enable automatic performance testing.</p>
+
+        <p class="view"><a href="https://github.com/vfreex/perfcharts">View the Project on GitHub <small>vfreex/perfcharts</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/vfreex/perfcharts/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/vfreex/perfcharts/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/vfreex/perfcharts">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="perfcharts" class="anchor" href="#perfcharts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Perfcharts</h1>
+
+<h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>Perfcharts is a free software written in Java, which reads performance testing and system monitoring results from Jmeter, NMON, and/or other applications to produce charts for further analysis. It can generate any line and bar chart from any kind of data with appropriate extensions, but now is specially designed for performance testing business.</p>
+
+<p>With this tool, you can get analysis charts by just putting a Jmeter result file (.jtl), some NMON resource monitoring logs (.nmon), and CPU load monitoring logs (.load) into a directory then just running the tool. This tool make it possible to enable automatic performance testing.</p>
+
+<h2>
+<a id="system-requirements" class="anchor" href="#system-requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>System Requirements</h2>
+
+<h3>
+<a id="operating-system" class="anchor" href="#operating-system" aria-hidden="true"><span class="octicon octicon-link"></span></a>Operating System</h3>
+
+<ul>
+<li>Linux or other Unix-like operating systems</li>
+<li>Windows with <a href="https://www.cygwin.com/">Cygwin</a>
+</li>
+</ul>
+
+<h3>
+<a id="java-runtime" class="anchor" href="#java-runtime" aria-hidden="true"><span class="octicon octicon-link"></span></a>Java Runtime</h3>
+
+<ul>
+<li>Java SE 1.7 or above (<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a>)</li>
+</ul>
+
+<h2>
+<a id="components" class="anchor" href="#components" aria-hidden="true"><span class="octicon octicon-link"></span></a>Components</h2>
+
+<p>The tool contains three main components: Parser, Generator, and Driver Program.</p>
+
+<ul>
+<li>
+<em>Parser</em> reads raw data, extracts the part of data we are interested in, and produces data table (in CSV format).</li>
+<li>
+<em>Generator</em> generates charts from data tables according to configuration files that is defined by users and specifies which charts should be produced.</li>
+<li>
+<em>Driver Program</em> controls the overall progress of running.</li>
+</ul>
+
+<h2>
+<a id="steps-to-generate-a-perf-test-report" class="anchor" href="#steps-to-generate-a-perf-test-report" aria-hidden="true"><span class="octicon octicon-link"></span></a>Steps to Generate a Perf-test Report</h2>
+
+<h3>
+<a id="use-cgt-perf" class="anchor" href="#use-cgt-perf" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use cgt-perf</h3>
+
+<p>We provide a shell script (cgt-perf) to simplify the process for perf-test report generation.</p>
+
+<pre><code>Usage:
+    cgt-perf [-d OUTPUT_DIR] [-o OUTPUT_FILE] [-z TIME_ZONE] [-f FROM_TIME] [-t TO_TIME] [INPUT_DIR]
+</code></pre>
+
+<h4>
+<a id="step-1" class="anchor" href="#step-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 1</h4>
+
+<p>Create a new directory, and put all related perf-test logs into the directory. </p>
+
+<p>You can have a single Jmeter XML log (.jtl) and several resource monitoring logs for input. </p>
+
+<ul>
+<li><p>The log file from NMON should be named as "servername[_&lt;suffix&gt;].nmon" (without quotes, &lt;suffix&gt; is optional), like "errata-web_140717_1258.nmon". </p></li>
+<li>
+<p>CPU load logs should be named as "servername[_&lt;suffix&gt;].load", like "errata-web_140717_1258.load". You can get this kind of CPU load logs by writing a simple shell script. The format of log entry is:</p>
+
+<pre><code>yyyy-MM-dd hh:mm:ss, 1min 5min 15min\[, cores\]
+</code></pre>
+</li>
+</ul>
+
+<p>Here is a sample CPU load monitoring log:</p>
+
+<pre><code>    2014-07-17 17:12:43, 0.73 0.99 1.27, 8
+    2014-07-17 17:12:48, 0.73 1.01 1.33, 8
+    2014-07-17 17:12:53, 0.73 0.99 1.22, 8
+    2014-07-17 17:12:58, 0.73 1.01 1.28, 8
+</code></pre>
+
+<h4>
+<a id="step-2" class="anchor" href="#step-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 2</h4>
+
+<p>Enter the directory you just created, and run cgt-perf in bin/.</p>
+
+<pre><code>    cgt-perf
+</code></pre>
+
+<p>Or you can run cgt-perf.sh INPUT_DIR to indicate the input directory manually:</p>
+
+<pre><code>    cgt-perf /home/cgt/input/
+</code></pre>
+
+<p>All generated files will be placed into the sub-directory "report" of your input directory. This is the default location for storing all output files. To specify another output directory, use -d option:</p>
+
+<pre><code>    cgt-perf -d home/cgt/output/ /home/cgt/input/
+</code></pre>
+
+<p>The file "report.html" in output directory is what you need. To specify another location for the generated report, use -o option:</p>
+
+<pre><code>    cgt-perf -d home/cgt/output/ /home/cgt/input/ -o my_report.html
+</code></pre>
+
+<h3>
+<a id="advanced-usage" class="anchor" href="#advanced-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Advanced usage</h3>
+
+<h4>
+<a id="step-1-run-appropriate-parser" class="anchor" href="#step-1-run-appropriate-parser" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 1 Run appropriate parser</h4>
+
+<p>The parser will convert your raw data to data table. All predefined parser reads raw data from standard input stream and put the result into standard output stream.</p>
+
+<pre><code>    java -jar lib/chartgeneration-parser-jmeter.jar &lt; example.jtl &gt; jmeter.csv
+    java -jar lib/chartgeneration-parser-nmon.jar &lt; errata-web_140707_0000.nmon &gt; errata-web.csv
+    java -jar lib/chartgeneration-parser-cpuload.jar &lt; errata-web_140707_0000.load &gt;&gt; errata-web.csv
+</code></pre>
+
+<h4>
+<a id="step-2-run-generator-to-produce-charts" class="anchor" href="#step-2-run-generator-to-produce-charts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 2: Run Generator to produce charts</h4>
+
+<p>The generator reads a data table (CSV file) from standard input stream and put the result into standard output stream by default.</p>
+
+<pre><code>    Usage: java -jar lib/chartgeneration.jar &lt;configuration_file&gt;
+</code></pre>
+
+<p>The configuration file defines which charts should be generated for the target report. We have provides some templates in shared/ for perf-test business.</p>
+
+<pre><code>    java -jar lib/chartgeneration.jar shared/jmeter.conf &lt; jmeter.csv &gt; jmeter.json
+    java -jar lib/chartgeneration.jar shared/res.conf &lt; errata-web.csv &gt; res.json
+</code></pre>
+
+<p>The instructions to providing your own configuration files are out of the section, and will be presented in a separated document.</p>
+
+<h4>
+<a id="step-3-show-charts-in-web-pages" class="anchor" href="#step-3-show-charts-in-web-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 3: Show charts in web pages</h4>
+
+<p>The data of generated charts will be stored into JSON files, which is optimized for JQuery Flot plotting library (see <a href="http://www.flotcharts.org/">http://www.flotcharts.org/</a> ). You can load these JSON files into your web pages, and customize the format of your report as you want.</p>
+
+<p>Here is the format of output JSON:</p>
+
+<pre><code>    {charts: [ {
+        title: &lt;title of your chart&gt;,
+        subtitle: &lt;subtitle of your chart&gt;,
+        xLabel: &lt;the label of x-axis&gt;,
+        yLabel: &lt;the label of y-axis&gt;,
+        xaxisMode: "NUMBER" | "TIME" | "CATEGORIES", /* The mode of x-axis */
+        series: &lt;The series of the chart, which Flot use to plot charts&gt;
+        }, ...
+    ]}
+</code></pre>
+
+<p>The detailed guidelines for customize reports is out of the section, and will be discussed in a separated document.</p>
+
+<h2>
+<a id="steps-to-generate-a-perf-trend-report" class="anchor" href="#steps-to-generate-a-perf-trend-report" aria-hidden="true"><span class="octicon octicon-link"></span></a>Steps to Generate a Perf-trend Report</h2>
+
+<h3>
+<a id="use-cgt-trend" class="anchor" href="#use-cgt-trend" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use cgt-trend</h3>
+
+<p>We provide a shell script (cgt-trend) to simplify the process for perf-trend report generation.</p>
+
+<pre><code>Usage:
+    cgt-trend [-d OUTPUT_DIR] [-o OUTPUT_FILE] [-z TIME_ZONE] [-f FROM_TIME] [-t TO_TIME] [INPUT_DIR]
+</code></pre>
+
+<h4>
+<a id="step-1-1" class="anchor" href="#step-1-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 1</h4>
+
+<p>You should run cgt-perf to create some performance reports before generating a perf-trend report.</p>
+
+<p>Create a plain text file. The file has several lines. Each line contains a build number, a comma, and a associated location of performance result (with .json extension name).
+An example (trend_input.txt):</p>
+
+<pre><code>    1,/home/vfreex/.jenkins/perfcharts1/report/tmp/subreports/Performance.json
+    2,/home/vfreex/.jenkins/perfcharts2/report/tmp/subreports/Performance.json
+    4,/home/vfreex/.jenkins/perfcharts4/report/tmp/subreports/Performance.json
+    7,/home/vfreex/.jenkins/perfcharts7/report/tmp/subreports/Performance.json
+</code></pre>
+
+<h4>
+<a id="step-2-1" class="anchor" href="#step-2-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 2</h4>
+
+<p>Create a directory for holding all generated files.</p>
+
+<p>Enter the directory you just created, and run cgt-trend in bin/.</p>
+
+<pre><code>    cgt-trend
+</code></pre>
+
+<p>Or you can run cgt-trend INPUT_DIR to indicate the input directory manually:</p>
+
+<pre><code>    cgt-trend /home/cgt/input/
+</code></pre>
+
+<p>All generated files will be placed into the sub-directory "report" of your input directory. This is the default location for storing all output files. To specify another output directory, use -d option:</p>
+
+<pre><code>    cgt-trend -d home/cgt/output/ /home/cgt/input/
+</code></pre>
+
+<p>The file "report.html" in output directory is what you need. To specify another location for the generated report, use -o option:</p>
+
+<pre><code>    cgt-trend -d home/cgt/output/ /home/cgt/input/ -o my_report.html
+</code></pre>
+
+<h2>
+<a id="build" class="anchor" href="#build" aria-hidden="true"><span class="octicon octicon-link"></span></a>Build</h2>
+
+<ol>
+<li><p>This software uses <a href="http://ant.apache.org/">Apache Ant</a> for compiling and packaging. Please install Apache Ant first.</p></li>
+</ol>
+
+<ul>
+<li>
+<p>for RHEL/CentOS/Fedora users</p>
+
+<pre><code>sudo yum install ant
+</code></pre>
+</li>
+<li>
+<p>for Debian/Ubuntu users</p>
+
+<pre><code>sudo aptitude install ant
+</code></pre>
+</li>
+</ul>
+
+<ol>
+<li>
+<p>Enter src directory, and build.</p>
+
+<pre><code>cd src
+ant
+chmod +x ../bin/*
+</code></pre>
+</li>
+</ol>
+
+<h2>
+<a id="release-log" class="anchor" href="#release-log" aria-hidden="true"><span class="octicon octicon-link"></span></a>Release Log</h2>
+
+<h3>
+<a id="v040" class="anchor" href="#v040" aria-hidden="true"><span class="octicon octicon-link"></span></a>v0.4.0</h3>
+
+<ul>
+<li>add trend report generation support</li>
+<li>some bug-fixes</li>
+</ul>
+
+<h3>
+<a id="v034" class="anchor" href="#v034" aria-hidden="true"><span class="octicon octicon-link"></span></a>v0.3.4</h3>
+
+<ul>
+<li>new style of axis labels</li>
+<li>other details related to the format of report</li>
+</ul>
+
+<h3>
+<a id="v033" class="anchor" href="#v033" aria-hidden="true"><span class="octicon octicon-link"></span></a>v0.3.3</h3>
+
+<ul>
+<li>support for customizing the title and subtitle of composite chart</li>
+<li>change the unit of response time to 'ms'</li>
+<li>change the series name format in composite chart</li>
+<li>automatic interval choosing improvements</li>
+</ul>
+
+<h3>
+<a id="v032" class="anchor" href="#v032" aria-hidden="true"><span class="octicon octicon-link"></span></a>v0.3.2</h3>
+
+<ul>
+<li>some bug-fixes</li>
+<li>reorganize some code</li>
+</ul>
+
+<h3>
+<a id="v031" class="anchor" href="#v031" aria-hidden="true"><span class="octicon octicon-link"></span></a>v0.3.1</h3>
+
+<ul>
+<li>new feature: support for specifying time duration</li>
+<li>new feature: automatic interval choosing</li>
+<li>new feature: Jmeter CSV log support</li>
+<li>change: new rules for generating Jmeter charts</li>
+<li>bug-fix: the time zone issue</li>
+<li>bug-fix: incorrect calculation of summary chart when a transaction only has one sample</li>
+</ul>
+
+<h3>
+<a id="v030" class="anchor" href="#v030" aria-hidden="true"><span class="octicon octicon-link"></span></a>v0.3.0</h3>
+
+<ul>
+<li>new features: summary chart for Jmeter Test logs</li>
+<li>bug-fix: mismatching between CPU load logs and its parser</li>
+</ul>
+
+<h3>
+<a id="v020" class="anchor" href="#v020" aria-hidden="true"><span class="octicon octicon-link"></span></a>v0.2.0</h3>
+
+<ul>
+<li>add support for subtitles</li>
+<li>add support for the number of cores in CPU load charts</li>
+<li>rewrite the driver program in Bash shell script</li>
+<li>new document</li>
+<li>some bug-fixes</li>
+</ul>
+
+<h3>
+<a id="v010" class="anchor" href="#v010" aria-hidden="true"><span class="octicon octicon-link"></span></a>v0.1.0</h3>
+
+<ul>
+<li>first release</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/vfreex">vfreex</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
