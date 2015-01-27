@@ -3,9 +3,9 @@ Perfcharts
 
 Introduction
 ------------
-Perfcharts is a free software written in Java, which reads performance testing and system monitoring results from Jmeter, NMON, and/or other applications to produce charts for further analysis. It can generate any line and bar chart from any kind of data with appropriate extensions, but now is specially designed for performance tesing business.
+Perfcharts is a free software written in Java, which reads performance testing and system monitoring results from Jmeter, NMON, and/or other applications to produce charts for further analysis. It can generate any line and bar chart from any kind of data with appropriate extensions, but now is specially designed for performance testing business.
 
-With this tool, you can get analysis charts by just putting a Jmeter result file (.jtl), some NMON resource monitoring logs (.nmon), and CPU load monitoring logs (.load) into a directory then just running the tool. This tool make it possible to enable automatic performance tesing.
+With this tool, you can get analysis charts by just putting a Jmeter result file (.jtl), some NMON resource monitoring logs (.nmon), and CPU load monitoring logs (.load) into a directory then just running the tool. This tool make it possible to enable automatic performance testing.
 
 System Requirements
 -------------------
@@ -24,10 +24,10 @@ The tool contains three main components: Parser, Generator, and Driver Program.
 * _Generator_ generates charts from data tables according to configuration files that is defined by users and specifies which charts should be produced.
 * _Driver Program_ controls the overall progress of running.
 
-Steps to Generate Perf-test Charts
+Steps to Generate a Perf-test Report
 ----------------------------------
 ### Use cgt-perf ###
-We provide a shell script (cgt-perf) to simplify the process for perf-test chart generation.
+We provide a shell script (cgt-perf) to simplify the process for perf-test report generation.
 
 	Usage:
 		cgt-perf [-d OUTPUT_DIR] [-o OUTPUT_FILE] [-z TIME_ZONE] [-f FROM_TIME] [-t TO_TIME] [INPUT_DIR]
@@ -37,9 +37,9 @@ Create a new directory, and put all related perf-test logs into the directory.
 
 You can have a single Jmeter XML log (.jtl) and several resource monitoring logs for input. 
 
-* The log file from NMON should be named as "servername\[\_&lt;surfix&gt;\].nmon" (without quotes, &lt;surfix&gt; is optional), like "errata-web_140717_1258.nmon". 
+* The log file from NMON should be named as "servername\[\_&lt;suffix&gt;\].nmon" (without quotes, &lt;suffix&gt; is optional), like "errata-web_140717_1258.nmon". 
 
-* CPU load logs should be named as "servername\[\_&lt;surfix&gt;\].load", like "errata-web_140717_1258.load". You can get this kind of CPU load logs by writing a simple shell script. The format of log entry is:
+* CPU load logs should be named as "servername\[\_&lt;suffix&gt;\].load", like "errata-web_140717_1258.load". You can get this kind of CPU load logs by writing a simple shell script. The format of log entry is:
 
 		yyyy-MM-dd hh:mm:ss, 1min 5min 15min\[, cores\]
 
@@ -51,7 +51,7 @@ Here is a sample CPU load monitoring log:
 		2014-07-17 17:12:58, 0.73 1.01 1.28, 8
 
 #### Step 2 ####
-Enter the directory you just created, and run cgt-perf.sh in bin/.
+Enter the directory you just created, and run cgt-perf in bin/.
 
 		cgt-perf
 
@@ -63,14 +63,14 @@ All generated files will be placed into the sub-directory "report" of your input
 
 		cgt-perf -d home/cgt/output/ /home/cgt/input/
 
-The file "report.html" in output directory is what you need. To specify another name of generated report, use -o option:
+The file "report.html" in output directory is what you need. To specify another location for the generated report, use -o option:
 
 		cgt-perf -d home/cgt/output/ /home/cgt/input/ -o my_report.html
 
 ### Advanced usage ###
 
-#### Step 1 Run appropriate parsers ####
-The parsers will convert your raw data to data table. All predefined parser reads raw data from standard input stream and put the result into standard output stream.
+#### Step 1 Run appropriate parser ####
+The parser will convert your raw data to data table. All predefined parser reads raw data from standard input stream and put the result into standard output stream.
 
 		java -jar lib/chartgeneration-parser-jmeter.jar < example.jtl > jmeter.csv
 		java -jar lib/chartgeneration-parser-nmon.jar < errata-web_140707_0000.nmon > errata-web.csv
@@ -105,6 +105,44 @@ Here is the format of output JSON:
 
 The detailed guidelines for customize reports is out of the section, and will be discussed in a separated document.
 
+Steps to Generate a Perf-trend Report
+-------------------------------------
+### Use cgt-trend ###
+We provide a shell script (cgt-trend) to simplify the process for perf-trend report generation.
+
+	Usage:
+		cgt-trend [-d OUTPUT_DIR] [-o OUTPUT_FILE] [-z TIME_ZONE] [-f FROM_TIME] [-t TO_TIME] [INPUT_DIR]
+
+#### Step 1 ####
+You should run cgt-perf to create some performance reports before generating a perf-trend report.
+
+Create a plain text file. The file has several lines. Each line contains a build number, a comma, and a associated location of performance result (with .json extension name).
+An example (trend_input.txt):
+
+		1,/home/vfreex/.jenkins/perfcharts1/report/tmp/subreports/Performance.json
+		2,/home/vfreex/.jenkins/perfcharts2/report/tmp/subreports/Performance.json
+		4,/home/vfreex/.jenkins/perfcharts4/report/tmp/subreports/Performance.json
+		7,/home/vfreex/.jenkins/perfcharts7/report/tmp/subreports/Performance.json
+
+#### Step 2 ####
+Create a directory for holding all generated files.
+
+Enter the directory you just created, and run cgt-trend in bin/.
+
+		cgt-trend
+
+Or you can run cgt-trend INPUT_DIR to indicate the input directory manually:
+
+		cgt-trend /home/cgt/input/
+
+All generated files will be placed into the sub-directory "report" of your input directory. This is the default location for storing all output files. To specify another output directory, use -d option:
+
+		cgt-trend -d home/cgt/output/ /home/cgt/input/
+
+The file "report.html" in output directory is what you need. To specify another location for the generated report, use -o option:
+
+		cgt-trend -d home/cgt/output/ /home/cgt/input/ -o my_report.html
+
 Build
 -----------
 1. This software uses [Apache Ant](http://ant.apache.org/) for compiling and packaging. Please install Apache Ant first.
@@ -126,40 +164,44 @@ Build
 
 Release Log
 -----------
-* v0.3.4
-1. new style of axis labels
-2. other details related to the format of report
+### v0.4.0 ###
+- add trend report generation support
+- some bug-fixes
 
-* v0.3.3
-1. support for customizing the title and subtitle of composite chart
-2. change the unit of response time to 'ms'
-3. change the series name format in composite chart
-4. automatic interval choosing improvements
+### v0.3.4 ###
+- new style of axis labels
+- other details related to the format of report
 
-* v0.3.2
-1. some bugfixes
-2. reorganize some code
+### v0.3.3 ###
+- support for customizing the title and subtitle of composite chart
+- change the unit of response time to 'ms'
+- change the series name format in composite chart
+- automatic interval choosing improvements
+
+### v0.3.2 ###
+- some bug-fixes
+- reorganize some code
 
 
-* v0.3.1
-1. new feature: support for specifying time duration
-2. new feature: automatic interval choosing
-3. new feature: Jmeter CSV log support
-4. change: new rules for generating Jmeter charts
-5. bugfix: the time zone issue
-6. bugfix: incorrect calculation of summary chart when a transaction only has one sample
+### v0.3.1 ###
+- new feature: support for specifying time duration
+- new feature: automatic interval choosing
+- new feature: Jmeter CSV log support
+- change: new rules for generating Jmeter charts
+- bug-fix: the time zone issue
+- bug-fix: incorrect calculation of summary chart when a transaction only has one sample
 
-* v0.3.0
-1. new features: summary chart for Jmeter Test logs
-2. bugfix: mismatching between CPU load logs and its parser
+### v0.3.0 ###
+- new features: summary chart for Jmeter Test logs
+- bug-fix: mismatching between CPU load logs and its parser
 
-* v0.2.0
-1. add support for subtitles
-2. add support for the number of cores in CPU load charts
-3. rewrite the driver program in Bash shell script
-4. new document
-5. some bugfixes
+### v0.2.0 ###
+- add support for subtitles
+- add support for the number of cores in CPU load charts
+- rewrite the driver program in Bash shell script
+- new document
+- some bug-fixes
 
-* v0.1.0
-1. first release
+### v0.1.0 ###
+- first release
 
