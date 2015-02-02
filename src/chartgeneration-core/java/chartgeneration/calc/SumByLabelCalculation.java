@@ -2,6 +2,7 @@ package chartgeneration.calc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -102,20 +103,28 @@ public class SumByLabelCalculation implements Chart2DCalculation {
 				valueList.add(0.0);
 			}
 			if (x.equals(lastX)) {
-				valueList.set(index, valueList.get(index) + value);
-				countList.set(index, countList.get(index) + 1);
+				valueList
+						.set(index, valueList.get(index).doubleValue() + value);
+				countList.set(index, countList.get(index).intValue() + 1);
 			} else {
 				double y = 0.0;
 				int count = 0;
 				for (int i = 0; i < countList.size(); ++i) {
 					int n = countList.get(i);
 					if (n > 0) {
-						y += valueList.get(i) / n;
+						y += valueList.get(i).doubleValue() / n;
 						++count;
 					}
 				}
 				if (count > 0)
 					stops.add(new Point2D(lastX, y * times, count));
+
+				for (int i = 0; i < countList.size(); i++) {
+					countList.set(i, 0);
+				}
+				for (int i = 0; i < valueList.size(); i++) {
+					valueList.set(i, 0.0);
+				}
 				valueList.set(index, value);
 				countList.set(index, 1);
 			}

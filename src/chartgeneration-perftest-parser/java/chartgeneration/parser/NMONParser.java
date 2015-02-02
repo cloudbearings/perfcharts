@@ -36,7 +36,7 @@ public class NMONParser implements DataParser {
 		// timeFormat.setTimeZone(utcZone);
 
 		Map<String, Integer> diskColumnMap = new HashMap<String, Integer>(4);
-		Pattern diskPattern = Pattern.compile("^[hsv]d[a-z]$");
+		//Pattern diskPattern = Pattern.compile("^[hsv]d[a-z]$");
 
 		Date startTime = Settings.getInstance().getStartTime();
 		Date endTime = Settings.getInstance().getEndTime();
@@ -59,10 +59,10 @@ public class NMONParser implements DataParser {
 					&& extractedLine.length > 2
 					&& !extractedLine[1].startsWith("T")) {
 				for (int i = 2; i < extractedLine.length; ++i) {
-					if (diskPattern.matcher(extractedLine[i]).matches()) {
+					//if (diskPattern.matcher(extractedLine[i]).matches()) {
 						// diskColumnMap.putIfAbsent(extractedLine[i], i);
 						diskColumnMap.put(extractedLine[i], i);
-					}
+					//}
 				}
 			} else if (extractedLine[0].equals("AAA")
 					&& extractedLine.length >= 3) {
