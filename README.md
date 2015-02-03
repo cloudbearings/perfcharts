@@ -164,6 +164,10 @@ Build
 
 Release Log
 -----------
+### v0.4.1 ###
+- bug-fix: class SumByLabelCalculation has a bug, which causes Disk IO Chart and Disk Busy Chart sometimes go wrong
+- remove check logic for storage device names
+
 ### v0.4.0 ###
 - add trend report generation support
 - some bug-fixes

@@ -493,13 +493,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 })(jQuery);
 </script>
 <script type="text/javascript">
-	var ChartGeneration = function() {
-	};
-	ChartGeneration.data = [];
-	ChartGeneration.compositeReport = {};
-</script>
-<script type="text/javascript">
-(function() {
+ChartGeneration = function() {
+};
+ChartGeneration.data = [];
+ChartGeneration.compositeReport = {};
+(function($) {
 	function setupUI() {
 		// set up tooltip
 		$("<div id='tooltip'></div>").css({
@@ -516,12 +514,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		var $report_nav = $("#report_nav");
 		for (var i = 0; i < data.length; ++i) {
 			var report = data[i];
-			var $a = $("<a class='report_switch' href='javascript:'/>")
-					.text(report.title).data("report-index", i).click(
-							function() {
-								$(".control_pad").html("");
-								showReport($(this).data("report-index"));
-							});
+			var $a = $("<a class='report_switch' href='javascript:'/>").text(
+					report.title).data("report-index", i).click(function() {
+				$(".control_pad").html("");
+				showReport($(this).data("report-index"));
+			});
 			$report_nav.append($("<li/>").append($a));
 		}
 		$("<li/>")
@@ -535,6 +532,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 	function showReport(index) {
 		var data = ChartGeneration.data;
+		if (index >= data.length)
+			return;
 		drawReport($(".report"), data[index]);
 	}
 
@@ -542,15 +541,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		$(".control_pad").html("");
 		var report = ChartGeneration.compositeReport;
 		report.title = "";
-		if (!report.charts){
-		report.charts = [ {
-			title : "Composite Chart",
-			subtitle : "",
-			xaxisMode : "TIME",
-			series : [],
-			yaxes : [],
-			yaxesMap : {},
-		} ];
+		if (!report.charts) {
+			report.charts = [ {
+				title : "Composite Chart",
+				subtitle : "",
+				xaxisMode : "TIME",
+				series : [],
+				yaxes : [],
+				yaxesMap : {},
+			} ];
 		}
 		drawReport($(".report"), report);
 		var $control_pad = $(".control_pad");
@@ -558,7 +557,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		$(".chart").addClass("composite_chart");
 		setupControlPadForCompositeChart($placeholder, $control_pad);
 	}
-	
+
 	function on_cb_control_pad_change() {
 		var $this = $(this);
 		var tag = $this.data("tag");
@@ -578,8 +577,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				yaxesMap[yLabel] = yaxes.length;
 			}
 			series.push({
-				// 					label : tag.report.title + "<br/>" + tag.chart.title
-				// 							+ "<br/>" + line.label,
+				// label : tag.report.title + "<br/>" + tag.chart.title
+				// + "<br/>" + line.label,
 				label : tag.chart.subtitle ? tag.chart.subtitle + "-"
 						+ line.label : line.label,
 				data : line.data,
@@ -594,8 +593,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				}
 			}
 		}
-		draw(tag.$placeholder, tag.$legend, compositeChart, function(
-				options) {
+		draw(tag.$placeholder, tag.$legend, compositeChart, function(options) {
 			options.yaxes = yaxes;
 			return options;
 		});
@@ -613,17 +611,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	function setupControlPadForCompositeChart($placeholder, $control_pad) {
 		var reports = ChartGeneration.data;
 		var $topDiv = $("<div/>").appendTo($control_pad);
-		$("<button>Clear Selection</button>").data("$placeholder",
-				$placeholder).click(on_clearSelection_click).appendTo(
-				$topDiv);
-		$("<input type='text' placeholder='title'/>")
-				.change(
-						function() {
-							$(".composite_chart .chart_title")
-									.text(
-											this.value ? this.value
-													: ChartGeneration.compositeReport.title);
-						}).appendTo($topDiv);
+		$("<button>Clear Selection</button>")
+				.data("$placeholder", $placeholder).click(
+						on_clearSelection_click).appendTo($topDiv);
+		$("<input type='text' placeholder='title'/>").change(
+				function() {
+					$(".composite_chart .chart_title").text(
+							this.value ? this.value
+									: ChartGeneration.compositeReport.title);
+				}).appendTo($topDiv);
 		$("<input type='text' placeholder='subtitle' />")
 				.change(
 						function() {
@@ -632,12 +628,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 											this.value ? this.value
 													: ChartGeneration.compositeReport.subtitle);
 						}).appendTo($topDiv);
-		$("<select><option value='TIME' selected>time</option><option value='INTEGER'>integer</option></select>").change(function(){
-			var compositeChart = ChartGeneration.compositeReport.charts[0];
-			compositeChart.xaxisMode = this.value;
-			showCompositeReport();
-		}).appendTo($topDiv);
-		
+		var $select = $("<select><option value='TIME'>time</option><option value='INTEGER'>integer</option></select>")
+				.change(
+						function() {
+							var compositeChart = ChartGeneration.compositeReport.charts[0];
+							compositeChart.xaxisMode = this.value;
+							showCompositeReport();
+						}).appendTo($topDiv);
+		$select.val(ChartGeneration.compositeReport.charts[0].xaxisMode);
+
 		var $rootList = $("<dl/>").appendTo($control_pad);
 		var indexOfSeries = 0;
 		for (var i = 0; i < reports.length; ++i) {
@@ -667,8 +666,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 								index : indexOfSeries++
 							}).change(on_cb_control_pad_change);
 					$("<dd/>").append(
-							$("<label/>").text(line.label).prepend(
-									$checkbox)).appendTo($chartList);
+							$("<label/>").text(line.label).prepend($checkbox))
+							.appendTo($chartList);
 				}
 			}
 
@@ -690,19 +689,16 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				drawChart($chart, chart);
 		}
 	}
-	
+
 	function drawJmeterSummaryChart($chart, chart) {
-		$chart.append($("<h3 class='chart_title'/>").text(chart.title))
-				.append(
-						$("<h4 class='chart_subtitle'/>").text(
-								chart.subtitle));
+		$chart.append($("<h3 class='chart_title'/>").text(chart.title)).append(
+				$("<h4 class='chart_subtitle'/>").text(chart.subtitle));
 		var $table = $("<table class='chart_table JmeterSummaryChart' />")
 				.appendTo($chart);
 		var $tableHeaderRow = $("<tr/>").appendTo(
 				$("<thead/>").appendTo($table));
 		for (var i = 0; i < chart.columnLabels.length; ++i) {
-			$("<th/>").text(chart.columnLabels[i])
-					.appendTo($tableHeaderRow);
+			$("<th/>").text(chart.columnLabels[i]).appendTo($tableHeaderRow);
 		}
 		var $tbody = $("<tbody/>").appendTo($table);
 		for (var i = 0; i < chart.rows.length; ++i) {
@@ -717,10 +713,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		}
 	}
 	function drawChart($chart, chart) {
-		$chart.append($("<h3 class='chart_title'/>").text(chart.title))
-				.append(
-						$("<h4 class='chart_subtitle'/>").text(
-								chart.subtitle));
+		$chart.append($("<h3 class='chart_title'/>").text(chart.title)).append(
+				$("<h4 class='chart_subtitle'/>").text(chart.subtitle));
 		var $placeholder = $("<div class='placeholder'/>").appendTo($chart);
 		$("<div class='x_label'/>").text(chart.xLabel).appendTo($chart);
 		var $legend = $("<div class='legend'/>").appendTo($chart);
@@ -756,14 +750,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			chart.yaxesMap = [];
 			for (var i = 0; i < chart.series.length; ++i) {
 				var line = chart.series[i];
-				//var yLabel = line._unit && line._unit.value ? chart.yLabel
-				//+ " / " + line._unit.value : chart.yLabel;
+				// var yLabel = line._unit && line._unit.value ? chart.yLabel
+				// + " / " + line._unit.value : chart.yLabel;
 				var yLabel = line._unit && line._unit.value ? line._unit.value
 						: chart.yLabel;
 				if (!chart.yaxesMap[yLabel]) {
 					chart.yaxes.push({
-						position : chart.yaxes.length & 1 ? "right"
-								: "left",
+						position : chart.yaxes.length & 1 ? "right" : "left",
 						axisLabel : yLabel
 					});
 					line.yaxis = chart.yaxesMap[yLabel] = chart.yaxes.length;
@@ -825,12 +818,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				tickLength : 0,
 				tickFormatter : function(num, _) {
 					var newTick = map[num];
-					return newTick ? "<div class='category_tick'>"
-							+ map[num] + "</div>" : "";
+					return newTick ? "<div class='category_tick'>" + map[num]
+							+ "</div>" : "";
 				}
 			}
 			break;
-		case "NUMBER":break;
+		case "NUMBER":
+			break;
 		case "INTEGER":
 			options.xaxis = {
 				minTickSize : 1,
@@ -851,10 +845,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 	function registerEvents($placeholder) {
 		$placeholder.off();
-		//zooming
+		// zooming
 		$placeholder.bind("plotselected", function(event, ranges) {
 			var plot = $placeholder.data("plot");
-			//if (true) {
+			// if (true) {
 			var xaxes = plot.getXAxes();
 			for (var i = 0; i < xaxes.length;) {
 				var opts = xaxes[i++].options;
@@ -875,33 +869,27 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			}
 			redraw($placeholder, plot);
 			plot.clearSelection();
-			//}
+			// }
 		});
-		//tooltip
-		$placeholder
-				.bind(
-						"plothover",
-						function(event, pos, item) {
-							var plot = $placeholder.data("plot");
-							if (item) {
-								var x = item.series.xaxis.options.mode === "time" ? new Date(
-										item.datapoint[0]).toUTCString()
-										: item.datapoint[0];
-								var y = item.datapoint[1].toFixed(2);
-								if (item.series._unit
-										&& item.series._unit.value)
-									y += " " + item.series._unit.value;
-								$("#tooltip").html(
-										"<b>" + item.series.label
-												+ "</b><br />" + x
-												+ "<br />" + y).css({
-									top : item.pageY + 5,
-									left : item.pageX + 5
-								}).fadeIn(200);
-							} else {
-								$("#tooltip").hide();
-							}
-						});
+		// tooltip
+		$placeholder.bind("plothover", function(event, pos, item) {
+			var plot = $placeholder.data("plot");
+			if (item) {
+				var x = item.series.xaxis.options.mode === "time" ? new Date(
+						item.datapoint[0]).toUTCString() : item.datapoint[0];
+				var y = item.datapoint[1].toFixed(2);
+				if (item.series._unit && item.series._unit.value)
+					y += " " + item.series._unit.value;
+				$("#tooltip").html(
+						"<b>" + item.series.label + "</b><br />" + x + "<br />"
+								+ y).css({
+					top : item.pageY + 5,
+					left : item.pageX + 5
+				}).fadeIn(200);
+			} else {
+				$("#tooltip").hide();
+			}
+		});
 		// reset zooming
 		$placeholder.bind("dblclick", function() {
 			resetZooming($placeholder);
@@ -937,10 +925,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	$(function() {
 		setupUI();
 		showReport(0);
-		//showCompositeReport();
 	});
-
-})();
+})(jQuery);
 </script>
 <style type="text/css">
 header, #content, footer {
