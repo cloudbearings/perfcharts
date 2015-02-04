@@ -146,22 +146,34 @@ public class JmeterSummaryChartGenerator implements Generator {
 					numRTfailure++;
 				}
 			}
+			// if (RTs.isEmpty()) {
+			// continue;
+			// }
 			long duration = maxTimestamp - minTimestamp + 1;
 
 			List<Object> tableRow = new ArrayList<Object>();
 			tableRow.add(series.getKey());
 			long samples = numRTsuccess + numRTfailure;
 			tableRow.add(samples);
-			double avgRT = 1.0 * sumRT / numRTsuccess;
-			tableRow.add(avgRT);
-			tableRow.add(minRT);
-			tableRow.add(maxRT);
-			tableRow.add(Utilities.fastSelect(RTs,
-					(int) Math.round((RTs.size() - 1) * 0.9)).doubleValue());
-			// std. dev. = sqrt(average of (x^2) - (average of x)^2)
-			tableRow.add(Math.sqrt(sumRTSquared / numRTsuccess - avgRT * avgRT));
+
+			if (!RTs.isEmpty()) {
+				double avgRT = 1.0 * sumRT / numRTsuccess;
+				tableRow.add(avgRT);
+				tableRow.add(minRT);
+				tableRow.add(maxRT);
+				tableRow.add(Utilities.fastSelect(RTs,
+						(int) Math.round((RTs.size() - 1) * 0.9)).doubleValue());
+				// std. dev. = sqrt(average of (x^2) - (average of x)^2)
+				tableRow.add(Math.sqrt(sumRTSquared / numRTsuccess - avgRT * avgRT));
+			} else {
+				tableRow.add(Double.NaN);
+				tableRow.add(Double.NaN);
+				tableRow.add(Double.NaN);
+				tableRow.add(Double.NaN);
+				tableRow.add(Double.NaN);
+			}
 			tableRow.add(100.0 * numRTfailure / samples);
-			tableRow.add(formatThroughput(1.0 * samples / duration));
+			tableRow.add(formatThroughput(1.0 * numRTsuccess / duration));
 			tableRow.add(bytesSum / 1.024 / duration);
 			tableRow.add(1.0 * bytesSum / numRTsuccess);
 			tableRows.add(tableRow);
