@@ -9,6 +9,7 @@ import java.util.Date;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+
 /**
  * The parser converts Jmeter test logs to data tables (in CSV format). The raw
  * data must be XML format.
@@ -29,6 +30,7 @@ public class JmeterXMLParser implements DataParser {
 		long startTimeVal = startTime == null ? -1 : startTime.getTime();
 		long endTimeVal = endTime == null ? -1 : endTime.getTime();
 		int level = 0;
+
 		String label = null;
 		long timestamp = 0;
 		int rt = 0;
@@ -36,54 +38,68 @@ public class JmeterXMLParser implements DataParser {
 		int threads = 0;
 		int bytes = 0;
 		boolean error = false;
+		boolean isEmptyTag = true;
 		while (reader.hasNext()) {
 			switch (reader.next()) {
 			case XMLStreamReader.START_ELEMENT:
 				++level;
-				boolean isSample = "sample".equals(reader.getLocalName());
-				boolean isHttpSample = !isSample
-						&& "httpSample".equals(reader.getLocalName());
-				if (level == 2 && (isSample || isHttpSample)) {
-					label = reader.getAttributeValue(null, "lb");
-					timestamp = Long.parseLong(reader.getAttributeValue(null,
-							"ts"));
-					rt = Integer.parseInt(reader.getAttributeValue(null, "t"));
-
-					if (startTimeVal > 0 && timestamp + rt < startTimeVal
-							|| endTimeVal > 0 && timestamp + rt > endTimeVal)
-						continue;
-					latency = Integer.parseInt(reader.getAttributeValue(null,
-							"lt"));
-					threads = Integer.parseInt(reader.getAttributeValue(null,
-							"ng"));
-					bytes = Integer.parseInt(reader.getAttributeValue(null,
-							"by"));
-					error = !Boolean.parseBoolean(reader.getAttributeValue(
-							null, "s"));
-					JmeterParser.writeFields(writer, "TX-" + label
-							+ (error ? "-F" : "-S"), timestamp, threads,
-							error ? '1' : '0', latency, rt, bytes);
-				}
-				if (isHttpSample) {
-					label = reader.getAttributeValue(null, "lb");
-					timestamp = Long.parseLong(reader.getAttributeValue(null,
-							"ts"));
-					rt = Integer.parseInt(reader.getAttributeValue(null, "t"));
-
-					if (startTimeVal > 0 && timestamp < startTimeVal
-							|| endTimeVal > 0 && timestamp > endTimeVal)
-						continue;
-
-					error = !Boolean.parseBoolean(reader.getAttributeValue(
-							null, "s"));
-					JmeterParser.writeFields(
-							writer,
-							"HIT-" + (error ? "F-" : "S-")
-									+ label.replace("\"", "\"\""), timestamp,
-							rt);
+				if (level == 2) {
+					boolean isSample = "sample".equals(reader.getLocalName());
+					boolean isHttpSample = !isSample
+							&& "httpSample".equals(reader.getLocalName());
+					if (isSample || isHttpSample) {
+						isEmptyTag = true;
+						label = reader.getAttributeValue(null, "lb");
+						timestamp = Long.parseLong(reader.getAttributeValue(
+								null, "ts"));
+						rt = Integer.parseInt(reader.getAttributeValue(null,
+								"t"));
+						latency = Integer.parseInt(reader.getAttributeValue(
+								null, "lt"));
+						String na = reader.getAttributeValue(null, "na");
+						threads = Integer.parseInt(na != null ? na : reader
+								.getAttributeValue(null, "ng"));
+						bytes = Integer.parseInt(reader.getAttributeValue(null,
+								"by"));
+						error = !Boolean.parseBoolean(reader.getAttributeValue(
+								null, "s"));
+						if ((startTimeVal <= 0 || timestamp + rt >= startTimeVal)
+								&& (endTimeVal <= 0 || timestamp + rt <= endTimeVal))
+							JmeterParser.writeFields(writer, "TX-" + label
+									+ (error ? "-F" : "-S"), timestamp,
+									threads, error ? '1' : '0', latency, rt,
+									bytes);
+					}
+				} else if (level >= 3) {
+					boolean isSample = "sample".equals(reader.getLocalName());
+					boolean isHttpSample = !isSample
+							&& "httpSample".equals(reader.getLocalName());
+					if (isHttpSample) {
+						isEmptyTag = false;
+						// label = reader.getAttributeValue(null, "lb");
+						long timestamp_ = Long.parseLong(reader
+								.getAttributeValue(null, "ts"));
+						if (startTimeVal > 0 && timestamp_ < startTimeVal
+								|| endTimeVal > 0 && timestamp_ > endTimeVal)
+							continue;
+						long rt_ = Integer.parseInt(reader.getAttributeValue(
+								null, "t"));
+						JmeterParser
+								.writeFields(writer, "HIT", timestamp_, rt_);
+					}
 				}
 				break;
 			case XMLStreamReader.END_ELEMENT:
+				if (level == 2 && isEmptyTag) {
+					//System.err.println("!!!EMPTY");
+					boolean isSample = "sample".equals(reader.getLocalName());
+					boolean isHttpSample = !isSample
+							&& "httpSample".equals(reader.getLocalName());
+					if (isHttpSample
+							&& (startTimeVal <= 0 || timestamp + rt >= startTimeVal)
+							&& (endTimeVal <= 0 || timestamp + rt <= endTimeVal))
+						JmeterParser.writeFields(writer, "HIT", timestamp, rt);
+				}
 				--level;
 				break;
 			}

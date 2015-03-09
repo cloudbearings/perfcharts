@@ -70,7 +70,7 @@ public class PerfTrendParser implements DataParser {
 					}
 					if (rows.length() > 0) {
 						JSONArray row = (JSONArray) rows.get(rows.length() - 1);
-						String txName = row.getString(txIndex);
+						//String txName = row.getString(txIndex);
 						double txAvgRT = row.getDouble(averageRTIndex);
 						writer.write("\"TOTAL\",");
 						writer.write(Integer.toString(buildId));

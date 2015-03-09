@@ -23,7 +23,7 @@ public class JmeterHitsChartTemplate extends BaseChart2DTemplateWithInterval {
 		FieldSelector yField = new IndexFieldSelector(2);
 		//FieldSelector xField = new AddTransformSelector(timestampField,yField);
 		rules = new ArrayList<Chart2DSeriesConfigRule>();
-		rules.add(new Chart2DSeriesConfigRule("^HIT-.*", "Hits", "",
+		rules.add(new Chart2DSeriesConfigRule("^HIT$", "Hits", "",
 				getLabelField(), timestampField, yField, new CountCalculation(
 						interval, 1000.0 / interval)));
 		return createConfig("Hits over Time", "Time",
