@@ -93,7 +93,8 @@ public class CountCalculation implements Chart2DCalculation {
 				++count;
 			} else {
 				if (count > 0) {
-					stops.add(new Point2D(lastX, count * times, count));
+					stops.add(new Point2D(lastX, count * times * 1000.0
+							/ interval, count));
 					if (setZeroIfIntervalNoData
 							&& lastX.doubleValue() + interval < x.doubleValue()) {
 						stops.add(new Point2D(lastX.doubleValue() + interval,
@@ -109,7 +110,8 @@ public class CountCalculation implements Chart2DCalculation {
 			lastX = x;
 		}
 		if (count > 0)
-			stops.add(new Point2D(lastX, count * times, count));
+			stops.add(new Point2D(lastX, count * times * 1000.0 / interval,
+					count));
 		return stops;
 	}
 
