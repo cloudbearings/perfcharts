@@ -80,6 +80,8 @@ public class NMONParser implements DataParser {
 				parseCPUUtilization(writer, line, timeTable);
 			else if (line[0].equals("MEM"))
 				parseMemoryUtilization(writer, line, timeTable);
+			else if (line[0].equals("VM"))
+				parseSwapInOut(writer, line, timeTable);
 			else if (line[0].equals("NET"))
 				parseNetworkThroughput(writer, line, timeTable);
 			else if (line[0].equals("DISKBUSY"))
@@ -132,6 +134,22 @@ public class NMONParser implements DataParser {
 		writer.write("\n");
 	}
 
+	private static void parseSwapInOut(BufferedWriter writer,
+			String[] line, Map<Integer, Long> timeTable) throws IOException {
+		Long ts = timeTable.get(Integer.parseInt(line[1].substring(1)));
+		if (ts == null)
+			return;
+		writer.write("VM");
+		writer.write(",");
+		writer.write(ts.toString());
+		writer.write(",");
+		writer.write(Float.toString(Float.parseFloat(line[10])));
+		writer.write(",");
+		writer.write(Float.toString(Float.parseFloat(line[11])));
+		writer.write("\n");
+	}
+
+	
 	private static void parseNetworkThroughput(BufferedWriter writer,
 			String[] line, Map<Integer, Long> timeTable) throws IOException {
 		Long ts = timeTable.get(Integer.parseInt(line[1].substring(1)));
