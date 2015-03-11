@@ -22,12 +22,16 @@ public class FlotChartFormatter implements Chart2DFormatter {
 				.append("\",\"yLabel\":\"")
 				.append(graph.getYLabel().replace("\"", "\\\""))
 				.append("\",\"xaxisMode\":\"")
-				.append(graph.getXaxisMode().toString());
+				.append(graph.getXaxisMode().toString()).append("\"");
 		if (graph.getSubtitle() != null) {
-			sb.append("\",\"subtitle\":\"").append(
-					graph.getSubtitle().replace("\"", "\\\""));
+			sb.append(",\"subtitle\":\"")
+					.append(graph.getSubtitle().replace("\"", "\\\""))
+					.append("\"");
 		}
-		sb.append("\",\"series\":[");
+		if (graph.getXTicks() != null) {
+			sb.append(",\"xaxisTicks\":").append(graph.getXTicks().format());
+		}
+		sb.append(",\"series\":[");
 		for (Chart2DSeries line : graph.getLines()) {
 			sb.append("\n{\"label\":\"")
 					.append(line.getLabel().replace("\"", "\\\"")).append("\"");

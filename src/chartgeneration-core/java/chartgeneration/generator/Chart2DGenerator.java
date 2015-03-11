@@ -17,6 +17,7 @@ import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
 import chartgeneration.model.DataTable;
+import chartgeneration.tick.TickGenerator;
 
 /**
  * A generator reads data tables and produces {@link Chart2D} according to
@@ -131,6 +132,10 @@ public class Chart2DGenerator implements Generator {
 				chart2dConfig.getYLabel(), series, chart2dConfig.getXaxisMode());
 		// set up appropriate formatter
 		graph.setFormatter(factory.createFormatter());
+		TickGenerator xTickGenerator = chart2dConfig.getXTickGenerator();
+		if (xTickGenerator != null) {
+			graph.setXTicks(xTickGenerator.generate(dataRows));
+		}
 		return graph;
 	}
 

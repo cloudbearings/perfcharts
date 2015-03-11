@@ -7,10 +7,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import org.json.JSONArray;
@@ -24,7 +24,7 @@ public class PerfTrendParser implements DataParser {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
 		String line;
-		Map<Integer, Set<String>> buildIDPathMap = new HashMap<Integer, Set<String>>();
+		Map<Integer, Set<String>> buildIDPathMap = new TreeMap<Integer, Set<String>>();
 		while ((line = reader.readLine()) != null) {
 			String[] parts = line.split(",");
 			if (parts.length < 2) {
@@ -38,7 +38,13 @@ public class PerfTrendParser implements DataParser {
 				buildIDPathMap.put(buildId, pathSet = new HashSet<String>());
 			pathSet.add(path);
 		}
+		int xvalue = 0;
 		for (int buildId : buildIDPathMap.keySet()) {
+			writer.write("\"XTICK\",");
+			writer.write(Integer.toString(xvalue));
+			writer.write(",#");
+			writer.write(Integer.toString(buildId));
+			writer.write("\n");
 			Set<String> pathSet = buildIDPathMap.get(buildId);
 			for (String path : pathSet) {
 				JSONTokener tokener = new JSONTokener(new FileInputStream(path));
@@ -63,7 +69,7 @@ public class PerfTrendParser implements DataParser {
 						writer.write("\"TX-");
 						writer.write(txName.replace("\"", "\"\""));
 						writer.write("\",");
-						writer.write(Integer.toString(buildId));
+						writer.write(Integer.toString(xvalue));
 						writer.write(",");
 						writer.write(Double.toString(txAvgRT));
 						writer.write("\n");
@@ -73,7 +79,7 @@ public class PerfTrendParser implements DataParser {
 						//String txName = row.getString(txIndex);
 						double txAvgRT = row.getDouble(averageRTIndex);
 						writer.write("\"TOTAL\",");
-						writer.write(Integer.toString(buildId));
+						writer.write(Integer.toString(xvalue));
 						writer.write(",");
 						writer.write(Double.toString(txAvgRT));
 						writer.write("\n");
@@ -81,7 +87,7 @@ public class PerfTrendParser implements DataParser {
 					break;
 				}
 			}
-
+			++xvalue;
 		}
 		writer.flush();
 	}

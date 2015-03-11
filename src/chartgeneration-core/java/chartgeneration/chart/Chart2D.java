@@ -4,6 +4,7 @@ import java.util.List;
 
 import chartgeneration.config.AxisMode;
 import chartgeneration.formatter.Chart2DFormatter;
+import chartgeneration.tick.Ticks;
 
 /**
  * Represents a 2-dimensional chart
@@ -32,6 +33,11 @@ public class Chart2D extends Chart {
 	 * the formatter that the chart uses
 	 */
 	private Chart2DFormatter formatter;
+	
+	/**
+	 * optional, custom x-ticks
+	 */
+	private Ticks xticks;
 
 	/**
 	 * Initialize an empty 2-dimensional chart
@@ -168,6 +174,14 @@ public class Chart2D extends Chart {
 	 */
 	public void setFormatter(Chart2DFormatter formatter) {
 		this.formatter = formatter;
+	}
+
+	public Ticks getXTicks() {
+		return xticks;
+	}
+
+	public void setXTicks(Ticks xticks) {
+		this.xticks = xticks;
 	}
 
 }

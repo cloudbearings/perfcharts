@@ -98,6 +98,9 @@ ChartGeneration.compositeReport = {};
 				}
 			}
 		}
+		if (compositeChart.xaxisMode == "INTEGER" 
+			&& $this.is(":checked"))
+			compositeChart.xaxisTicks = tag.chart.xaxisTicks;
 		draw(tag.$placeholder, tag.$legend, compositeChart, function(options) {
 			options.yaxes = yaxes;
 			return options;
@@ -109,6 +112,7 @@ ChartGeneration.compositeReport = {};
 		var $placeholder = $this.data("$placeholder");
 		var compositeChart = ChartGeneration.compositeReport.charts[0];
 		compositeChart.series = [];
+		compositeChart.xaxisTicks = null;
 		$(".cb_control_pad").prop("checked", false);
 		redraw($placeholder, $placeholder.data("plot"), compositeChart);
 	}
@@ -333,10 +337,17 @@ ChartGeneration.compositeReport = {};
 		case "INTEGER":
 			options.xaxis = {
 				minTickSize : 1,
-				tickSize : 1,
-				tickFormatter : function(num, _) {
+				tickSize : 1
+				/*tickFormatter : function(num, _) {
 					return Math.round(num);
-				}
+				}*/
+			}
+			if (chart.xaxisTicks) {
+				options.xaxis.ticks = chart.xaxisTicks;
+			} else {
+				options.xaxis.tickFormatter = function(num, _) {
+					return Math.round(num);
+				};
 			}
 			break;
 		default:

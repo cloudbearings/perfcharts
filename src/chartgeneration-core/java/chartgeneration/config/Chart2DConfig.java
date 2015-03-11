@@ -5,6 +5,7 @@ import java.util.List;
 import chartgeneration.chart.Chart2D;
 import chartgeneration.generator.Chart2DFactory;
 import chartgeneration.generator.Chart2DFactoryImpl;
+import chartgeneration.tick.TickGenerator;
 
 /**
  * The configuration for a general two dimensional chart
@@ -34,6 +35,8 @@ public class Chart2DConfig extends BaseChartConfig<Chart2D> {
 	 * the interval value. 0 means do not merge.
 	 */
 	private int interval = 0;
+	
+	private TickGenerator xTickGenerator;
 
 	public Chart2DConfig() {
 
@@ -185,6 +188,14 @@ public class Chart2DConfig extends BaseChartConfig<Chart2D> {
 	@Override
 	public Chart2DFactory createChartFactory() throws Exception {
 		return new Chart2DFactoryImpl();
+	}
+
+	public TickGenerator getXTickGenerator() {
+		return xTickGenerator;
+	}
+
+	public void setXTickGenerator(TickGenerator xTickGenerator) {
+		this.xTickGenerator = xTickGenerator;
 	}
 
 }
