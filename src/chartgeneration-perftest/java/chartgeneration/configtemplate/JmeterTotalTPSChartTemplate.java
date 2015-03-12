@@ -10,10 +10,12 @@ import chartgeneration.common.IndexFieldSelector;
 import chartgeneration.config.AxisMode;
 import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
+import chartgeneration.config.Chart2DSeriesExclusionRule;
 import chartgeneration.configtemplate.BaseChart2DTemplateWithInterval;
 
 public class JmeterTotalTPSChartTemplate extends
 		BaseChart2DTemplateWithInterval {
+	private String exclusionPattern;
 
 	@Override
 	public Chart2DConfig generateChartConfig() {
@@ -25,14 +27,30 @@ public class JmeterTotalTPSChartTemplate extends
 		FieldSelector rtField = new IndexFieldSelector(5);
 		FieldSelector xField = new AddTransformSelector(timestampField, rtField);
 		rules = new ArrayList<Chart2DSeriesConfigRule>();
-		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-S$",
-				"Transations-Success", "", getLabelField(), xField, null,
-				new CountCalculation(interval, 1.0, false)));
-		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-F$",
-				"Transations-Failure", "", getLabelField(), xField, null,
-				new CountCalculation(interval, 1.0, true)));
+		Chart2DSeriesConfigRule rule1 = new Chart2DSeriesConfigRule(
+				"^TX-(.+)-S$", "Transations-Success", "", getLabelField(),
+				xField, null, new CountCalculation(interval, 1.0, false));
+		if (exclusionPattern != null && !exclusionPattern.isEmpty())
+			rule1.setExclusionRule(new Chart2DSeriesExclusionRule("$1",
+					exclusionPattern));
+		rules.add(rule1);
+		Chart2DSeriesConfigRule rule2 = new Chart2DSeriesConfigRule(
+				"^TX-(.+)-F$", "Transations-Failure", "", getLabelField(),
+				xField, null, new CountCalculation(interval, 1.0, true));
+		if (exclusionPattern != null && !exclusionPattern.isEmpty())
+			rule2.setExclusionRule(new Chart2DSeriesExclusionRule("$1",
+					exclusionPattern));
+		rules.add(rule2);
 		return createConfig("Total TPS over Time", "Time", "TPS", rules,
 				AxisMode.TIME);
+	}
+
+	public String getExclusionPattern() {
+		return exclusionPattern;
+	}
+
+	public void setExclusionPattern(String exclusionPattern) {
+		this.exclusionPattern = exclusionPattern;
 	}
 
 }

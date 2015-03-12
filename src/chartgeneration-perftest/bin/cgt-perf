@@ -17,6 +17,7 @@ show_usage() {
 	echo "	-z TIME_ZONE	specify the time zone, like 'GMT+8'"
 	echo "	-f FROM_TIME	specify the start time of duration, like '2014-12-18 9:30:00'"
 	echo "	-t TO_TIME	specify the end time of duration, like '2014-12-18 17:30:00'"
+	echo "	-e EXCLUSION_PATTERN	specify the pattern (regular expression) which is used to exclude some transactions for average TPS & RT  calculation, like 'ping\.html'"
 }
 
 # initialize global variables
@@ -26,7 +27,7 @@ if ! [ -n "$CGT_LOG" ]; then export CGT_LOG=$CGT_HOME/log; fi
 if ! [ -n "$CGT_JAVA_COMMAND" ]; then export CGT_JAVA_COMMAND=java; fi
 input_dir=\.
 # deal with arguments
-while getopts d:o:z:f:t:? opt; do
+while getopts d:o:z:f:t:e:? opt; do
 	case $opt in
 	d) 
 		output_dir=$OPTARG;;
@@ -38,6 +39,8 @@ while getopts d:o:z:f:t:? opt; do
 		start_time=$OPTARG;;
 	t)
 		end_time=$OPTARG;;
+	e)
+		exclusion_pattern=$OPTARG;;
 	?|*)	echo
 		show_usage
 		exit -1;;
@@ -109,10 +112,11 @@ mkdir -p "$json_dir"
 # generate charts from Jmeter
 if [ -f "$jmeter_data_table" ]; then
 	if [ -f "$input_dir/jmeter.conf" ]; then
-		cp "$input_dir/jmeter.conf" "$jmeter_dir/jmeter.conf"
+		config_file_template="$input_dir/jmeter.conf"
 	else
-		cp "$jmeter_default_config_file" "$jmeter_dir/jmeter.conf"
+		config_file_template="$jmeter_default_config_file"
 	fi
+	sed "s/<!--{command_line_exclusion_pattern}-->/${exclusion_pattern}/g" "$config_file_template" > "$jmeter_dir/jmeter.conf"
 	if ! $CGT_JAVA_COMMAND -jar "$perftest_generator" "$jmeter_dir/jmeter.conf" < "$jmeter_data_table" > "$jmeter_json_file"; then
 		exit 1
 	fi

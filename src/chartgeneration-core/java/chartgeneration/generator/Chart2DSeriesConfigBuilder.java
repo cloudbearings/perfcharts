@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import chartgeneration.common.FieldSelector;
 import chartgeneration.config.Chart2DSeriesConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
+import chartgeneration.config.Chart2DSeriesExclusionRule;
 import chartgeneration.model.DataTable;
 
 /**
@@ -42,10 +43,19 @@ public class Chart2DSeriesConfigBuilder {
 		Map<String, Set<String>> map = new HashMap<String, Set<String>>();
 		// traverse all data rows, add labels of rows that matches the patterns
 		// specified by rules to @map.
+		Chart2DSeriesExclusionRule exclusionRule = rule.getExclusionRule();
+		Pattern exclusionPattern = exclusionRule != null ? Pattern
+				.compile(exclusionRule.getPattern()) : null;
 		for (List<Object> row : rows) {
 			String rowLabel = labelField.select(row).toString();
 			Matcher matcher = pattern.matcher(rowLabel);
 			if (matcher.matches()) {
+				if (exclusionRule != null) {
+					String source = matcher.replaceAll(exclusionRule
+							.getSource());
+					if (exclusionPattern.matcher(source).matches())
+						continue; // exclude this row;
+				}
 				String seriesLabel = matcher.replaceAll(labelFormat);
 				Set<String> labels = map.get(seriesLabel);
 				if (labels == null)
@@ -53,13 +63,12 @@ public class Chart2DSeriesConfigBuilder {
 				labels.add(rowLabel);
 			}
 		}
-		
 		// generate seriesConfigs for each series
 		final List<Chart2DSeriesConfig> seriesConfigs = new ArrayList<Chart2DSeriesConfig>(
 				map.size());
-		for (String seriesLabels : map.keySet()) {
-			Set<String> involvedRowLabels = map.get(seriesLabels);
-			seriesConfigs.add(new Chart2DSeriesConfig(seriesLabels, rule
+		for (String seriesLabel : map.keySet()) {
+			Set<String> involvedRowLabels = map.get(seriesLabel);
+			seriesConfigs.add(new Chart2DSeriesConfig(seriesLabel, rule
 					.getUnit(), rule.getLabelField(), rule.getXField(), rule
 					.getYField(), rule.getCalculation(), involvedRowLabels,
 					rule.isShowLine(), rule.isShowBar(), rule.isShowUnit()));
