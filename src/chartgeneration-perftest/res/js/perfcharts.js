@@ -50,12 +50,14 @@ ChartGeneration.compositeReport = {};
 			report.charts = [ {
 				title : "Composite Chart",
 				subtitle : "",
-				xaxisMode : "TIME",
-				series : [],
-				yaxes : [],
-				yaxesMap : {},
+				xaxisMode : "TIME"
 			} ];
 		}
+		var compositeChart = report.charts[0];
+		compositeChart.series = [];
+		compositeChart.yaxes = [];
+		compositeChart.yaxesMap = {};
+		compositeChart.xaxisTicks = null;
 		drawReport($(".report"), report);
 		var $control_pad = $(".control_pad");
 		var $placeholder = $(".placeholder");
