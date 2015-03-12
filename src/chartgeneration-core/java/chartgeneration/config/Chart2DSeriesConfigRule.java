@@ -66,6 +66,8 @@ public class Chart2DSeriesConfigRule {
 	 */
 	private boolean showUnit;
 
+	private Chart2DSeriesExclusionRule exclusionRule;
+	
 	/**
 	 * constructor
 	 */
@@ -351,6 +353,14 @@ public class Chart2DSeriesConfigRule {
 	 */
 	public void setShowUnit(boolean showUnit) {
 		this.showUnit = showUnit;
+	}
+
+	public Chart2DSeriesExclusionRule getExclusionRule() {
+		return exclusionRule;
+	}
+
+	public void setExclusionRule(Chart2DSeriesExclusionRule exclusionRule) {
+		this.exclusionRule = exclusionRule;
 	}
 
 }
