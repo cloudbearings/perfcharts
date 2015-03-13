@@ -164,6 +164,14 @@ Build
 
 Release Log
 -----------
+### v0.4.2 ###
+- new feature: add support for Swap In / Out Chart
+- new feature: add support for transaction exclusion
+- bug-fix: Composite Chart doesn't support resource monitoring charts
+- bug-fix: incorrect VU, HITS, and TPS charts
+- String x-tick support, and adjust styles of history trend chart
+- dynamic y-axes position support
+
 ### v0.4.1 ###
 - bug-fix: class SumByLabelCalculation has a bug, which causes Disk IO Chart and Disk Busy Chart sometimes go wrong
 - remove check logic for storage device names
