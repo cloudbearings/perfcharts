@@ -116,7 +116,9 @@ if [ -f "$jmeter_data_table" ]; then
 	else
 		config_file_template="$jmeter_default_config_file"
 	fi
-	sed "s/<!--{command_line_exclusion_pattern}-->/${exclusion_pattern}/g" "$config_file_template" > "$jmeter_dir/jmeter.conf"
+	encoded_exclusion_pattern=${exclusion_pattern//\\/\\\\}
+	encoded_exclusion_pattern=${encoded_exclusion_pattern////\\\/}
+	sed "s/<!--{command_line_exclusion_pattern}-->/${encoded_exclusion_pattern}/g" "$config_file_template" > "$jmeter_dir/jmeter.conf"
 	if ! $CGT_JAVA_COMMAND -jar "$perftest_generator" "$jmeter_dir/jmeter.conf" < "$jmeter_data_table" > "$jmeter_json_file"; then
 		exit 1
 	fi
@@ -136,7 +138,9 @@ if [ -f "$res_data_table" ]; then
 	else
 		config_file_template=$rm_default_config_file
 	fi
-	sed "s/<!--{server_name}-->/${server_name}/g" "$config_file_template" > "$resource_monitoring_dir/$server_name.conf"
+	encoded_server_name=${server_name//\\/\\\\}
+	encoded_server_name=${encoded_server_name////\\\/}
+	sed "s/<!--{server_name}-->/${encoded_server_name}/g" "$config_file_template" > "$resource_monitoring_dir/$server_name.conf"
 	if ! $CGT_JAVA_COMMAND -jar "$perftest_generator" "$resource_monitoring_dir/$server_name.conf" < "$res_data_table" > "$json_dir/Resource-$server_name.json"; then
 		exit 1
 	fi
