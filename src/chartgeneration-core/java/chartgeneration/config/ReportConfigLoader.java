@@ -10,6 +10,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -28,6 +29,7 @@ import chartgeneration.configtemplate.ChartConfigTemplate;
  *
  */
 public class ReportConfigLoader {
+	private static final Logger LOGGER = Logger.getLogger(ReportConfigLoader.class.getName());
 	/**
 	 * The name of this package (with a appended point for concatenation)
 	 */
@@ -186,11 +188,16 @@ public class ReportConfigLoader {
 
 		return cfg;
 	}
+
 	/**
 	 * call setXXX method to assign a new property value to an object
-	 * @param obj an object
-	 * @param fieldName the name of property
-	 * @param value the new value
+	 * 
+	 * @param obj
+	 *            an object
+	 * @param fieldName
+	 *            the name of property
+	 * @param value
+	 *            the new value
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 * @throws InvocationTargetException
@@ -202,9 +209,32 @@ public class ReportConfigLoader {
 				+ fieldName.substring(1);
 		// TODO: need optimization
 		for (Method m : obj.getClass().getMethods()) {
-			if (m.getName().equals(methodName)) {
-				m.invoke(obj, value);
-				break;
+			try {
+				if (m.getName().equals(methodName)) {
+					if (m.getParameterTypes().length == 0)
+						continue;
+					Class<?> paramType = m.getParameterTypes()[0];
+					if (paramType == int.class) {
+						if (value instanceof Number) {
+							value = ((Number) value).intValue();
+						} else if (value instanceof String) {
+							value = Integer.parseInt(value.toString());
+						}
+					} else if (paramType == Long.class || paramType == long.class) {
+						if (value instanceof Number) {
+							value = paramType
+									.cast(((Number) value).longValue());
+						} else if (value instanceof String) {
+							value = Long.parseLong(value.toString());
+						}
+					} else if (paramType == String.class) {
+						value = value.toString();
+					}
+					m.invoke(obj, value);
+					break;
+				}
+			} catch (Exception ex) {
+				LOGGER.warning("ignore config parameter: " + fieldName + " -> " + value );
 			}
 		}
 	}
