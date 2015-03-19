@@ -14,11 +14,14 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 public class PerfTrendParser implements DataParser {
-	private final static Logger LOGGER = Logger.getLogger(PerfTrendParser.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(PerfTrendParser.class
+			.getName());
+
 	@Override
 	public void parse(InputStream in, OutputStream out) throws Exception {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -47,44 +50,65 @@ public class PerfTrendParser implements DataParser {
 			writer.write("\n");
 			Set<String> pathSet = buildIDPathMap.get(buildId);
 			for (String path : pathSet) {
-				JSONTokener tokener = new JSONTokener(new FileInputStream(path));
-				JSONObject report = (JSONObject) tokener.nextValue();
-				JSONArray charts = report.getJSONArray("charts");
-				for (int i = 0; i < charts.length(); ++i) {
-					JSONObject chart = (JSONObject) charts.get(i);
-					if (!chart.has("chartType")
-							|| !"JmeterSummaryChart".equals(chart
-									.getString("chartType")))
-						continue;
-					JSONArray columnLabels = chart.getJSONArray("columnLabels");
-					int txIndex = findKey(columnLabels, "Transation");
-					int averageRTIndex = findKey(columnLabels, "Average");
-					JSONArray rows = chart.getJSONArray("rows");
-					for (int j = 0; j < rows.length() - 1; ++j) {
-						JSONArray row = (JSONArray) rows.get(j);
-						String txName = row.getString(txIndex);
-						double txAvgRT = row.getDouble(averageRTIndex);
-						// LOGGER.info("read JmeterSummaryChart entry from perf report: "
-						// + txName + ", " + txAvgRT);
-						writer.write("\"TX-");
-						writer.write(txName.replace("\"", "\"\""));
-						writer.write("\",");
-						writer.write(Integer.toString(xvalue));
-						writer.write(",");
-						writer.write(Double.toString(txAvgRT));
-						writer.write("\n");
+				try {
+					JSONTokener tokener = new JSONTokener(new FileInputStream(
+							path));
+					JSONObject report = new JSONObject(tokener);
+					JSONArray charts = report.getJSONArray("charts");
+					for (int i = 0; i < charts.length(); ++i) {
+						JSONObject chart = charts.getJSONObject(i);
+						if (!chart.has("chartType")
+								|| !"JmeterSummaryChart".equals(chart
+										.getString("chartType")))
+							continue;
+						JSONArray columnLabels = chart
+								.getJSONArray("columnLabels");
+						int txIndex = findKey(columnLabels, "Transation");
+						int averageRTIndex = findKey(columnLabels, "Average");
+						JSONArray rows = chart.getJSONArray("rows");
+						for (int j = 0; j < rows.length() - 1; ++j) {
+							JSONArray row = (JSONArray) rows.get(j);
+							String txName = row.getString(txIndex);
+							double txAvgRT = row.getDouble(averageRTIndex);
+							// LOGGER.info("read JmeterSummaryChart entry from perf report: "
+							// + txName + ", " + txAvgRT);
+							if (Double.isNaN(txAvgRT)) {
+								LOGGER.warning("Skip invaild Response Time value (NaN) for transaction \""
+										+ txName
+										+ "\" (build id=#"
+										+ buildId
+										+ ").");
+								continue;
+							}
+							writer.write("\"TX-");
+							writer.write(txName.replace("\"", "\"\""));
+							writer.write("\",");
+							writer.write(Integer.toString(xvalue));
+							writer.write(",");
+							writer.write(Double.toString(txAvgRT));
+							writer.write("\n");
+						}
+						if (rows.length() > 0) {
+							JSONArray row = (JSONArray) rows
+									.get(rows.length() - 1);
+							// String txName = row.getString(txIndex);
+							double txAvgRT = row.getDouble(averageRTIndex);
+							if (Double.isNaN(txAvgRT)) {
+								LOGGER.warning("Skip invaild Response Time value (NaN) for TOTAL (build id=#"
+										+ buildId + ").");
+								continue;
+							}
+							writer.write("\"TOTAL\",");
+							writer.write(Integer.toString(xvalue));
+							writer.write(",");
+							writer.write(Double.toString(txAvgRT));
+							writer.write("\n");
+						}
+						break;
 					}
-					if (rows.length() > 0) {
-						JSONArray row = (JSONArray) rows.get(rows.length() - 1);
-						//String txName = row.getString(txIndex);
-						double txAvgRT = row.getDouble(averageRTIndex);
-						writer.write("\"TOTAL\",");
-						writer.write(Integer.toString(xvalue));
-						writer.write(",");
-						writer.write(Double.toString(txAvgRT));
-						writer.write("\n");
-					}
-					break;
+				} catch (JSONException ex) {
+					LOGGER.warning("Parsing Error, skip build \"" + path
+							+ "\":\n" + ex.toString());
 				}
 			}
 			++xvalue;

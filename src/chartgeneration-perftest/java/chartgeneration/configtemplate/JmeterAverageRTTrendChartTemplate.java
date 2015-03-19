@@ -9,7 +9,7 @@ import chartgeneration.common.IndexFieldSelector;
 import chartgeneration.config.AxisMode;
 import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
-import chartgeneration.tick.IntegerStringTickGenerator;
+import chartgeneration.tick.LongStringTickGenerator;
 
 public class JmeterAverageRTTrendChartTemplate extends BaseChart2DTemplate {
 
@@ -25,7 +25,7 @@ public class JmeterAverageRTTrendChartTemplate extends BaseChart2DTemplate {
 				rtField, new AverageCalculation(), true, false, false));
 		Chart2DConfig cfg = createConfig("Average Response Time Trend",
 				"Build No.", "Response Time", rules, AxisMode.INTEGER);
-		cfg.setXTickGenerator(new IntegerStringTickGenerator("^XTICK$",
+		cfg.setXTickGenerator(new LongStringTickGenerator("^XTICK$",
 				getLabelField(), xField, buildIDField));
 		return cfg;
 	}

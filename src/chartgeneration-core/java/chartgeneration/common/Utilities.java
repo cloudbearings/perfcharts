@@ -50,9 +50,9 @@ public class Utilities {
 		if (Utilities.isDouble(s))
 			return Double.parseDouble(s);
 		if (Utilities.isLong(s)) {
-			if (s.length() > 9)
-				return Long.parseLong(s);
-			return Integer.parseInt(s);
+			// if (s.length() > 9)
+			return Long.parseLong(s);
+			// return Integer.parseInt(s);
 		}
 		return s;
 	}

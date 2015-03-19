@@ -27,7 +27,7 @@ public class PerftestParserEntry {
 				&& !args[1].isEmpty() ? args[1] : "UTC"));
 		AppData.getInstance()
 				.getLogger()
-				.info("The time zone for parsing NMON and CPU load logs is "
+				.info("The fallback time zone is "
 						+ TimeZone.getDefault().getDisplayName());
 		String parserClassName = args[0];
 		if (!parserClassName.startsWith("/"))

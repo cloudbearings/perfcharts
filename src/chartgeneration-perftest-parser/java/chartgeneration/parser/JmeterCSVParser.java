@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Date;
+import java.util.logging.Logger;
 
 /**
  * The parser converts Jmeter test logs to data tables (in CSV format). The raw
@@ -16,6 +17,8 @@ import java.util.Date;
  */
 public class JmeterCSVParser implements DataParser {
 
+	private static Logger LOGGER = Logger.getLogger(JmeterCSVParser.class
+			.getName());
 	@Override
 	public void parse(InputStream in, OutputStream out) throws Exception {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -30,6 +33,10 @@ public class JmeterCSVParser implements DataParser {
 		while ((line = reader.readLine()) != null) {
 			String[] fields = line.split(",");
 			long timestamp = Long.parseLong(fields[0]);
+			if (timestamp == 0){
+				LOGGER.warning("Skip invalid data row: " + line);
+				continue;
+			}
 			int rt = Integer.parseInt(fields[1]);
 			if (startTimeVal > 0 && timestamp + rt < startTimeVal
 					|| endTimeVal > 0 && timestamp + rt > endTimeVal)

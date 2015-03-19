@@ -7,13 +7,13 @@ import java.util.regex.Pattern;
 
 import chartgeneration.common.FieldSelector;
 
-public class IntegerStringTickGenerator implements TickGenerator {
+public class LongStringTickGenerator implements TickGenerator {
 	private String labelPattern;
 	private FieldSelector labelField;
 	private FieldSelector valueField;
 	private FieldSelector tickField;
 
-	public IntegerStringTickGenerator(String labelPattern,
+	public LongStringTickGenerator(String labelPattern,
 			FieldSelector labelField, FieldSelector valueField,
 			FieldSelector tickField) {
 		this.labelPattern = labelPattern;
@@ -55,18 +55,18 @@ public class IntegerStringTickGenerator implements TickGenerator {
 	}
 
 	@Override
-	public IntegerStringTicks generate(List<List<Object>> dataRows) {
-		Map<Integer, String> valueTickMap = new TreeMap<Integer, String>();
+	public LongStringTicks generate(List<List<Object>> dataRows) {
+		Map<Long, String> valueTickMap = new TreeMap<Long, String>();
 		Pattern pattern = Pattern.compile(labelPattern);
 		for (List<Object> row : dataRows) {
 			String label = labelField.select(row).toString();
 			if (!pattern.matcher(label).matches())
 				continue;
-			int value = (int)valueField.select(row);
+			long value = ((Number) valueField.select(row)).longValue();
 			String tick = tickField.select(row).toString();
 			valueTickMap.put(value, tick);
 		}
-		return new IntegerStringTicks(valueTickMap);
+		return new LongStringTicks(valueTickMap);
 	}
 
 }

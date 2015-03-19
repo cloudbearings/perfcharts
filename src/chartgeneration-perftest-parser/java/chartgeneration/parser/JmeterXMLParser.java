@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -18,6 +19,8 @@ import javax.xml.stream.XMLStreamReader;
  *
  */
 public class JmeterXMLParser implements DataParser {
+	private static Logger LOGGER = Logger.getLogger(JmeterCSVParser.class
+			.getName());
 
 	public void parse(InputStream in, OutputStream out)
 			throws XMLStreamException, IOException {
@@ -52,6 +55,10 @@ public class JmeterXMLParser implements DataParser {
 						label = reader.getAttributeValue(null, "lb");
 						timestamp = Long.parseLong(reader.getAttributeValue(
 								null, "ts"));
+						if (timestamp == 0) {
+							LOGGER.warning("Skip invalid data element, because its timestamp is 0.");
+							continue;
+						}
 						rt = Integer.parseInt(reader.getAttributeValue(null,
 								"t"));
 						latency = Integer.parseInt(reader.getAttributeValue(
@@ -91,7 +98,7 @@ public class JmeterXMLParser implements DataParser {
 				break;
 			case XMLStreamReader.END_ELEMENT:
 				if (level == 2 && isEmptyTag) {
-					//System.err.println("!!!EMPTY");
+					// System.err.println("!!!EMPTY");
 					boolean isSample = "sample".equals(reader.getLocalName());
 					boolean isHttpSample = !isSample
 							&& "httpSample".equals(reader.getLocalName());

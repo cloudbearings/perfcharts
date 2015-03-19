@@ -9,7 +9,7 @@ import chartgeneration.common.IndexFieldSelector;
 import chartgeneration.config.AxisMode;
 import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
-import chartgeneration.tick.IntegerStringTickGenerator;
+import chartgeneration.tick.LongStringTickGenerator;
 public class JmeterRTTrendChartTemplate extends BaseChart2DTemplate {
 
 	@Override
@@ -24,7 +24,7 @@ public class JmeterRTTrendChartTemplate extends BaseChart2DTemplate {
 				false, false));
 		Chart2DConfig cfg = createConfig("Response Time Trend", "Build No.", "Response Time", rules,
 				AxisMode.INTEGER);
-		cfg.setXTickGenerator(new IntegerStringTickGenerator("^XTICK$", getLabelField(), xField, buildIDField));
+		cfg.setXTickGenerator(new LongStringTickGenerator("^XTICK$", getLabelField(), xField, buildIDField));
 		return cfg;
 	}
 

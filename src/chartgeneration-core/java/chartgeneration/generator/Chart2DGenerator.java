@@ -91,6 +91,16 @@ public class Chart2DGenerator implements Generator {
 			Collections.sort(involvedRows, new Comparator<List<Object>>() {
 				@Override
 				public int compare(List<Object> o1, List<Object> o2) {
+//					@SuppressWarnings("unchecked")
+//					Object c = (Comparable<Object>) seriesConfig
+//							.getXField().select(o1);
+//					@SuppressWarnings("unchecked")
+//					Object d = (Comparable<Object>) seriesConfig
+//							.getXField().select(o2);
+//					if (c instanceof Integer || d instanceof Integer  ){
+//						System.err.println("a=" + c + ", b=" + d);
+//					}
+//					
 					@SuppressWarnings("unchecked")
 					Comparable<Object> a = (Comparable<Object>) seriesConfig
 							.getXField().select(o1);
