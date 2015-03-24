@@ -33,7 +33,7 @@ public class NMONDiskIOChartTemplate extends BaseChart2DTemplateWithInterval {
 		rules.add(new Chart2DSeriesConfigRule("^DISKWRITE-(.+)$", "Disk-Total-Write", "KiB/s",
 				labelField, timestampField, diskIOField, new SumByLabelCalculation(
 						labelField, interval)));
-		return createConfig("Disk IO over Time / (KiB/s)", "Time", "Disk IO", rules, AxisMode.TIME);
+		return createConfig("Disk IO", "Time", "Disk IO", rules, AxisMode.TIME);
 	}
 
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="chartgeneration" default="all" basedir=".">
-	<description>Chart Generation Tool</description>
+	<description>Perfcharts</description>
 	<property name="bin" value="../bin"/>
 	<property name="res" value="../res"/>
 	<property name="examples" value="../examples"/>
@@ -22,6 +22,10 @@
 			<property name="lib" value="../${lib}"/> 
 			<property name="build" value="../${build}/chartgeneration-perftest-parser"/> 
 		</ant>
+		<ant antfile="build.xml" dir="chartgeneration-tool-zabbix-downloader" target="all" inheritall="false" inheritrefs="false">
+			<property name="lib" value="../${lib}"/> 
+			<property name="build" value="../${build}/chartgeneration-tool-zabbix-downloader"/> 
+		</ant>
 	</target>
 	<target name="copy" depends="build">
 		<!--copy todir="${bin}">
@@ -36,6 +40,9 @@
 		<!--copy todir="${examples}">
 			<fileset dir="chartgeneration-perftest/examples" />
 		</copy-->
+		<copy todir="${bin}">
+			<fileset dir="chartgeneration-tool-zabbix-downloader/bin" />
+		</copy>
 	</target>
 	<target name="all" depends="copy">
 	</target>

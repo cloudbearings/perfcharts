@@ -22,10 +22,17 @@ public class NMONNetworkThroughputChartTemplate extends
 		FieldSelector netReadField = new IndexFieldSelector(2);
 		FieldSelector netWriteField = new IndexFieldSelector(3);
 		List<Chart2DSeriesConfigRule> rules = new ArrayList<Chart2DSeriesConfigRule>();
-		rules.add(new Chart2DSeriesConfigRule("^NET$", "Network-Read", "KiB/s", labelField,
+		rules.add(new Chart2DSeriesConfigRule("^NET$", "Network-In", "KiB/s", labelField,
 				timestampField, netReadField, new AverageCalculation(interval)));
-		rules.add(new Chart2DSeriesConfigRule("^NET$", "Network-Write", "KiB/s", labelField,
+		rules.add(new Chart2DSeriesConfigRule("^NET$", "Network-Out", "KiB/s", labelField,
 				timestampField, netWriteField, new AverageCalculation(interval)));
+		
+		FieldSelector singleValueField = netReadField;
+		rules.add(new Chart2DSeriesConfigRule("^NET_IF_IN-(.+)$", "Network-In-$1", "KiB/s", labelField,
+				timestampField, singleValueField, new AverageCalculation(interval)));
+		rules.add(new Chart2DSeriesConfigRule("^NET_IF_IN-(.+)$", "Network-Out-$1", "KiB/s", labelField,
+				timestampField, singleValueField, new AverageCalculation(interval)));
+		
 		return createConfig("Network Throughput over Time", "Time", "Network Throughput",
 				rules, AxisMode.TIME);
 	}

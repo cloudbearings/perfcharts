@@ -34,6 +34,23 @@ public class NMONMemoryUtilizationChartTemplate extends
 		rules.add(new Chart2DSeriesConfigRule("^MEM$", "Memory-Buffers", "MiB", labelField,
 				timestampField, buffersMemField, new AverageCalculation(
 						interval)));
+		
+
+		FieldSelector singleValueField = totalMemField;
+		rules.add(new Chart2DSeriesConfigRule("^MEM_TOTAL$", "Memory-Total", "MiB", labelField,
+				timestampField, singleValueField, new AverageCalculation(interval)));
+		rules.add(new Chart2DSeriesConfigRule("^MEM_FREE$", "Memory-Free", "MiB", labelField,
+				timestampField, singleValueField, new AverageCalculation(interval)));
+		rules.add(new Chart2DSeriesConfigRule("^MEM_CACHED$", "Memory-Cached", "MiB", labelField,
+				timestampField, singleValueField,
+				new AverageCalculation(interval)));
+		rules.add(new Chart2DSeriesConfigRule("^MEM_BUFFERS$", "Memory-Buffers", "MiB", labelField,
+				timestampField, singleValueField, new AverageCalculation(
+						interval)));
+		rules.add(new Chart2DSeriesConfigRule("^MEM_AVAILABLE$", "Memory-Available", "MiB", labelField,
+				timestampField, singleValueField, new AverageCalculation(
+						interval)));
+		
 		return createConfig("Memory Utilization over Time", "Time",
 				"Memory Utilization", rules, AxisMode.TIME);
 	}

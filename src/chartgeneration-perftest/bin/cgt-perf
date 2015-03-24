@@ -81,13 +81,15 @@ if [ -f "$file" ]; then
 	file_bare_name=${file_base_name%%.*}
 	#echo ext of $file_base_name is $file_extension
 	case $file_extension in
-	load|nmon)
+	load|nmon|zabbix)
 		server_name=${file_bare_name%%_*}
 		mkdir -p "$resource_monitoring_dir"
 		if [ "$file_extension" == "load" ]; then
 			parser_class=CPULoadParser
 		elif [ "$file_extension" == "nmon" ]; then
 			parser_class=NMONParser
+		elif [ "$file_extension" == "zabbix" ]; then
+			parser_class=ZabbixParser
 		fi
 		#echo $CGT_JAVA_COMMAND "-DstartTime=$start_time" "-DendTime=$end_time" -jar "$perftest_parser" "$parser_class" "$time_zone" \< "$file" \>\> "$resource_monitoring_dir/$server_name.csv"
 		if ! $CGT_JAVA_COMMAND "-DstartTime=$start_time" "-DendTime=$end_time" -jar "$perftest_parser" "$parser_class" "$time_zone" < "$file" >> "$resource_monitoring_dir/$server_name.csv"; then

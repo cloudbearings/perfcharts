@@ -118,7 +118,7 @@ public class Utilities {
 		if (o instanceof Integer || o instanceof Long)
 			return o.toString();
 		if (o instanceof Double || o instanceof Float)
-			return String.format("%.2f", o);
+			return String.format("%.3f", o);
 		if (o instanceof Boolean)
 			return ((Boolean) o).booleanValue() ? "true" : "false";
 		return "\"" + o.toString().replace("\"", "\\\"") + "\"";

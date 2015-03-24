@@ -20,7 +20,7 @@ public class JmeterAverageRTTrendChartTemplate extends BaseChart2DTemplate {
 		FieldSelector rtField = new IndexFieldSelector(2);
 		FieldSelector buildIDField = rtField;
 		rules = new ArrayList<Chart2DSeriesConfigRule>();
-		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)$",
+		rules.add(new Chart2DSeriesConfigRule("^TOTAL$",
 				"Average Response Time", "ms", getLabelField(), xField,
 				rtField, new AverageCalculation(), true, false, false));
 		Chart2DConfig cfg = createConfig("Average Response Time Trend",
