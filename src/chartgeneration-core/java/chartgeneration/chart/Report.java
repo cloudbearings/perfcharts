@@ -1,5 +1,6 @@
 package chartgeneration.chart;
 
+import java.util.Collection;
 import java.util.List;
 /**
  * A report is a collection of charts.
@@ -14,7 +15,7 @@ public class Report {
 	/**
 	 * charts that the report contains
 	 */
-	private List<Chart> charts;
+	private Collection<Chart> charts;
 
 	/**
 	 * Initialize an empty report.
@@ -31,7 +32,7 @@ public class Report {
 	 * @param charts
 	 *            charts that the report contains
 	 */
-	public Report(String title, List<Chart> charts) {
+	public Report(String title, Collection<Chart> charts) {
 		this.title = title;
 		this.charts = charts;
 	}
@@ -41,7 +42,7 @@ public class Report {
 	 * 
 	 * @return charts
 	 */
-	public List<Chart> getCharts() {
+	public Iterable<Chart> getCharts() {
 		return charts;
 	}
 
@@ -51,7 +52,7 @@ public class Report {
 	 * @param charts
 	 *            charts
 	 */
-	public void setCharts(List<Chart> charts) {
+	public void setCharts(Collection<Chart> charts) {
 		this.charts = charts;
 	}
 

@@ -47,20 +47,6 @@ public class ZabbixDownloaderEntry {
 		}
 		String[] hosts = hostStr.split(";");
 
-		System.out.println("Zabbix password for user '" + user + "' on '" + apiUrl + "':");
-
-		String password;
-		Console console = System.console();
-		if (console != null)
-			password = new String(System.console().readPassword());
-		else {
-			Scanner scanner = new Scanner(System.in);
-			password = scanner.nextLine();
-			scanner.close();
-		}
-		if (password == null || password.isEmpty())
-			throw new InvalidParameterException("password is required.");
-
 		TimeZone timeZone;
 		final String timeZoneStr = prop.getProperty("time_zone");
 		if (timeZoneStr == null || timeZoneStr.isEmpty())
@@ -68,6 +54,7 @@ public class ZabbixDownloaderEntry {
 		else
 			timeZone = TimeZone.getTimeZone("UTC");
 		TimeZone.setDefault(timeZone);
+		sdf.setTimeZone(timeZone);
 		LOGGER.info("The fallback time zone is " + timeZone.getDisplayName());
 
 		final String startTimeStr = prop.getProperty("start_time");
@@ -81,11 +68,26 @@ public class ZabbixDownloaderEntry {
 		Date endTime = null;
 		if (endTimeStr != null && !endTimeStr.isEmpty()) {
 			endTime = sdf.parse(endTimeStr);
-			LOGGER.info("Use start time " + endTime.toString());
+			LOGGER.info("Use end time " + endTime.toString());
 		}
 
 		// make sure output directory exists
 		new File(outputDir).mkdirs();
+
+
+		System.out.println("Zabbix password for user '" + user + "' on '"
+				+ apiUrl + "':");
+		String password;
+		Console console = System.console();
+		if (console != null)
+			password = new String(System.console().readPassword());
+		else {
+			Scanner scanner = new Scanner(System.in);
+			password = scanner.nextLine();
+			scanner.close();
+		}
+		if (password == null || password.isEmpty())
+			throw new InvalidParameterException("password is required.");
 
 		ZabbixDownloader downloader = new ZabbixDownloader(apiUrl, user,
 				password, hosts, startTime, endTime, outputDir);

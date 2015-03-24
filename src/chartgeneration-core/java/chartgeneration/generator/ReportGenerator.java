@@ -2,7 +2,11 @@ package chartgeneration.generator;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import chartgeneration.chart.Chart;
 import chartgeneration.chart.Report;
@@ -48,21 +52,49 @@ public class ReportGenerator {
 	 * @throws Exception
 	 */
 	public Report generate(InputStream in) throws Exception {
-		List<Chart> charts = new ArrayList<Chart>();
-		Report report = new Report(null, charts);
-
 		// load data table
-		DateTableLoader loader = new DateTableLoader();
-		DataTable dataTable = loader.load(in);
+		final DateTableLoader loader = new DateTableLoader();
+		final DataTable dataTable = loader.load(in);
 
-		for (ChartConfig<Chart> cfg : chartConfigs) {
-			// for each ChartConfig, create associate factory and generate
-			// corresponding chart
-			ChartFactory<Chart> factory = cfg.createChartFactory();
-			Generator generator = factory.createGenerator(cfg);
-			charts.add(generator.generate(dataTable));
+		final int workingThreadsCount = Math.min(chartConfigs.size(), Runtime
+				.getRuntime().availableProcessors() * 2);
+		final Thread[] workingThreads = new Thread[workingThreadsCount];
+		final AtomicInteger remainedTasks = new AtomicInteger(chartConfigs.size());
+		final Chart[] charts = new Chart[chartConfigs.size()];
+		for (int t = 0; t < workingThreads.length; t++) {
+			workingThreads[t] = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					int taskId;
+					while ((taskId = remainedTasks.decrementAndGet()) >= 0) {
+						ChartConfig<Chart> cfg = chartConfigs.get(taskId);
+						try {
+						ChartFactory<Chart> factory = cfg.createChartFactory();
+						Generator generator = factory.createGenerator(cfg);
+						charts[taskId] = generator.generate(dataTable);
+						} catch (Exception e){
+							e.printStackTrace();
+							System.exit(1);
+						}
+					}
+				}
+			});
 		}
-		return report;
+		for (int t = 0; t < workingThreads.length; t++) {
+			workingThreads[t].start();
+		}
+		for (int t = 0; t < workingThreads.length; t++) {
+			workingThreads[t].join();
+		}
+
+//		for (ChartConfig<Chart> cfg : chartConfigs) {
+//			// for each ChartConfig, create associate factory and generate
+//			// corresponding chart
+//			ChartFactory<Chart> factory = cfg.createChartFactory();
+//			Generator generator = factory.createGenerator(cfg);
+//			charts.add(generator.generate(dataTable));
+//		}
+		return new Report(null, Arrays.asList(charts));
 	}
 
 	/**

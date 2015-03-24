@@ -121,18 +121,15 @@ public class ZabbixDownloader {
 		final JSONArray hostIds = new JSONArray(hostID2Records.keySet()
 				.toArray());
 
-		// final ConcurrentLinkedQueue<String[]> producedCSVRecords = new
-		// ConcurrentLinkedQueue<String[]>();
+		final ConcurrentLinkedQueue<Integer> itemsInQueue = new ConcurrentLinkedQueue<Integer>();
 		// search for monitored items (concurrently)
 		LOGGER.info("Searching for monitored items...");
-		@SuppressWarnings("unchecked")
-		final ConcurrentLinkedQueue<Integer>[] valueType2ItemIDs = (ConcurrentLinkedQueue<Integer>[]) new ConcurrentLinkedQueue[5];
-		for (int i = 0; i < valueType2ItemIDs.length; i++) {
-			valueType2ItemIDs[i] = new ConcurrentLinkedQueue<Integer>();
-		}
 		final ConcurrentHashMap<Integer, Integer> itemID2HostID = new ConcurrentHashMap<Integer, Integer>();
-		int processors = 1;// Runtime.getRuntime().availableProcessors();
-		Thread[] threads = new Thread[processors];
+		final ConcurrentHashMap<Integer, Integer> itemID2ValueType = new ConcurrentHashMap<Integer, Integer>();
+
+		int maxThreads = (int)(Runtime.getRuntime().availableProcessors() * 2);
+		LOGGER.info("Max working threads: " + maxThreads);
+		Thread[] threads = new Thread[maxThreads];
 		final AtomicInteger remainedItemKeys = new AtomicInteger(
 				itemKeys.length);
 		for (int t = 0; t < threads.length; t++) {
@@ -162,21 +159,19 @@ public class ZabbixDownloader {
 								String itemKey_ = item.getString("key_");
 								String itemName = item.getString("name");
 								int valueType = item.getInt("value_type");
-								// System.out.println(hostId + ":" + itemId
-								// + " -> " + itemKey_ + " : " + itemName);
 								if (valueType >= 0 && valueType < 5) {
 									ConcurrentLinkedQueue<String[]> records = hostID2Records
 											.get(hostId);
 									if (records != null) {
 										itemID2HostID.put(itemId, hostId);
-										valueType2ItemIDs[valueType]
-												.add(itemId);
+										itemID2ValueType.put(itemId, valueType);
 										records.add(new String[] { "ITEM",
 												Integer.toString(itemId),
 												itemKey_,
 												Integer.toString(valueType),
 												itemName,
 												Integer.toString(hostId) });
+										itemsInQueue.add(itemId);
 									}
 								}
 							}
@@ -210,23 +205,22 @@ public class ZabbixDownloader {
 
 		// get history (concurrently)
 		LOGGER.info("Fetching data...");
-		final AtomicInteger remainedTasks = new AtomicInteger(5);
-		threads = new Thread[processors];
+		threads = new Thread[maxThreads];
+		final int totalTasks = itemsInQueue.size();
+		final AtomicInteger finishedTasks = new AtomicInteger(0);
 		for (int t = 0; t < threads.length; t++) {
 			threads[t] = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					int valueType;
-					while ((valueType = remainedTasks.decrementAndGet()) >= 0) {
-						Queue<Integer> itemIDs = valueType2ItemIDs[valueType];
-						if (itemIDs.isEmpty())
-							continue;
+					Integer itemID;
+					while ((itemID = itemsInQueue.poll()) != null) {
+						LOGGER.info("Downloading data (" + finishedTasks.incrementAndGet() + " of " + totalTasks + ")...");
 						try {
+							int valueType = itemID2ValueType.get(itemID);
 							JSONObject param = new JSONObject()
 									.put("history", valueType)
 									.put("output", "extend")
-									.put("itemids",
-											new JSONArray(itemIDs.toArray()));
+									.put("itemids", itemID);
 							if (startTimeValue > 0)
 								param.put("time_from", startTimeValue);
 							if (endTimeValue > 0)
@@ -312,13 +306,15 @@ public class ZabbixDownloader {
 	private static JSONObject callRPC(String url, String method,
 			JSONObject params, String auth, int id)
 			throws MalformedURLException, IOException, ZabbixAPIException {
-		LOGGER.info("JSON RPC Request begins.");
+		LOGGER.info("JSON RPC Request begins: " + method);
 		HttpURLConnection http = (HttpURLConnection) new URL(url)
 				.openConnection();
 		http.setDoOutput(true);
 		http.setDoInput(true);
 		http.setUseCaches(false);
+		http.setConnectTimeout(1000 * 60);
 		http.setRequestMethod("POST");
+		http.setRequestProperty("Connection", "Close");
 		http.setRequestProperty("Content-Type", "application/json-rpc");
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
 				http.getOutputStream()));
@@ -327,32 +323,10 @@ public class ZabbixDownloader {
 				.value(method).key("id").value(id).key("auth").value(auth)
 				.key("params").value(params).endObject();
 		writer.flush();
-		int contentLength = http.getContentLength();
-//		if (contentLength < 0)
-//			throw new ZabbixAPIException(
-//					"Content length is not set on target Zabbix server.");
-		if (contentLength > 1024 * 1024 * 1024 * 1) {
-			throw new ZabbixAPIException(
-					"Your requested data is larger than 1GB.");
-		}
-		ByteArrayOutputStream memory = contentLength > 0 ? new ByteArrayOutputStream(
-				contentLength) : new ByteArrayOutputStream();
-		InputStream in = http.getInputStream();
-		byte[] buffer = new byte[1024];
-		int receivedBytes = 0;
-		int readBytes;
-		System.out.println("0/" + contentLength);
-		while ((readBytes = in.read(buffer, 0, buffer.length)) > 0) {
-			memory.write(buffer, 0, readBytes);
-			receivedBytes += readBytes;
-			System.out.println("\r" + receivedBytes + "/" + contentLength);
-			System.out.flush();
-			
-		}
-		JSONObject r = new JSONObject(new JSONTokener(new InputStreamReader(
-				new ByteArrayInputStream(memory.toByteArray()))));
+		JSONObject r = new JSONObject(new JSONTokener(new BufferedReader(
+				new InputStreamReader(http.getInputStream()))));
 		http.disconnect();
-		LOGGER.info("JSON RPC Request complete.");
+		LOGGER.info("JSON RPC Request ends: " + method);
 		return r;
 	}
 

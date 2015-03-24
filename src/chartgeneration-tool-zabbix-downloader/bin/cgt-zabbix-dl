@@ -66,7 +66,7 @@ if ! [ -n "$report_file" ]; then report_file=$output_dir/report.html; fi
 bin_dir=$CGT_HOME/bin
 lib_zabbix_downloader=$CGT_LIB/chartgeneration-tool-zabbix-downloader.jar
 
-if ! $CGT_JAVA_COMMAND "-DAPI_URL=$zabbix_api_url" "-Duser=$zabbix_user" "-Dhosts=$zabbix_hosts" "-Dtime_zone=$time_zone" "-DstartTime=$start_time" "-DendTime=$end_time" -jar "$lib_zabbix_downloader" "$output_dir"; then
+if ! $CGT_JAVA_COMMAND "-DAPI_URL=$zabbix_api_url" "-Duser=$zabbix_user" "-Dhosts=$zabbix_hosts" "-Dtime_zone=$time_zone" "-Dstart_time=$start_time" "-Dend_time=$end_time" -jar "$lib_zabbix_downloader" "$output_dir"; then
 	exit 1
 fi
 

@@ -164,6 +164,11 @@ Build
 
 Release Log
 -----------
+### v0.5.0 ###
+- new feature: add partial support for Zabbix monitor (with cgt-zabbix-dl tool)
+- multithread acceleration
+- bug-fix: Average Response Time Trend Chart uses arithmetic average. Changed to weighted average.
+
 ### v0.4.2 ###
 - new feature: add support for Swap In / Out Chart
 - new feature: add support for transaction exclusion
