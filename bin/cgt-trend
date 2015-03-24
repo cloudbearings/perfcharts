@@ -62,10 +62,10 @@ cgt_monoreport=$bin_dir/cgt-monoreport
 
 perftest_parser=$CGT_LIB/chartgeneration-perftest-parser.jar
 perftest_generator=$CGT_LIB/chartgeneration-core.jar
-trend_default_config_file=$CGT_HOME/res/perftrend.conf
+trend_default_config_file=$CGT_HOME/res/perftrend.chartconf
 
 tmp_dir=$output_dir/tmp
-trend_conf_file=$tmp_dir/perftrend.conf
+trend_conf_file=$tmp_dir/perftrend.chartconf
 trend_json_file=$tmp_dir/Performance\ Trend.json
 
 # parse raw data to data tables
@@ -80,7 +80,7 @@ if ! $CGT_JAVA_COMMAND "-DstartTime=$start_time" "-DendTime=$end_time" -jar "$pe
 	exit 1
 fi
 
-custom_conf_file="`dirname "$input_file"`/perftrend.conf"
+custom_conf_file="`dirname "$input_file"`/perftrend.chartconf"
 #echo "'$custom_conf_file'"
 if [ -f "$custom_conf_file" ]; then
 		cp "$custom_conf_file" "$trend_conf_file"

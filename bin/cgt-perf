@@ -59,8 +59,8 @@ cgt_js=$bin_dir/cgt-js
 cgt_monoreport=$bin_dir/cgt-monoreport
 perftest_parser=$CGT_LIB/chartgeneration-perftest-parser.jar
 perftest_generator=$CGT_LIB/chartgeneration-core.jar
-jmeter_default_config_file=$CGT_HOME/res/jmeter.conf
-rm_default_config_file=$CGT_HOME/res/res.template.conf
+jmeter_default_config_file=$CGT_HOME/res/jmeter.chartconf
+rm_default_config_file=$CGT_HOME/res/res.template.chartconf
 report_template=$CGT_HOME/res/report_mono.html
 
 tmp_dir=$output_dir/tmp
@@ -81,13 +81,15 @@ if [ -f "$file" ]; then
 	file_bare_name=${file_base_name%%.*}
 	#echo ext of $file_base_name is $file_extension
 	case $file_extension in
-	load|nmon)
+	load|nmon|zabbix)
 		server_name=${file_bare_name%%_*}
 		mkdir -p "$resource_monitoring_dir"
 		if [ "$file_extension" == "load" ]; then
 			parser_class=CPULoadParser
 		elif [ "$file_extension" == "nmon" ]; then
 			parser_class=NMONParser
+		elif [ "$file_extension" == "zabbix" ]; then
+			parser_class=ZabbixParser
 		fi
 		#echo $CGT_JAVA_COMMAND "-DstartTime=$start_time" "-DendTime=$end_time" -jar "$perftest_parser" "$parser_class" "$time_zone" \< "$file" \>\> "$resource_monitoring_dir/$server_name.csv"
 		if ! $CGT_JAVA_COMMAND "-DstartTime=$start_time" "-DendTime=$end_time" -jar "$perftest_parser" "$parser_class" "$time_zone" < "$file" >> "$resource_monitoring_dir/$server_name.csv"; then
@@ -111,15 +113,15 @@ done
 mkdir -p "$json_dir"
 # generate charts from Jmeter
 if [ -f "$jmeter_data_table" ]; then
-	if [ -f "$input_dir/jmeter.conf" ]; then
-		config_file_template="$input_dir/jmeter.conf"
+	if [ -f "$input_dir/jmeter.chartconf" ]; then
+		config_file_template="$input_dir/jmeter.chartconf"
 	else
 		config_file_template="$jmeter_default_config_file"
 	fi
 	encoded_exclusion_pattern=${exclusion_pattern//\\/\\\\}
 	encoded_exclusion_pattern=${encoded_exclusion_pattern////\\\/}
-	sed "s/<!--{command_line_exclusion_pattern}-->/${encoded_exclusion_pattern}/g" "$config_file_template" > "$jmeter_dir/jmeter.conf"
-	if ! $CGT_JAVA_COMMAND -jar "$perftest_generator" "$jmeter_dir/jmeter.conf" < "$jmeter_data_table" > "$jmeter_json_file"; then
+	sed "s/<!--{command_line_exclusion_pattern}-->/${encoded_exclusion_pattern}/g" "$config_file_template" > "$jmeter_dir/jmeter.chartconf"
+	if ! $CGT_JAVA_COMMAND -jar "$perftest_generator" "$jmeter_dir/jmeter.chartconf" < "$jmeter_data_table" > "$jmeter_json_file"; then
 		exit 1
 	fi
 fi
@@ -131,17 +133,17 @@ if [ -f "$res_data_table" ]; then
 	file_bare_name=${file_base_name%%.*}
 	server_name=${file_bare_name%%_*}
 	unset config_file_template
-	if [ -f "$input_dir/$server_name.conf" ]; then
-		config_file_template=$input_dir/$server_name.conf
-	elif [ -f "$input_dir/res.template.conf" ]; then
-		config_file_template=$input_dir/res.template.conf
+	if [ -f "$input_dir/$server_name.chartconf" ]; then
+		config_file_template=$input_dir/$server_name.chartconf
+	elif [ -f "$input_dir/res.template.chartconf" ]; then
+		config_file_template=$input_dir/res.template.chartconf
 	else
 		config_file_template=$rm_default_config_file
 	fi
 	encoded_server_name=${server_name//\\/\\\\}
 	encoded_server_name=${encoded_server_name////\\\/}
-	sed "s/<!--{server_name}-->/${encoded_server_name}/g" "$config_file_template" > "$resource_monitoring_dir/$server_name.conf"
-	if ! $CGT_JAVA_COMMAND -jar "$perftest_generator" "$resource_monitoring_dir/$server_name.conf" < "$res_data_table" > "$json_dir/Resource-$server_name.json"; then
+	sed "s/<!--{server_name}-->/${encoded_server_name}/g" "$config_file_template" > "$resource_monitoring_dir/$server_name.chartconf"
+	if ! $CGT_JAVA_COMMAND -jar "$perftest_generator" "$resource_monitoring_dir/$server_name.chartconf" < "$res_data_table" > "$json_dir/Resource-$server_name.json"; then
 		exit 1
 	fi
 fi
