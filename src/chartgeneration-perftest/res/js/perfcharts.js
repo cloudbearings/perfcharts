@@ -224,7 +224,7 @@ ChartGeneration.compositeReport = {};
 	function drawJmeterSummaryChart($chart, chart) {
 		$chart.append($("<h3 class='chart_title'/>").text(chart.title)).append(
 				$("<h4 class='chart_subtitle'/>").text(chart.subtitle));
-		var $table = $("<table class='chart_table JmeterSummaryChart' />")
+		var $table = $("<table class='chart_table JmeterSummaryChart sortable' />")
 				.appendTo($chart);
 		var $tableHeaderRow = $("<tr/>").appendTo(
 				$("<thead/>").appendTo($table));

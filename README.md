@@ -166,6 +166,7 @@ Release Log
 -----------
 ### v0.5.0 ###
 - new feature: add partial support for Zabbix monitor (with cgt-zabbix-dl tool)
+- new feature: sort support
 - multithread acceleration
 - bug-fix: Average Response Time Trend Chart uses arithmetic average. Changed to weighted average.
 

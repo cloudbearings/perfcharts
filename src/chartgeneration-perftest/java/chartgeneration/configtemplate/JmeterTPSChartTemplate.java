@@ -10,6 +10,7 @@ import chartgeneration.common.IndexFieldSelector;
 import chartgeneration.config.AxisMode;
 import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
+import chartgeneration.config.SeriesOrder;
 import chartgeneration.configtemplate.BaseChart2DTemplateWithInterval;
 
 public class JmeterTPSChartTemplate extends BaseChart2DTemplateWithInterval {
@@ -28,7 +29,9 @@ public class JmeterTPSChartTemplate extends BaseChart2DTemplateWithInterval {
 				xField, null, new CountCalculation(interval), true, false, false));
 		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-F$", "$1-Failure", "", getLabelField(),
 				xField, null, new CountCalculation(interval), true, false, false));
-		return createConfig("TPS over Time", "Time", "TPS", rules, AxisMode.TIME);
+		Chart2DConfig cfg =  createConfig("TPS over Time", "Time", "TPS", rules, AxisMode.TIME);
+		cfg.setSeriesOrder(SeriesOrder.SERIES_LABEL);
+		return cfg;
 	}
 
 }

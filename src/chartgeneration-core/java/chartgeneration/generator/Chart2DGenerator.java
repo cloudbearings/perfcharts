@@ -16,6 +16,7 @@ import chartgeneration.common.FieldSelector;
 import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
+import chartgeneration.config.SeriesOrder;
 import chartgeneration.model.DataTable;
 import chartgeneration.tick.TickGenerator;
 
@@ -73,6 +74,14 @@ public class Chart2DGenerator implements Generator {
 		// this chart
 		for (Chart2DSeriesConfigRule rule : rules)
 			seriesConfigs.addAll(seriesConfigBuilder.build(rule, dataTable));
+		
+		// sort series
+		Collections.sort(seriesConfigs, new Comparator<Chart2DSeriesConfig>() {
+			@Override
+			public int compare(Chart2DSeriesConfig o1, Chart2DSeriesConfig o2) {
+				return 0;
+			}
+		});
 
 		final List<Chart2DSeries> series = new ArrayList<Chart2DSeries>(
 				seriesConfigs.size());
@@ -91,16 +100,6 @@ public class Chart2DGenerator implements Generator {
 			Collections.sort(involvedRows, new Comparator<List<Object>>() {
 				@Override
 				public int compare(List<Object> o1, List<Object> o2) {
-//					@SuppressWarnings("unchecked")
-//					Object c = (Comparable<Object>) seriesConfig
-//							.getXField().select(o1);
-//					@SuppressWarnings("unchecked")
-//					Object d = (Comparable<Object>) seriesConfig
-//							.getXField().select(o2);
-//					if (c instanceof Integer || d instanceof Integer  ){
-//						System.err.println("a=" + c + ", b=" + d);
-//					}
-//					
 					@SuppressWarnings("unchecked")
 					Comparable<Object> a = (Comparable<Object>) seriesConfig
 							.getXField().select(o1);
@@ -111,7 +110,7 @@ public class Chart2DGenerator implements Generator {
 				}
 			});
 			Chart2DCalculation calc = seriesConfig.getCalculation();
-			
+
 			int interval = chart2dConfig.getInterval();
 			// If user didn't specify the interval, produce one.
 			if (interval == 0) {
@@ -125,17 +124,58 @@ public class Chart2DGenerator implements Generator {
 					interval = 1;
 				calc.setInterval(interval);
 				logger.info("use automatic interval value " + interval
-						+ " for series '" + seriesConfig.getLabel() + "' in chart '"
-						+ chart2dConfig.getTitle() + "'");
+						+ " for series '" + seriesConfig.getLabel()
+						+ "' in chart '" + chart2dConfig.getTitle() + "'");
 			}
 			// execute the calculation defined by Chart2DSeriesConfig, and
 			// collect generated points
 			List<Point2D> lineStops = calc.produce(involvedRows,
 					seriesConfig.getXField(), seriesConfig.getYField());
-			Chart2DSeries line = new Chart2DSeries(seriesConfig.getLabel(),
-					seriesConfig.getUnit(), lineStops, seriesConfig.isShowLine(),
-					seriesConfig.isShowBar(), seriesConfig.isShowUnit());
-			series.add(line);
+			if (!lineStops.isEmpty()) {
+				Chart2DSeries line = new Chart2DSeries(seriesConfig.getLabel(),
+						seriesConfig.getUnit(), lineStops,
+						seriesConfig.isShowLine(), seriesConfig.isShowBar(),
+						seriesConfig.isShowUnit());
+				series.add(line);
+			}
+		}
+		
+		SeriesOrder order = chart2dConfig.getSeriesOrder();
+		if (order != null && order != SeriesOrder.NONE) {
+			switch (order) {
+			case SERIES_LABEL:
+				series.sort(new Comparator<Chart2DSeries>() {
+					@Override
+					public int compare(Chart2DSeries o1, Chart2DSeries o2) {
+						return o1.getLabel().compareTo(o2.getLabel());
+					}
+				});
+				break;
+			case FIRST_POINT_Y:
+				series.sort(new Comparator<Chart2DSeries>() {
+					@Override
+					public int compare(Chart2DSeries o1, Chart2DSeries o2) {
+						if (o1.getStops().isEmpty() || o2.getStops().isEmpty())
+							return 0;
+						double y1 = o1.getStops().get(0).getY();
+						double y2 = o2.getStops().get(0).getY();
+						return Double.compare(y1, y2);
+					}
+				});
+				break;
+			case FIRST_POINT_Y_DESC:
+				series.sort(new Comparator<Chart2DSeries>() {
+					@Override
+					public int compare(Chart2DSeries o1, Chart2DSeries o2) {
+						if (o1.getStops().isEmpty() || o2.getStops().isEmpty())
+							return 0;
+						double y1 = o1.getStops().get(0).getY();
+						double y2 = o2.getStops().get(0).getY();
+						return Double.compare(y2, y1);
+					}
+				});
+				break;
+			}
 		}
 		Chart2D graph = new Chart2D(chart2dConfig.getTitle(),
 				chart2dConfig.getSubtitle(), chart2dConfig.getXLabel(),

@@ -1,6 +1,7 @@
 package chartgeneration.perftest.generator;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -164,7 +165,8 @@ public class JmeterSummaryChartGenerator implements Generator {
 				tableRow.add(Utilities.fastSelect(RTs,
 						(int) Math.round((RTs.size() - 1) * 0.9)).doubleValue());
 				// std. dev. = sqrt(average of (x^2) - (average of x)^2)
-				tableRow.add(Math.sqrt(sumRTSquared / numRTsuccess - avgRT * avgRT));
+				tableRow.add(Math.sqrt(sumRTSquared / numRTsuccess - avgRT
+						* avgRT));
 			} else {
 				tableRow.add(Double.NaN);
 				tableRow.add(Double.NaN);
@@ -194,6 +196,17 @@ public class JmeterSummaryChartGenerator implements Generator {
 			bytesSumTotal += bytesSum;
 			RTsTotal.addAll(RTs);
 		}
+
+		// sort rows by transaction name
+		tableRows.sort(new Comparator<List<Object>>() {
+			@Override
+			public int compare(List<Object> o1, List<Object> o2) {
+				if (o1.isEmpty() || o2.isEmpty())
+					return 0;
+				return o1.get(0).toString().compareTo(o2.get(0).toString());
+			}
+		});
+
 		// generate the TOTAL row
 		List<Object> totalRow = new ArrayList<Object>();
 		totalRow.add("TOTAL");

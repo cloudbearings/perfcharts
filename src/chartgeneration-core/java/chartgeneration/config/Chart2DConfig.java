@@ -35,11 +35,12 @@ public class Chart2DConfig extends BaseChartConfig<Chart2D> {
 	 * the interval value. 0 means do not merge.
 	 */
 	private int interval = 0;
-	
+
 	private TickGenerator xTickGenerator;
 
-	public Chart2DConfig() {
+	private SeriesOrder seriesOrder;
 
+	public Chart2DConfig() {
 	}
 
 	/**
@@ -57,11 +58,7 @@ public class Chart2DConfig extends BaseChartConfig<Chart2D> {
 	 */
 	public Chart2DConfig(String title, String subtitle, String xLabel,
 			String yLabel, List<Chart2DSeriesConfigRule> rules, int interval) {
-		super(title, subtitle);
-		this.xLabel = xLabel;
-		this.yLabel = yLabel;
-		this.rules = rules;
-		this.interval = interval;
+		this(title, subtitle, xLabel, yLabel, rules, AxisMode.NUMBER, interval);
 	}
 
 	/**
@@ -82,12 +79,37 @@ public class Chart2DConfig extends BaseChartConfig<Chart2D> {
 	public Chart2DConfig(String title, String subtitle, String xLabel,
 			String yLabel, List<Chart2DSeriesConfigRule> rules,
 			AxisMode xaxisMode, int interval) {
+		this(title, subtitle, xLabel, yLabel, rules, xaxisMode, interval,
+				SeriesOrder.NONE);
+	}
+
+	/**
+	 * 
+	 * @param title
+	 *            title of the chart
+	 * @param subtitle
+	 *            subtitle of the chart
+	 * @param xLabel
+	 *            x-axis label of the chart
+	 * @param yLabel
+	 *            y-axis label of the chart
+	 * @param rules
+	 *            for generating elements of the chart
+	 * @param xaxisMode
+	 *            the x-axis mode
+	 * @param seriesOrder
+	 *            determine how to sort generated series
+	 */
+	public Chart2DConfig(String title, String subtitle, String xLabel,
+			String yLabel, List<Chart2DSeriesConfigRule> rules,
+			AxisMode xaxisMode, int interval, SeriesOrder seriesOrder) {
 		super(title, subtitle);
 		this.xLabel = xLabel;
 		this.yLabel = yLabel;
 		this.rules = rules;
 		this.xaxisMode = xaxisMode;
 		this.interval = interval;
+		this.seriesOrder = seriesOrder;
 	}
 
 	/**
@@ -196,6 +218,14 @@ public class Chart2DConfig extends BaseChartConfig<Chart2D> {
 
 	public void setXTickGenerator(TickGenerator xTickGenerator) {
 		this.xTickGenerator = xTickGenerator;
+	}
+
+	public SeriesOrder getSeriesOrder() {
+		return seriesOrder;
+	}
+
+	public void setSeriesOrder(SeriesOrder seriesOrder) {
+		this.seriesOrder = seriesOrder;
 	}
 
 }

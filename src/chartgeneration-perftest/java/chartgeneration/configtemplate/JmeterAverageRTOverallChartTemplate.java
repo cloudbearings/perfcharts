@@ -10,6 +10,7 @@ import chartgeneration.common.IndexFieldSelector;
 import chartgeneration.config.AxisMode;
 import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
+import chartgeneration.config.SeriesOrder;
 import chartgeneration.configtemplate.BaseChart2DTemplate;
 
 public class JmeterAverageRTOverallChartTemplate extends BaseChart2DTemplate {
@@ -22,8 +23,10 @@ public class JmeterAverageRTOverallChartTemplate extends BaseChart2DTemplate {
 		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-S$", "$1", "ms",
 				getLabelField(), new ConstantSelector(1), rtField,
 				new AverageCalculation(), false, true, false));
-		return createConfig("Transactions Average Response Time Overall", "", "Response Time",
+		Chart2DConfig cfg = createConfig("Transactions Average Response Time Overall", "", "Response Time",
 				rules, AxisMode.CATEGORIES);
+		cfg.setSeriesOrder(SeriesOrder.FIRST_POINT_Y_DESC);
+		return cfg;
 	}
 
 }

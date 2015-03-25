@@ -10,6 +10,7 @@ import chartgeneration.common.IndexFieldSelector;
 import chartgeneration.config.AxisMode;
 import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
+import chartgeneration.config.SeriesOrder;
 import chartgeneration.configtemplate.BaseChart2DTemplateWithInterval;
 
 public class JmeterRTChartTemplate extends BaseChart2DTemplateWithInterval {
@@ -23,8 +24,10 @@ public class JmeterRTChartTemplate extends BaseChart2DTemplateWithInterval {
 		rules = new ArrayList<Chart2DSeriesConfigRule>();
 		rules.add(new Chart2DSeriesConfigRule("^TX-(.+)-S$", "$1", "ms",  getLabelField(),
 				xField, rtField, new AverageCalculation(getInterval())));
-		return createConfig("Response Time over Time",
+		Chart2DConfig cfg =  createConfig("Response Time over Time",
 				"Time", "Response Time", rules, AxisMode.TIME);
+		cfg.setSeriesOrder(SeriesOrder.SERIES_LABEL);
+		return cfg;
 	}
 
 }

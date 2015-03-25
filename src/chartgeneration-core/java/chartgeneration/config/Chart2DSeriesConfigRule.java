@@ -10,8 +10,8 @@ import chartgeneration.generator.Chart2DSeriesConfigBuilder;
 /**
  * A {@link Chart2DSeriesConfigRule} defines a rule to produce
  * {@link Chart2DSeriesConfig}s. Instances of this class are usually created by
- * {@link ChartConfigTemplate}, and used by {@link Chart2DSeriesConfigBuilder} to
- * create {@link Chart2DSeriesConfig}s.
+ * {@link ChartConfigTemplate}, and used by {@link Chart2DSeriesConfigBuilder}
+ * to create {@link Chart2DSeriesConfig}s.
  * 
  * @author Rayson Zhu
  *
@@ -67,7 +67,7 @@ public class Chart2DSeriesConfigRule {
 	private boolean showUnit;
 
 	private Chart2DSeriesExclusionRule exclusionRule;
-	
+
 	/**
 	 * constructor
 	 */
@@ -143,8 +143,8 @@ public class Chart2DSeriesConfigRule {
 	public Chart2DSeriesConfigRule(String labelPattern,
 			String seriesLabelFormat, String unit, FieldSelector labelField,
 			FieldSelector xField, FieldSelector yField,
-			Chart2DCalculation calculation, boolean showLines, boolean showBars,
-			boolean showUnit) {
+			Chart2DCalculation calculation, boolean showLines,
+			boolean showBars, boolean showUnit) {
 		this.labelPattern = labelPattern;
 		this.seriesLabelFormat = seriesLabelFormat;
 		this.labelField = labelField;
