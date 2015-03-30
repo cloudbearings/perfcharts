@@ -7,7 +7,7 @@ public class JmeterSummaryChartTemplate extends BaseChartTemplate {
 
 	public JmeterSummaryChartConfig generateChartConfig() {
 		JmeterSummaryChartConfig config = new JmeterSummaryChartConfig();
-		config.setTitle("Summary Chart");
+		config.setTitle("Summary");
 		return config;
 	}
 

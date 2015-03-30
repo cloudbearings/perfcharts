@@ -44,7 +44,7 @@ public class FlotChartFormatter implements Chart2DFormatter {
 				sb.append("}");
 			}
 			if (line.isShowBars()) {
-				sb.append(",\"bars\":{\"show\":true,\"align\":\"center\",\"barWidth\":0.8}");
+				sb.append(",\"bars\":{\"show\":true}");
 			}
 			if (!line.isShowLine()) {
 				sb.append(",\"lines\":{\"show\":false}");
