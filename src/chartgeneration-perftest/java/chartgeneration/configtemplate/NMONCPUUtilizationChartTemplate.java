@@ -9,10 +9,10 @@ import chartgeneration.common.IndexFieldSelector;
 import chartgeneration.config.AxisMode;
 import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
-import chartgeneration.configtemplate.BaseChart2DTemplateWithInterval;
+import chartgeneration.configtemplate.Chart2DTemplateWithIntervalBase;
 
 public class NMONCPUUtilizationChartTemplate extends
-		BaseChart2DTemplateWithInterval {
+		Chart2DTemplateWithIntervalBase {
 
 	@Override
 	public Chart2DConfig generateChartConfig() {

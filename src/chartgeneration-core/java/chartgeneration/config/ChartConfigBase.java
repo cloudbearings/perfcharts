@@ -1,18 +1,17 @@
-package chartgeneration.configtemplate;
+package chartgeneration.config;
 
-import chartgeneration.common.FieldSelector;
+import chartgeneration.chart.Chart;
 
 /**
- * Defines the default template of charts.
+ * BaseChartConfig is the base class for chart configuration.
  * 
  * @author Rayson Zhu
  *
+ * @param <T>
+ *            the type of chart
  */
-public abstract class BaseChartTemplate implements ChartConfigTemplate {
-	/**
-	 * the label field of data row
-	 */
-	private FieldSelector labelField;
+public abstract class ChartConfigBase<T extends Chart> implements
+		ChartConfig<T> {
 	/**
 	 * the title of configured chart
 	 */
@@ -22,23 +21,20 @@ public abstract class BaseChartTemplate implements ChartConfigTemplate {
 	 */
 	private String subtitle;
 
-	/**
-	 * Get the label field of data row
-	 * 
-	 * @return a label field
-	 */
-	public FieldSelector getLabelField() {
-		return labelField;
+	private String key;
+
+	public ChartConfigBase() {
+
 	}
 
-	/**
-	 * set the label field of data row
-	 * 
-	 * @param labelField
-	 *            a label field
-	 */
-	public void setLabelField(FieldSelector labelField) {
-		this.labelField = labelField;
+	public ChartConfigBase(String title, String subtitle) {
+		this(title, subtitle, null);
+	}
+
+	public ChartConfigBase(String title, String subtitle, String key) {
+		this.title = title;
+		this.subtitle = subtitle;
+		this.key = key;
 	}
 
 	/**
@@ -79,4 +75,11 @@ public abstract class BaseChartTemplate implements ChartConfigTemplate {
 		this.title = title;
 	}
 
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
 }

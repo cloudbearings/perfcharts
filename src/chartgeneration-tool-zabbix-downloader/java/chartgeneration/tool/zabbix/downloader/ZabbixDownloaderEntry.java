@@ -13,7 +13,6 @@ import java.util.TimeZone;
 import java.util.logging.Logger;
 
 import chartgeneration.tool.zabbix.downloader.ZabbixDownloader.ZabbixAPIException;
-import chartgeneration.tool.zabbix.downloader.ZabbixDownloader.ZabbixAPIFailureException;
 
 public class ZabbixDownloaderEntry {
 	private final static Logger LOGGER = Logger

@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class Utilities {
 	private static final Pattern longPattern = Pattern.compile("^\\d+$");
 	private static final Pattern doublePattern = Pattern
-			.compile("^\\d*\\.\\d+$");
+			.compile("\\d*\\.\\d+|NaN");
 
 	/**
 	 * determine if the string s can be converted to a {@link Double}
@@ -48,7 +48,7 @@ public class Utilities {
 	 */
 	public static Object parseString(String s) {
 		if (Utilities.isDouble(s))
-			return Double.parseDouble(s);
+			return parseDouble(s);
 		if (Utilities.isLong(s)) {
 			// if (s.length() > 9)
 			return Long.parseLong(s);
@@ -71,7 +71,7 @@ public class Utilities {
 		if (clazz == Integer.class || clazz == int.class)
 			value = Integer.parseInt(s);
 		else if (clazz == Double.class || clazz == double.class)
-			value = Double.parseDouble(s);
+			value = parseDouble(s);
 		else if (clazz == Long.class || clazz == long.class)
 			value = Long.parseLong(s);
 		else if (clazz == Float.class || clazz == float.class)
@@ -79,6 +79,32 @@ public class Utilities {
 		else
 			value = s;
 		return value;
+	}
+
+	public static double parseDouble(String s) {
+		switch (s) {
+		case "+∞":
+			return Double.POSITIVE_INFINITY;
+		case "-∞":
+			return Double.NEGATIVE_INFINITY;
+		case "NaN":
+		case "":
+			return Double.NaN;
+		default:
+			return Double.parseDouble(s);
+		}
+
+	}
+
+	public static String doubleToString(double d) {
+		if (Double.isFinite(d))
+			return Double.toString(d);
+		else if (Double.POSITIVE_INFINITY == d)
+			return "+∞";
+		else if (Double.NEGATIVE_INFINITY == d)
+			return "-∞";
+		else
+			return "NaN";
 	}
 
 	/**
@@ -95,7 +121,7 @@ public class Utilities {
 		if (type.equals("int"))
 			value = Integer.parseInt(s);
 		else if (type.equals("double"))
-			value = Double.parseDouble(s);
+			value = parseDouble(s);
 		else if (type.equals("long"))
 			value = Long.parseLong(s);
 		else if (type.equals("float"))

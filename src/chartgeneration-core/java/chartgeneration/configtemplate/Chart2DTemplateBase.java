@@ -12,7 +12,7 @@ import chartgeneration.config.Chart2DSeriesConfigRule;
  * @author Rayson Zhu
  *
  */
-public abstract class BaseChart2DTemplate extends BaseChartTemplate {
+public abstract class Chart2DTemplateBase extends ChartTemplateBase {
 	/**
 	 * the x-axis label
 	 */
@@ -93,10 +93,13 @@ public abstract class BaseChart2DTemplate extends BaseChartTemplate {
 			List<Chart2DSeriesConfigRule> rules, AxisMode xaxisMode) {
 		String title = getTitle();
 		String subtitle = getSubtitle();
-		return new Chart2DConfig(title == null ? defaultTitle : title,
+		String key = getKey();
+		Chart2DConfig config = new Chart2DConfig(title == null ? defaultTitle : title,
 				subtitle == null ? defaultSubtitle : subtitle,
 				xLabel == null ? defaultXLabel : xLabel,
 				yLabel == null ? defaultYLabel : yLabel, rules, xaxisMode, 0);
+		config.setKey(key);
+		return config;
 	}
 
 	public abstract Chart2DConfig generateChartConfig();

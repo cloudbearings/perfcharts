@@ -11,7 +11,7 @@ echo '(function(){var d=ChartGeneration.data,j;' > "$js_file"
 for json_file in "$json_files"/*.json; do
 if [ -f "$json_file" ]; then
 	file_base_name=`basename "$json_file"`
-	file_bare_name=${file_base_name%%.*}
+	file_bare_name=${file_base_name%.*}
 	echo -n 'j=' >> "$js_file"
 	cat "$json_file" >> "$js_file"
 	echo ";if(!j.title)j.title='$file_bare_name';d.push(j);" >> "$js_file"

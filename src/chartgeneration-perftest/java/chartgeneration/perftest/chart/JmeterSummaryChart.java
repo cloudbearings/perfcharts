@@ -11,6 +11,7 @@ import chartgeneration.perftest.formatter.JmeterSummaryChartFormatter;
  * @author Rayson Zhu
  *
  */
+@Deprecated
 public class JmeterSummaryChart extends Chart {
 	/**
 	 * the formatter that the chart uses

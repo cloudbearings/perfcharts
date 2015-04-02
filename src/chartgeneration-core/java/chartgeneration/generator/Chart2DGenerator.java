@@ -63,7 +63,7 @@ public class Chart2DGenerator implements Generator {
 
 	public Chart2D generate(final DataTable dataTable) throws Exception {
 		Logger logger = AppData.getInstance().getLogger();
-
+		logger.info("Generating 2D chart '" + chart2dConfig.getTitle() + "' (" + chart2dConfig.getKey() + ")...");
 		final List<List<Object>> dataRows = dataTable.getRows();
 
 		final Chart2DSeriesConfigBuilder seriesConfigBuilder = new Chart2DSeriesConfigBuilder();
@@ -123,9 +123,9 @@ public class Chart2DGenerator implements Generator {
 				if (interval < 1)
 					interval = 1;
 				calc.setInterval(interval);
-				logger.info("use automatic interval value " + interval
+				/*logger.info("use automatic interval value " + interval
 						+ " for series '" + seriesConfig.getLabel()
-						+ "' in chart '" + chart2dConfig.getTitle() + "'");
+						+ "' in chart '" + chart2dConfig.getTitle() + "'");*/
 			}
 			// execute the calculation defined by Chart2DSeriesConfig, and
 			// collect generated points
@@ -174,6 +174,8 @@ public class Chart2DGenerator implements Generator {
 						return Double.compare(y2, y1);
 					}
 				});
+				break;
+			default:
 				break;
 			}
 		}

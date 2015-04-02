@@ -7,14 +7,14 @@ import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
 
 /**
- * Represents a {@link BaseChart2DTemplateWithInterval} with interval merge
+ * Represents a {@link Chart2DTemplateWithIntervalBase} with interval merge
  * support
  * 
  * @author Rayson Zhu
  *
  */
-public abstract class BaseChart2DTemplateWithInterval extends
-		BaseChart2DTemplate {
+public abstract class Chart2DTemplateWithIntervalBase extends
+		Chart2DTemplateBase {
 	/**
 	 * the interval value. 0 means do not merge.
 	 */
@@ -23,7 +23,7 @@ public abstract class BaseChart2DTemplateWithInterval extends
 	/**
  * 
  */
-	public BaseChart2DTemplateWithInterval() {
+	public Chart2DTemplateWithIntervalBase() {
 
 	}
 
@@ -32,7 +32,7 @@ public abstract class BaseChart2DTemplateWithInterval extends
 	 * @param interval
 	 *            the interval value. 0 means do not merge.
 	 */
-	public BaseChart2DTemplateWithInterval(int interval) {
+	public Chart2DTemplateWithIntervalBase(int interval) {
 		this.interval = interval;
 	}
 

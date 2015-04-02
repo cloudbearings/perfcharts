@@ -10,7 +10,7 @@ import chartgeneration.config.AxisMode;
 import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
 
-public class VMSwapInOutChartTemplate extends BaseChart2DTemplateWithInterval {
+public class VMSwapInOutChartTemplate extends Chart2DTemplateWithIntervalBase {
 	@Override
 	public Chart2DConfig generateChartConfig() {
 		int interval = getInterval();

@@ -15,6 +15,33 @@ import chartgeneration.common.Utilities;
  */
 public class FlotChartFormatter implements Chart2DFormatter {
 	public String format(Chart2D graph) throws Exception {
+//		JSONObject chartJson = new JSONObject();
+//		chartJson.put("title", graph.getTitle());
+//		chartJson.put("subtitle", graph.getSubtitle());
+//		chartJson.put("xLabel", graph.getXLabel());
+//		chartJson.put("yLabel", graph.getYLabel());
+//		chartJson.put("xaxisMode", graph.getXaxisMode().toString());
+//		if (graph.getXTicks() != null)
+//			chartJson.put("xaxisTicks", graph.getXTicks().format());
+//		JSONArray seriesArr = new JSONArray();
+//		for (Chart2DSeries line : graph.getLines()) {
+//			JSONObject seriesJson = new JSONObject();
+//			seriesJson.put("label", line.getLabel());
+//			seriesJson.put("bars", line.getLabel());
+//			seriesJson.put("lines", line.getLabel());
+//			seriesJson.put("points", line.getLabel());
+//			seriesJson.put("label", line.getLabel());
+//			JSONArray dataArr = new JSONArray();
+//			for (Point2D stop : line.getStops()) {
+//				dataArr.put(new JSONArray().put(
+//						Utilities.commonConvertToJsonValue(stop.getX())).put(
+//						stop.getY()));
+//			}
+//			seriesJson.put("data", dataArr);
+//			seriesArr.put(seriesJson);
+//		}
+//		
+
 		StringBuilder sb = new StringBuilder("\n{\"title\":\"")
 				.append(graph.getTitle().replace("\"", "\\\""))
 				.append("\",\"xLabel\":\"")
@@ -26,6 +53,11 @@ public class FlotChartFormatter implements Chart2DFormatter {
 		if (graph.getSubtitle() != null) {
 			sb.append(",\"subtitle\":\"")
 					.append(graph.getSubtitle().replace("\"", "\\\""))
+					.append("\"");
+		}
+		if (graph.getKey() != null) {
+			sb.append(",\"key\":\"")
+					.append(graph.getKey().replace("\"", "\\\""))
 					.append("\"");
 		}
 		if (graph.getXTicks() != null) {

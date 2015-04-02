@@ -1,7 +1,6 @@
 package chartgeneration.perftest.config;
 
-import chartgeneration.config.BaseChartConfig;
-import chartgeneration.perftest.chart.JmeterSummaryChart;
+import chartgeneration.config.GenericTableConfigBase;
 import chartgeneration.perftest.generator.JmeterSummaryChartFactory;
 import chartgeneration.perftest.generator.JmeterSummaryChartFactoryImpl;
 
@@ -12,7 +11,7 @@ import chartgeneration.perftest.generator.JmeterSummaryChartFactoryImpl;
  *
  */
 public class JmeterSummaryChartConfig extends
-		BaseChartConfig<JmeterSummaryChart> {
+		GenericTableConfigBase {
 	@Override
 	public JmeterSummaryChartFactory createChartFactory() throws Exception {
 		return new JmeterSummaryChartFactoryImpl();

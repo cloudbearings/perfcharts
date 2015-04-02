@@ -1,12 +1,18 @@
-package chartgeneration.chart;
+package chartgeneration.configtemplate;
+
+import chartgeneration.common.FieldSelector;
 
 /**
- * Represents a generated chart
+ * Defines the default template of charts.
  * 
  * @author Rayson Zhu
  *
  */
-public abstract class Chart {
+public abstract class ChartTemplateBase implements ChartConfigTemplate {
+	/**
+	 * the label field of data row
+	 */
+	private FieldSelector labelField;
 	/**
 	 * the title of configured chart
 	 */
@@ -16,38 +22,26 @@ public abstract class Chart {
 	 */
 	private String subtitle;
 	
-	/**
-	 * An identifier
-	 */
 	private String key;
 
 	/**
-	 * Initialize an empty chart
+	 * Get the label field of data row
+	 * 
+	 * @return a label field
 	 */
-	public Chart() {
-
+	public FieldSelector getLabelField() {
+		return labelField;
 	}
 
 	/**
-	 * Initialize a chart with specified title and subtitle
+	 * set the label field of data row
 	 * 
-	 * @param title
-	 *            a title
-	 * @param subtitle
-	 *            a subtitle
+	 * @param labelField
+	 *            a label field
 	 */
-	public Chart(String title, String subtitle) {
-		this.title = title;
-		this.subtitle = subtitle;
+	public void setLabelField(FieldSelector labelField) {
+		this.labelField = labelField;
 	}
-
-	/**
-	 * format the chart to string
-	 * 
-	 * @return a string
-	 * @throws Exception
-	 */
-	public abstract String format() throws Exception;
 
 	/**
 	 * get the subtitle of configured chart
@@ -94,4 +88,5 @@ public abstract class Chart {
 	public void setKey(String key) {
 		this.key = key;
 	}
+
 }

@@ -7,7 +7,7 @@ if [ "$#" -lt 1 ]; then
 	exit 1
 fi
 
-included_scripts=('lib/jquery-1.11.1.min.js' 'lib/jquery.tablesorter.min.js' 'lib/flot/jquery.flot.min.js lib/flot/jquery.flot.time.min.js' 'lib/flot/jquery.flot.categories.min.js' 'lib/flot/jquery.flot.selection.min.js' 'lib/flot/jquery.flot.crosshair.min.js' 'lib/flot/jquery.flot.axislabels.js' 'js/perfcharts.js' 'data.js')
+included_scripts=('lib/jquery-1.11.1.js' 'lib/jquery.tablesorter.js' 'lib/jquery.stickytableheaders.js' 'lib/flot/jquery.flot.js lib/flot/jquery.flot.time.js' 'lib/flot/jquery.flot.categories.js' 'lib/flot/jquery.flot.selection.js' 'lib/flot/jquery.flot.crosshair.js' 'lib/flot/jquery.flot.axislabels.js' 'js/perfcharts.js' 'data.js')
 included_stylesheets=('css/tablesorter/theme.default.css' 'css/default-style.css')
 included_htmls=('partial/body.html')
 

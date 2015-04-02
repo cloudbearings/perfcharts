@@ -11,10 +11,10 @@ import chartgeneration.config.AxisMode;
 import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
 import chartgeneration.config.Chart2DSeriesExclusionRule;
-import chartgeneration.configtemplate.BaseChart2DTemplateWithInterval;
+import chartgeneration.configtemplate.Chart2DTemplateWithIntervalBase;
 
 public class JmeterTotalTPSChartTemplate extends
-		BaseChart2DTemplateWithInterval {
+		Chart2DTemplateWithIntervalBase {
 	private String exclusionPattern;
 
 	@Override

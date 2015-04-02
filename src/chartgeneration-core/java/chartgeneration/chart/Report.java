@@ -1,7 +1,6 @@
 package chartgeneration.chart;
 
 import java.util.Collection;
-import java.util.List;
 /**
  * A report is a collection of charts.
  * @author Rayson Zhu

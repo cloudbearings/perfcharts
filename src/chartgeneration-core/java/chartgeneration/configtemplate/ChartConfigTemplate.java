@@ -27,6 +27,10 @@ public interface ChartConfigTemplate {
 	 */
 	public void setLabelField(FieldSelector labelField);
 
+	public String getKey();
+
+	public void setKey(String key);
+	
 	/**
 	 * Create a {@link ChartConfig} object to generate this kind of chart.
 	 * 

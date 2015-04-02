@@ -1,11 +1,11 @@
 package chartgeneration.perftest.generator;
 
+import chartgeneration.chart.GenericTable;
 import chartgeneration.config.ChartConfig;
 import chartgeneration.formatter.ChartFormatter;
-import chartgeneration.generator.ChartFactory;
+import chartgeneration.formatter.GenericTableFormatter;
 import chartgeneration.generator.Generator;
-import chartgeneration.perftest.chart.JmeterSummaryChart;
-import chartgeneration.perftest.formatter.JmeterSummaryChartFormatter;
+import chartgeneration.generator.GenericTableFactory;
 /**
  * A factory for creating creating {@link Generator} and {@link ChartFormatter}
  * objects for {@link JmeterSummaryChart}
@@ -14,10 +14,10 @@ import chartgeneration.perftest.formatter.JmeterSummaryChartFormatter;
  *
  */
 public interface JmeterSummaryChartFactory extends
-		ChartFactory<JmeterSummaryChart> {
+		GenericTableFactory {
 	@Override
-	public JmeterSummaryChartGenerator createGenerator(ChartConfig<JmeterSummaryChart> config) throws Exception;
+	public JmeterSummaryChartGenerator createGenerator(ChartConfig<GenericTable> config) throws Exception;
 
 	@Override
-	public JmeterSummaryChartFormatter createFormatter() throws Exception;
+	public GenericTableFormatter createFormatter() throws Exception;
 }

@@ -9,9 +9,9 @@ import chartgeneration.common.IndexFieldSelector;
 import chartgeneration.config.AxisMode;
 import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
-import chartgeneration.configtemplate.BaseChart2DTemplateWithInterval;
+import chartgeneration.configtemplate.Chart2DTemplateWithIntervalBase;
 
-public class JmeterHitsChartTemplate extends BaseChart2DTemplateWithInterval {
+public class JmeterHitsChartTemplate extends Chart2DTemplateWithIntervalBase {
 
 	@Override
 	public Chart2DConfig generateChartConfig() {

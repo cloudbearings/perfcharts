@@ -10,6 +10,7 @@ import chartgeneration.perftest.chart.JmeterSummaryChart;
  * @author Rayson Zhu
  *
  */
+@Deprecated
 public interface JmeterSummaryChartFormatter extends
 		ChartFormatter<JmeterSummaryChart> {
 	public String format(JmeterSummaryChart chart) throws Exception;

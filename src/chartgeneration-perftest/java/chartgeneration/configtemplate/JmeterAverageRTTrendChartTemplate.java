@@ -11,7 +11,7 @@ import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
 import chartgeneration.tick.LongStringTickGenerator;
 
-public class JmeterAverageRTTrendChartTemplate extends BaseChart2DTemplate {
+public class JmeterAverageRTTrendChartTemplate extends Chart2DTemplateBase {
 
 	@Override
 	public Chart2DConfig generateChartConfig() {

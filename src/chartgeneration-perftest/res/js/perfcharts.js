@@ -1,8 +1,8 @@
-function ChartGeneration ($) {
+function ChartGeneration($) {
 	ChartGeneration.eventHandlers = {
-		toggleSeries : function (sender, reportIndex, chartIndex, seriesIndex) {
+		toggleSeries : function(sender, reportIndex, chartIndex, seriesIndex) {
 			if (reportIndex < 0) // composite report does not support this
-									// function
+				// function
 				return;
 			var chart = ChartGeneration.data[reportIndex].charts[chartIndex];
 			var series = chart.series[seriesIndex];
@@ -10,19 +10,25 @@ function ChartGeneration ($) {
 			if (series._show === false)
 				show = true;
 			series._show = show;
-			
+
 			if (!series.lines)
-				series.lines = { show : true };
+				series.lines = {
+					show : true
+				};
 			series.lines.show = show ? series._showLines : false;
-			
+
 			if (!series.bars)
-				series.bars = { show : false };
+				series.bars = {
+					show : false
+				};
 			series.bars.show = show ? series._showBars : false;
-			
+
 			if (!series.points)
-				series.points = { show : false };
+				series.points = {
+					show : false
+				};
 			series.points.show = show ? series._showPoints : false;
-			
+
 			redraw(chart.plot.getPlaceholder(), chart.plot, chart, true);
 			// sender.style.color = show ? '#F00' : '#0F0'; // does not work,
 			// because the clicked legend has been discarded after redrawing.
@@ -104,15 +110,15 @@ function ChartGeneration ($) {
 		var yaxesMap = compositeChart.yaxesMap;
 		var yaxes = compositeChart.yaxes;
 		var line = tag.line;
-		var yLabel = line._unit && line._unit.value ? tag.chart.yLabel
-				+ " (" + line._unit.value + ")" : tag.chart.yLabel;
+		var yLabel = line._unit && line._unit.value ? tag.chart.yLabel + " ("
+				+ line._unit.value + ")" : tag.chart.yLabel;
 		var useWhichYaxis = yaxesMap[yLabel]; // starts from 1 if exists
 		if ($this.is(":checked")) {
 			if (!useWhichYaxis) {
 				yaxes.push({
 					position : yaxes.length & 1 ? "right" : "left",
 					axisLabel : yLabel,
-					_used: 0
+					_used : 0
 				});
 				useWhichYaxis = yaxesMap[yLabel] = yaxes.length;
 			}
@@ -137,7 +143,8 @@ function ChartGeneration ($) {
 			}
 			if (--yaxes[useWhichYaxis - 1]._used <= 0) {
 				for (var i = useWhichYaxis; i < yaxes.length; ++i) {
-					yaxes[i].position = yaxes[i].position == "right" ? "left" : "right";
+					yaxes[i].position = yaxes[i].position == "right" ? "left"
+							: "right";
 					--yaxesMap[yaxes[i].axisLabel]
 					yaxes[i - 1] = yaxes[i];
 				}
@@ -174,13 +181,13 @@ function ChartGeneration ($) {
 		$("<button>Clear Selection</button>")
 				.data("$placeholder", $placeholder).click(
 						on_clearSelection_click).appendTo($topDiv);
-		$("<input type='text' placeholder='title'/>").change(
+		$("<input type='text' placeholder='caption'/>").change(
 				function() {
 					$(".composite_chart .chart_title").text(
 							this.value ? this.value
 									: ChartGeneration.compositeReport.title);
 				}).appendTo($topDiv);
-		$("<input type='text' placeholder='subtitle' />")
+		$("<input type='text' placeholder='description' />")
 				.change(
 						function() {
 							$(".composite_chart .chart_subtitle")
@@ -249,11 +256,49 @@ function ChartGeneration ($) {
 			chart._reportIndex = report._index;
 			if (chart.chartType === "JmeterSummaryChart")
 				drawJmeterSummaryChart($chart, chart);
+			else if (chart.chartType === "TABLE")
+				drawTable($chart, chart);
 			else
 				drawChart($chart, chart);
 		}
 	}
 
+	function drawTable($chart, chart) {
+		$chart.append($("<h3 class='chart_title'/>").text(chart.title)).append(
+				$("<h4 class='chart_subtitle'/>").text(chart.subtitle));
+		var $table = $("<table class='chart_table'/>").appendTo($chart);
+		if (chart.key)
+			$table.attr("data-key", chart.key);
+
+		var $tableHeaderRow = $("<tr/>").appendTo(
+				$("<thead/>").appendTo($table));
+		for (var i = 0; i < chart.header.length; ++i) {
+			$("<th/>").text(chart.header[i]).appendTo($tableHeaderRow);
+		}
+		var $tbody = $("<tbody/>").appendTo($table);
+		for (var i = 0; i < chart.rows.length; ++i) {
+			var $tableRow = $("<tr/>").appendTo($tbody);
+			var row = chart.rows[i];
+			for (var j = 0; j < row.length; ++j) {
+				var cell = row[j];
+				var isFloat = cell.valueType === "double"
+						|| cell.valueType === "float";
+				var isNumber = isFloat || typeof cell.value === "number"
+						|| cell.valueType === "int"
+						|| cell.valueType === "long";
+				var showText = cell.value;
+				if (isFloat) {
+					showText = cell.value !== null ? cell.value.toFixed(3)
+							: (cell.rawValue === "NaN" ? "N/A" : cell.rawValue);
+				}
+				var $td = $("<td/>").text(showText).appendTo($tableRow);
+				if (isNumber)
+					$td.css("text-align", "right");
+			}
+		}
+		$table.tablesorter().stickyTableHeaders();
+	}
+	// will be deprecated 
 	function drawJmeterSummaryChart($chart, chart) {
 		$chart.append($("<h3 class='chart_title'/>").text(chart.title)).append(
 				$("<h4 class='chart_subtitle'/>").text(chart.subtitle));
@@ -292,14 +337,14 @@ function ChartGeneration ($) {
 				series._index = i;
 				series._chartIndex = chart._index;
 				series._reportIndex = chart._reportIndex;
-				series._showLines = series.lines 
-					&& series.lines.show === false ? false : true;
-				series._showBars = series.bars 
-					&& series.bars.show === true ? true : false;
-				series._showPoints = series.points 
-				&& series.points.show === true ? true : false;
+				series._showLines = series.lines && series.lines.show === false ? false
+						: true;
+				series._showBars = series.bars && series.bars.show === true ? true
+						: false;
+				series._showPoints = series.points
+						&& series.points.show === true ? true : false;
 				// series._show = true;
-			}	
+			}
 		}
 		$chart.append($("<h3 class='chart_title'/>").text(chart.title)).append(
 				$("<h4 class='chart_subtitle'/>").text(chart.subtitle));
@@ -308,16 +353,16 @@ function ChartGeneration ($) {
 		var $legend = $("<div class='legend'/>").appendTo($chart);
 		var plot = draw($placeholder, $legend, chart);
 		registerEvents($placeholder);
-//		var $category_tick = $placeholder.find('.category_tick');
-//		var maxTickLabelHeight = 0;
-//		$category_tick.each(function(_, elem) {
-//			var $this = $(elem);
-//			if (maxTickLabelHeight < $this.width())
-//				maxTickLabelHeight = $this.width();
-//			$this.css("margin-top", $this.width());
-//			$this.css("margin-left", $this.height());
-//		});
-//		$placeholder.css("padding-bottom", maxTickLabelHeight);
+		// var $category_tick = $placeholder.find('.category_tick');
+		// var maxTickLabelHeight = 0;
+		// $category_tick.each(function(_, elem) {
+		// var $this = $(elem);
+		// if (maxTickLabelHeight < $this.width())
+		// maxTickLabelHeight = $this.width();
+		// $this.css("margin-top", $this.width());
+		// $this.css("margin-left", $this.height());
+		// });
+		// $placeholder.css("padding-bottom", maxTickLabelHeight);
 	}
 
 	function yTickFormatter(num, _) {
@@ -378,21 +423,22 @@ function ChartGeneration ($) {
 				},
 				points : {
 					show : true,
-					radius: 1,
-					lineWidth: 0,
-					fill: 1,
-					fillColor: false
+					radius : 1,
+					lineWidth : 0,
+					fill : 1,
+					fillColor : false
 				}
 			},
-			shadowSize: 0,
+			shadowSize : 0,
 			crosshair : {
 				mode : "xy"
 			},
 			grid : {
 				hoverable : true
-			}/*
-				 * , pan: { interactive: true }, zoom: { interactive: true }
-				 */
+			}
+		/*
+		 * , pan: { interactive: true }, zoom: { interactive: true }
+		 */
 		};
 		if (optionsHook)
 			options = optionsHook(options);
@@ -420,8 +466,8 @@ function ChartGeneration ($) {
 				}
 			}
 			options.series.bars = {
-					show : true,
-					barWidth: 0.8
+				show : true,
+				barWidth : 0.8
 			}
 			options.series.points.show = false;
 			break;
@@ -431,9 +477,9 @@ function ChartGeneration ($) {
 			options.xaxis = {
 				minTickSize : 1,
 				tickSize : 1
-				/*
-				 * tickFormatter : function(num, _) { return Math.round(num); }
-				 */
+			/*
+			 * tickFormatter : function(num, _) { return Math.round(num); }
+			 */
 			}
 			if (chart.xaxisTicks) {
 				options.xaxis.ticks = chart.xaxisTicks;
@@ -458,7 +504,11 @@ function ChartGeneration ($) {
 		var show = true;
 		if (series._show === false)
 			show = false;
-		return '<a class="' + (show ? 'series_label_shown' : 'series_label_hidden') + '" onclick="ChartGeneration.eventHandlers.toggleSeries(this, ' + series._reportIndex + ", " + series._chartIndex + ", " + series._index + ');">'+label+'</a>';
+		return '<a class="'
+				+ (show ? 'series_label_shown' : 'series_label_hidden')
+				+ '" onclick="ChartGeneration.eventHandlers.toggleSeries(this, '
+				+ series._reportIndex + ", " + series._chartIndex + ", "
+				+ series._index + ');">' + label + '</a>';
 	}
 
 	function registerEvents($placeholder) {
@@ -491,31 +541,38 @@ function ChartGeneration ($) {
 		});
 
 		// tooltip
-		$placeholder.bind("plothover", function(event, pos, item) {
-			// var plot = $placeholder.data("plot");
-			var chart = $placeholder.data("chart");
-			if (item) {
-				var x = item.series.xaxis.options.mode === "time" ? new Date(
-						item.datapoint[0]).toUTCString() : item.datapoint[0];
-				if (chart.xaxisTicks) {
-					var tickLabel = binary_search_for_tick(chart.xaxisTicks, x);
-					if (tickLabel)
-						x = tickLabel;
-				}
+		$placeholder
+				.bind(
+						"plothover",
+						function(event, pos, item) {
+							// var plot = $placeholder.data("plot");
+							var chart = $placeholder.data("chart");
+							if (item) {
+								var x = item.series.xaxis.options.mode === "time" ? new Date(
+										item.datapoint[0]).toUTCString()
+										: item.datapoint[0];
+								if (chart.xaxisTicks) {
+									var tickLabel = binary_search_for_tick(
+											chart.xaxisTicks, x);
+									if (tickLabel)
+										x = tickLabel;
+								}
 
-				var y = item.datapoint[1].toFixed(3);
-				if (item.series._unit && item.series._unit.value)
-					y += " " + item.series._unit.value;
-				$("#tooltip").html(
-						"<b>" + item.series.label + "</b><br />" + x + "<br />"
-								+ y).css({
-					top : item.pageY + 5,
-					left : item.pageX + 5
-				}).fadeIn(200);
-			} else {
-				$("#tooltip").hide();
-			}
-		});
+								var y = item.datapoint[1].toFixed(3);
+								if (item.series._unit
+										&& item.series._unit.value)
+									y += " " + item.series._unit.value;
+								$("#tooltip").html(
+										"<b>" + item.series.label
+												+ "</b><br />" + x + "<br />"
+												+ y).css({
+									top : item.pageY + 5,
+									left : item.pageX + 5
+								}).fadeIn(200);
+							} else {
+								$("#tooltip").hide();
+							}
+						});
 		// reset zooming
 		$placeholder.bind("dblclick", function() {
 			resetZooming($placeholder);
@@ -542,13 +599,13 @@ function ChartGeneration ($) {
 		if (!ignoreGridUpdate)
 			plot.setupGrid();
 		plot.draw();
-//		if (chart && chart.xaxisMode === "CATEGORIES"){
-//			$placeholder.find('.category_tick').each(function(_, elem) {
-//				var $this = $(elem);
-//				$this.css("margin-top", $this.width());
-//				$this.css("margin-left", $this.height());
-//			});
-//		}
+		// if (chart && chart.xaxisMode === "CATEGORIES"){
+		// $placeholder.find('.category_tick').each(function(_, elem) {
+		// var $this = $(elem);
+		// $this.css("margin-top", $this.width());
+		// $this.css("margin-left", $this.height());
+		// });
+		// }
 	}
 
 	function resetZooming($placeholder) {
@@ -564,7 +621,7 @@ function ChartGeneration ($) {
 		redraw($placeholder, plot, null);
 	}
 
-	$(function(){
+	$(function() {
 		setupUI();
 		showReport(0);
 	});

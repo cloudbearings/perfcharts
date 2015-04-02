@@ -11,9 +11,9 @@ import chartgeneration.config.AxisMode;
 import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
 import chartgeneration.config.SeriesOrder;
-import chartgeneration.configtemplate.BaseChart2DTemplate;
+import chartgeneration.configtemplate.Chart2DTemplateBase;
 
-public class JmeterAverageRTOverallChartTemplate extends BaseChart2DTemplate {
+public class JmeterAverageRTOverallChartTemplate extends Chart2DTemplateBase {
 
 	@Override
 	public Chart2DConfig generateChartConfig() {

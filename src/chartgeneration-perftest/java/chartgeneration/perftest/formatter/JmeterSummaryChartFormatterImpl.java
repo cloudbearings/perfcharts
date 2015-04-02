@@ -5,8 +5,10 @@ import java.util.List;
 import chartgeneration.common.Utilities;
 import chartgeneration.perftest.chart.JmeterSummaryChart;
 
+@Deprecated
 public class JmeterSummaryChartFormatterImpl implements
 		JmeterSummaryChartFormatter {
+
 	public String format(JmeterSummaryChart chart) throws Exception {
 		StringBuffer sb = new StringBuffer(
 				"{\"chartType\":\"JmeterSummaryChart\"");

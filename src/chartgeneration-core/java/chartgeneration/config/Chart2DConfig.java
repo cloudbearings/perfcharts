@@ -13,7 +13,7 @@ import chartgeneration.tick.TickGenerator;
  * @author Rayson Zhu
  *
  */
-public class Chart2DConfig extends BaseChartConfig<Chart2D> {
+public class Chart2DConfig extends ChartConfigBase<Chart2D> {
 	/**
 	 * the x-axis label
 	 */
@@ -111,6 +111,8 @@ public class Chart2DConfig extends BaseChartConfig<Chart2D> {
 		this.interval = interval;
 		this.seriesOrder = seriesOrder;
 	}
+	
+	
 
 	/**
 	 * get the label of x-axis
