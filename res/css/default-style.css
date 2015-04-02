@@ -1,10 +1,14 @@
+html {
+	font-size: 100%;
+}
+
+body {
+	font-size: 1em;
+}
+
 header, #content, footer {
 	width: 1100px;
 	margin: 0 auto;
-}
-
-html {
-	
 }
 
 #report_nav {
@@ -61,7 +65,6 @@ html {
 /* 	text-align : right; */
 /* 	transform-origin: 0 0 */
 /* } */
-
 .x_label {
 	margin: 5px 60px;
 	text-align: center;
@@ -74,6 +77,7 @@ html {
 .series_label_shown {
 	color: #000;
 }
+
 .series_label_hidden {
 	color: #888;
 	text-decoration: line-through;
@@ -83,14 +87,25 @@ html {
 	border: 2px solid;
 	border-collapse: collapse;
 	margin: 0 auto;
+/* 	table-layout: fixed; */
 }
 
 .chart_table thead {
 	background-color: #ddd;
 }
 
-.chart_table td, .chart_table th {
+.chart_table th {
 	border: 1px solid #000;
+	font-size: 0.8em;
+}
+
+.chart_table td {
+	border: 1px solid #000;
+	font-size: 0.75em;
+}
+
+.chart_table tr:nth-child(2n) {
+	background-color: #eee;
 }
 
 .JmeterSummaryChart {

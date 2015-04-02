@@ -103,7 +103,7 @@ if [ -f "$file" ]; then
 			exit 1
 		fi
 		;;
-	conf) ;;
+	chartconf) ;;
 	*) echo "[Warning] The file'$file' is ignored, because I don't know what it is.";;
 	esac
 fi
@@ -130,7 +130,7 @@ fi
 for res_data_table in "$resource_monitoring_dir"/*.csv; do
 if [ -f "$res_data_table" ]; then
 	file_base_name=`basename "$res_data_table"`
-	file_bare_name=${file_base_name%%.*}
+	file_bare_name=${file_base_name%%.*} #FIXME: change to file_bare_name=${file_base_name%.*} ?
 	server_name=${file_bare_name%%_*}
 	unset config_file_template
 	if [ -f "$input_dir/$server_name.chartconf" ]; then
