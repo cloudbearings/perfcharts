@@ -822,8 +822,8 @@ function ChartGeneration($) {
 							: (cell.rawValue === "NaN" ? "N/A" : cell.rawValue);
 				}
 				var $td = $("<td/>").text(showText).appendTo($tableRow);
-				if (cell.cssStyle)
-					$td.addClass(cell.cssStyle);
+				if (cell.cssClass)
+					$td.addClass(cell.cssClass);
 				if (isNumber)
 					$td.css("text-align", "right");
 			}
