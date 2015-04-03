@@ -1,4 +1,4 @@
-package chartgeneration.parser.model;
+package chartgeneration.parser.perfsummary;
 
 import java.util.Map;
 
