@@ -97,14 +97,13 @@ public class Utilities {
 	}
 
 	public static String doubleToString(double d) {
-		if (Double.isFinite(d))
-			return Double.toString(d);
-		else if (Double.POSITIVE_INFINITY == d)
+		if (Double.POSITIVE_INFINITY == d)
 			return "+∞";
 		else if (Double.NEGATIVE_INFINITY == d)
 			return "-∞";
-		else
+		else if (Double.isNaN(d))
 			return "NaN";
+		return Double.toString(d);
 	}
 
 	/**

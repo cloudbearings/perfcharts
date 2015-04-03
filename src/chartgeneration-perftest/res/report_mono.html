@@ -822,6 +822,8 @@ function ChartGeneration($) {
 							: (cell.rawValue === "NaN" ? "N/A" : cell.rawValue);
 				}
 				var $td = $("<td/>").text(showText).appendTo($tableRow);
+				if (cell.cssStyle)
+					$td.addClass(cell.cssStyle);
 				if (isNumber)
 					$td.css("text-align", "right");
 			}
@@ -1477,6 +1479,13 @@ header, #content, footer {
 
 .JmeterSummaryChart_error {
 	color: red;
+}
+
+.perfcharts_warning {
+	color: red;
+}
+.perfcharts_fine {
+	color: green;
 }</style>
 </head>
 <body>

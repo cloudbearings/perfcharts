@@ -78,9 +78,10 @@ public class PerformanceComparisonTableGenerator implements Generator {
 			row[2] = new TableCell(sSample - dSample);
 			double sAverage = (double) sAverageField.select(dataRow);
 			double dAverage = (double) dAverageField.select(dataRow);
+			double diffAverage = sAverage - dAverage;
 			row[3] = new TableCell(sAverage);
-			row[4] = new TableCell(sAverage - dAverage);
-			row[5] = new TableCell((sAverage - dAverage) * 100.0 / dAverage);
+			row[4] = new TableCell(diffAverage);
+			row[5] = new TableCell(diffAverage * 100.0 / dAverage);
 			double s90Line = (double) s90LineField.select(dataRow);
 			double d90Line = (double) d90LineField.select(dataRow);
 			row[6] = new TableCell(s90Line);

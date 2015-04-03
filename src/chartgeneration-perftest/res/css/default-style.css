@@ -125,3 +125,10 @@ header, #content, footer {
 .JmeterSummaryChart_error {
 	color: red;
 }
+
+.perfcharts_warning {
+	color: red;
+}
+.perfcharts_fine {
+	color: green;
+}

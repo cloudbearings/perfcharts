@@ -63,7 +63,8 @@ public class Chart2DGenerator implements Generator {
 
 	public Chart2D generate(final DataTable dataTable) throws Exception {
 		Logger logger = AppData.getInstance().getLogger();
-		logger.info("Generating 2D chart '" + chart2dConfig.getTitle() + "' (" + chart2dConfig.getKey() + ")...");
+		logger.info("Generating 2D chart '" + chart2dConfig.getTitle() + "' ("
+				+ chart2dConfig.getKey() + ")...");
 		final List<List<Object>> dataRows = dataTable.getRows();
 
 		final Chart2DSeriesConfigBuilder seriesConfigBuilder = new Chart2DSeriesConfigBuilder();
@@ -74,7 +75,7 @@ public class Chart2DGenerator implements Generator {
 		// this chart
 		for (Chart2DSeriesConfigRule rule : rules)
 			seriesConfigs.addAll(seriesConfigBuilder.build(rule, dataTable));
-		
+
 		// sort series
 		Collections.sort(seriesConfigs, new Comparator<Chart2DSeriesConfig>() {
 			@Override
@@ -123,9 +124,11 @@ public class Chart2DGenerator implements Generator {
 				if (interval < 1)
 					interval = 1;
 				calc.setInterval(interval);
-				/*logger.info("use automatic interval value " + interval
-						+ " for series '" + seriesConfig.getLabel()
-						+ "' in chart '" + chart2dConfig.getTitle() + "'");*/
+				/*
+				 * logger.info("use automatic interval value " + interval +
+				 * " for series '" + seriesConfig.getLabel() + "' in chart '" +
+				 * chart2dConfig.getTitle() + "'");
+				 */
 			}
 			// execute the calculation defined by Chart2DSeriesConfig, and
 			// collect generated points
@@ -139,12 +142,12 @@ public class Chart2DGenerator implements Generator {
 				series.add(line);
 			}
 		}
-		
+
 		SeriesOrder order = chart2dConfig.getSeriesOrder();
 		if (order != null && order != SeriesOrder.NONE) {
 			switch (order) {
 			case SERIES_LABEL:
-				series.sort(new Comparator<Chart2DSeries>() {
+				Collections.sort(series, new Comparator<Chart2DSeries>() {
 					@Override
 					public int compare(Chart2DSeries o1, Chart2DSeries o2) {
 						return o1.getLabel().compareTo(o2.getLabel());
@@ -152,7 +155,7 @@ public class Chart2DGenerator implements Generator {
 				});
 				break;
 			case FIRST_POINT_Y:
-				series.sort(new Comparator<Chart2DSeries>() {
+				Collections.sort(series, new Comparator<Chart2DSeries>() {
 					@Override
 					public int compare(Chart2DSeries o1, Chart2DSeries o2) {
 						if (o1.getStops().isEmpty() || o2.getStops().isEmpty())
@@ -164,7 +167,7 @@ public class Chart2DGenerator implements Generator {
 				});
 				break;
 			case FIRST_POINT_Y_DESC:
-				series.sort(new Comparator<Chart2DSeries>() {
+				Collections.sort(series, new Comparator<Chart2DSeries>() {
 					@Override
 					public int compare(Chart2DSeries o1, Chart2DSeries o2) {
 						if (o1.getStops().isEmpty() || o2.getStops().isEmpty())

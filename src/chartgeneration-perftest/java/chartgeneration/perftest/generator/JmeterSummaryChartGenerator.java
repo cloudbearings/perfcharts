@@ -1,6 +1,7 @@
 package chartgeneration.perftest.generator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -158,6 +159,8 @@ public class JmeterSummaryChartGenerator implements Generator {
 			if (!RTs.isEmpty()) {
 				double avgRT = 1.0 * sumRT / numRTsuccess;
 				tableRow[2] = new TableCell(avgRT);
+				if (avgRT > 5000)
+					tableRow[2].setCssClass("perfcharts_warning");
 				tableRow[3] = new TableCell(minRT);
 				tableRow[4] = new TableCell(maxRT);
 				tableRow[5] = new TableCell(Utilities.fastSelect(RTs,
@@ -165,14 +168,14 @@ public class JmeterSummaryChartGenerator implements Generator {
 				// std. dev. = sqrt(average of (x^2) - (average of x)^2)
 				tableRow[6] = new TableCell(Math.sqrt(sumRTSquared
 						/ numRTsuccess - avgRT * avgRT));
-				
-				//tableRow[7] = new TableCell(100.0 * numRTfailure / samples);
+
+				// tableRow[7] = new TableCell(100.0 * numRTfailure / samples);
 				double throughput = 1.0 * numRTsuccess / duration;
 				// tableRow[8] = new TableCell(formatThroughput(throughput),
 				// "string",
 				// throughput);
 				tableRow[8] = new TableCell(throughput * 1000 * 60 * 60);
-				//tableRow[8].setCssClass("perfcharts-tx-summary-throughput");
+				// tableRow[8].setCssClass("perfcharts-tx-summary-throughput");
 				tableRow[9] = new TableCell(bytesSum / 1.024 / duration);
 				tableRow[10] = new TableCell(1.0 * bytesSum / numRTsuccess);
 			} else {
@@ -185,9 +188,14 @@ public class JmeterSummaryChartGenerator implements Generator {
 				tableRow[9] = new TableCell(Double.NaN);
 				tableRow[10] = new TableCell(Double.NaN);
 			}
-			tableRow[7] = new TableCell(samples > 0 ? 100.0 * numRTfailure / samples : Double.NaN);
+			double errorPerc = samples > 0 ? 100.0 * numRTfailure / samples
+					: Double.NaN;
+			tableRow[7] = new TableCell(errorPerc);
+			if (Double.isInfinite(errorPerc) || Double.isNaN(errorPerc)
+					|| errorPerc > 0.0)
+				tableRow[7].setCssClass("perfcharts_warning");
 			tableRows.add(tableRow);
-			
+
 			if (minTimestampTotal > minTimestamp)
 				minTimestampTotal = minTimestamp;
 			if (maxTimestampTotal < maxTimestamp)
@@ -206,7 +214,7 @@ public class JmeterSummaryChartGenerator implements Generator {
 		}
 
 		// sort rows by transaction name
-		tableRows.sort(new Comparator<TableCell[]>() {
+		Collections.sort(tableRows, new Comparator<TableCell[]>() {
 			@Override
 			public int compare(TableCell[] o1, TableCell[] o2) {
 				if (o1 == null || o1.length == 0 || o2 == null
@@ -252,25 +260,25 @@ public class JmeterSummaryChartGenerator implements Generator {
 		return chart;
 	}
 
-//	/**
-//	 * format the throughput data
-//	 * 
-//	 * @param throughput
-//	 *            throughput
-//	 * @return a string
-//	 */
-//	private String formatThroughput(double throughput) {
-//		if (throughput >= 1.0)
-//			return String.format("%.2f/ms", throughput);
-//		throughput *= 1000;
-//		if (throughput >= 1.0)
-//			return String.format("%.2f/s", throughput);
-//		throughput *= 60;
-//		if (throughput >= 1.0)
-//			return String.format("%.2f/min", throughput);
-//		throughput *= 60;
-//		return String.format("%.2f/h", throughput);
-//	}
+	// /**
+	// * format the throughput data
+	// *
+	// * @param throughput
+	// * throughput
+	// * @return a string
+	// */
+	// private String formatThroughput(double throughput) {
+	// if (throughput >= 1.0)
+	// return String.format("%.2f/ms", throughput);
+	// throughput *= 1000;
+	// if (throughput >= 1.0)
+	// return String.format("%.2f/s", throughput);
+	// throughput *= 60;
+	// if (throughput >= 1.0)
+	// return String.format("%.2f/min", throughput);
+	// throughput *= 60;
+	// return String.format("%.2f/h", throughput);
+	// }
 
 	/**
 	 * Get the configuration of this chart.
