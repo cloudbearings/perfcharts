@@ -159,7 +159,8 @@ public class JmeterSummaryChartGenerator implements Generator {
 			if (!RTs.isEmpty()) {
 				double avgRT = 1.0 * sumRT / numRTsuccess;
 				tableRow[2] = new TableCell(avgRT);
-				if (avgRT > 5000)
+				if (Double.isInfinite(avgRT) || Double.isNaN(avgRT)
+						|| avgRT > 5000)
 					tableRow[2].setCssClass("perfcharts_warning");
 				tableRow[3] = new TableCell(minRT);
 				tableRow[4] = new TableCell(maxRT);
