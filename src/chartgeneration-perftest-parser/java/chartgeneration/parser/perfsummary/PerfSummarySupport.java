@@ -150,7 +150,46 @@ public class PerfSummarySupport {
 		int throughputIndex = columnKeys.getInt("Throughput (tx/h)");
 		JSONArray rows = summaryChart.getJSONArray("rows");
 		Map<String, PerfSummaryItem> transactionName2ItemMap = new HashMap<String, PerfSummaryItem>();
-		for (int j = 0; j < rows.length() /*- 1*/; ++j) {
+
+		PerfSummaryItem totalItem = null;
+		int dataRows = rows.length();
+		JSONArray totalRow = null;
+		if (summaryChart.has("bottomRows")) {
+			JSONArray bottomRows = summaryChart.getJSONArray("bottomRows");
+			if (bottomRows.length() > 0) {
+				totalRow = bottomRows.getJSONArray(0);
+			}
+		} else {
+			--dataRows;
+			if (rows.length() > 0) {
+				totalRow = rows.getJSONArray(rows.length() - 1);
+			}
+		}
+		{
+			if (totalRow != null) {
+				totalItem = new PerfSummaryItem();
+				JSONArray row = totalRow;
+				// String txName =
+				// row.getJSONObject(txIndex).getString("value");
+				long samples = row.getJSONObject(samplesIndex).getLong("value");
+				double avgRT = getDoubleFromTableCell(row
+						.getJSONObject(avgIndex));
+				double _90LineRT = getDoubleFromTableCell(row
+						.getJSONObject(_90LineIndex));
+				// double stdDevRT =
+				// getDoubleFromTableCell(row.getJSONObject(stdDevIndex);
+				double errorPercentage = getDoubleFromTableCell(row
+						.getJSONObject(errorIndex));
+				double throughput = getDoubleFromTableCell(row
+						.getJSONObject(throughputIndex));
+				totalItem.setSamples(samples);
+				totalItem.setAverage(avgRT);
+				totalItem.set90Line(_90LineRT);
+				totalItem.setError(errorPercentage);
+				totalItem.setThroughput(throughput);
+			}
+		}
+		for (int j = 0; j < dataRows /*- 1*/; ++j) {
 			JSONArray row = (JSONArray) rows.get(j);
 			String txName = row.getJSONObject(txIndex).getString("value");
 			long samples = row.getJSONObject(samplesIndex).getLong("value");
@@ -173,32 +212,6 @@ public class PerfSummarySupport {
 			item.set90Line(_90LineRT);
 			item.setError(errorPercentage);
 			item.setThroughput(throughput);
-		}
-		PerfSummaryItem totalItem = null;
-		if (summaryChart.has("bottomRows")) {
-			JSONArray bottomRows = summaryChart.getJSONArray("bottomRows");
-			if (bottomRows.length() > 0) {
-				totalItem = new PerfSummaryItem();
-				JSONArray row = (JSONArray) bottomRows.get(0);
-				// String txName =
-				// row.getJSONObject(txIndex).getString("value");
-				long samples = row.getJSONObject(samplesIndex).getLong("value");
-				double avgRT = getDoubleFromTableCell(row
-						.getJSONObject(avgIndex));
-				double _90LineRT = getDoubleFromTableCell(row
-						.getJSONObject(_90LineIndex));
-				// double stdDevRT =
-				// getDoubleFromTableCell(row.getJSONObject(stdDevIndex);
-				double errorPercentage = getDoubleFromTableCell(row
-						.getJSONObject(errorIndex));
-				double throughput = getDoubleFromTableCell(row
-						.getJSONObject(throughputIndex));
-				totalItem.setSamples(samples);
-				totalItem.setAverage(avgRT);
-				totalItem.set90Line(_90LineRT);
-				totalItem.setError(errorPercentage);
-				totalItem.setThroughput(throughput);
-			}
 		}
 		return new PerfSummaryData(transactionName2ItemMap, totalItem);
 	}

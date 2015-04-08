@@ -500,7 +500,13 @@ function ChartGeneration($) {
 			}
 			options.series.bars = {
 				show : true,
-				barWidth : 0.8
+				//align: "center",
+				barWidth : 0.8,
+				horizontal: false,
+				lineWidth : 0,
+				fill : 0.95,
+				fillColor : false
+				
 			}
 			options.series.points.show = false;
 			break;

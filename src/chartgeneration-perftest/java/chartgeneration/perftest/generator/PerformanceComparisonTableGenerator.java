@@ -40,8 +40,9 @@ public class PerformanceComparisonTableGenerator implements Generator {
 		final int columns = 14;
 		table.setHeader(new String[] { "Transaction", "#Samples",
 				"#Samples diff", "Average", "Average diff", "Average diff%",
-				"90% line", "90% line diff", "90% line diff%", "Throughput (tx/h)",
-				"Throughput diff", "Throughput diff%", "Error%", "Error% diff" });
+				"90% line", "90% line diff", "90% line diff%",
+				"Throughput (tx/h)", "Throughput diff", "Throughput diff%",
+				"Error%", "Error% diff" });
 		FieldSelector labelField = new IndexFieldSelector(0);
 		FieldSelector sSampleField = new IndexFieldSelector(1);
 		FieldSelector dSampleField = new IndexFieldSelector(2);
@@ -53,13 +54,13 @@ public class PerformanceComparisonTableGenerator implements Generator {
 		FieldSelector dErrorField = new IndexFieldSelector(8);
 		FieldSelector sThroughputField = new IndexFieldSelector(9);
 		FieldSelector dThroughputField = new IndexFieldSelector(10);
-		TableCell[] totalRow = new TableCell[columns];
+		TableCell[] totalRow = null;// = new TableCell[columns];
 		Map<String, TableCell[]> tx2RowMap = new TreeMap<String, TableCell[]>();
 		for (List<Object> dataRow : dataTable.getRows()) {
 			String label = labelField.select(dataRow).toString();
 			TableCell[] row = null;
 			if ("TOTAL".equals(label)) {
-				row = totalRow;
+				row = totalRow = new TableCell[columns];
 				row[0] = new TableCell("TOTAL");
 			} else {
 				Matcher m = txPattern.matcher(label);
@@ -98,15 +99,19 @@ public class PerformanceComparisonTableGenerator implements Generator {
 			row[12] = new TableCell(sError);
 			row[13] = new TableCell(sError - dError);
 		}
-		List<TableCell[]> rows = new ArrayList<TableCell[]>(
-				tx2RowMap.size()/* + 1*/);
+		List<TableCell[]> rows = new ArrayList<TableCell[]>(tx2RowMap.size()/*
+																			 * +
+																			 * 1
+																			 */);
 		for (Map.Entry<String, TableCell[]> entry : tx2RowMap.entrySet())
 			rows.add(entry.getValue());
-		//rows.add(totalRow);
+		// rows.add(totalRow);
 		table.setRows(rows);
-		List<TableCell[]> bottomRows = new ArrayList<TableCell[]>(1);
-		bottomRows.add(totalRow);
-		table.setBottomRows(bottomRows);
+		if (totalRow != null) {
+			List<TableCell[]> bottomRows = new ArrayList<TableCell[]>(1);
+			bottomRows.add(totalRow);
+			table.setBottomRows(bottomRows);
+		}
 		return table;
 	}
 
