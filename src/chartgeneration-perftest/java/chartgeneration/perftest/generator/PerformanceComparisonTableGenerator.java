@@ -99,11 +99,14 @@ public class PerformanceComparisonTableGenerator implements Generator {
 			row[13] = new TableCell(sError - dError);
 		}
 		List<TableCell[]> rows = new ArrayList<TableCell[]>(
-				tx2RowMap.size() + 1);
+				tx2RowMap.size()/* + 1*/);
 		for (Map.Entry<String, TableCell[]> entry : tx2RowMap.entrySet())
 			rows.add(entry.getValue());
-		rows.add(totalRow);
+		//rows.add(totalRow);
 		table.setRows(rows);
+		List<TableCell[]> bottomRows = new ArrayList<TableCell[]>(1);
+		bottomRows.add(totalRow);
+		table.setBottomRows(bottomRows);
 		return table;
 	}
 

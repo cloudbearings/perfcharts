@@ -9,7 +9,9 @@ public class GenericTable extends Chart {
 	private ChartFormatter<GenericTable> formatter;
 	private String[] header;
 	private Map<String, Object> columnKeys;
+	private Collection<TableCell[]> topRows;
 	private Collection<TableCell[]> rows;
+	private Collection<TableCell[]> bottomRows;
 	private String[] footer;
 	
 	public GenericTable(
@@ -61,6 +63,22 @@ public class GenericTable extends Chart {
 
 	public void setColumnKeys(Map<String, Object> columnKeys) {
 		this.columnKeys = columnKeys;
+	}
+
+	public Collection<TableCell[]> getTopRows() {
+		return topRows;
+	}
+
+	public void setTopRows(Collection<TableCell[]> topRows) {
+		this.topRows = topRows;
+	}
+
+	public Collection<TableCell[]> getBottomRows() {
+		return bottomRows;
+	}
+
+	public void setBottomRows(Collection<TableCell[]> bottomRows) {
+		this.bottomRows = bottomRows;
 	}
 
 }

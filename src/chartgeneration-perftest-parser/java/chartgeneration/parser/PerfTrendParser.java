@@ -79,28 +79,32 @@ public class PerfTrendParser implements DataParser {
 							LOGGER.severe("No valid summary chart found from target build.");
 							Runtime.getRuntime().exit(1);
 						}
-
-						for (String txName : data.getItems().keySet()) {
-							PerfSummaryItem item = data.getItems().get(txName);
-							double avg = item.getAverage();
-							if (Double.isNaN(avg) || Double.isInfinite(avg)) {
-								LOGGER.warning("Skip invaild Response Time value (NaN) for transaction \""
-										+ txName
-										+ "\" (build id=#"
-										+ buildId
-										+ ").");
+						if (data.getItems() != null) {
+							for (String txName : data.getItems().keySet()) {
+								PerfSummaryItem item = data.getItems().get(
+										txName);
+								double avg = item.getAverage();
+								if (Double.isNaN(avg) || Double.isInfinite(avg)) {
+									LOGGER.warning("Skip invaild Response Time value (NaN) for transaction \""
+											+ txName
+											+ "\" (build id=#"
+											+ buildId + ").");
+									continue;
+								}
+								csvPrinter.printRecord("TX-" + txName, xvalue,
+										avg);
+							}
+						}
+						if (data.getTotal() != null) {
+							double avgTotal = data.getTotal().getAverage();
+							if (Double.isNaN(avgTotal)
+									|| Double.isInfinite(avgTotal)) {
+								LOGGER.warning("Skip invaild Response Time value (NaN) for TOTAL (build id=#"
+										+ buildId + ").");
 								continue;
 							}
-							csvPrinter.printRecord("TX-" + txName, xvalue, avg);
+							csvPrinter.printRecord("TOTAL", xvalue, avgTotal);
 						}
-						double avgTotal = data.getTotal().getAverage();
-						if (Double.isNaN(avgTotal)
-								|| Double.isInfinite(avgTotal)) {
-							LOGGER.warning("Skip invaild Response Time value (NaN) for TOTAL (build id=#"
-									+ buildId + ").");
-							continue;
-						}
-						csvPrinter.printRecord("TOTAL", xvalue, avgTotal);
 					} catch (JSONException ex) {
 						LOGGER.warning("Parsing Error, skip build \"" + path
 								+ "\":\n" + ex.toString());

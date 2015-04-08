@@ -33,7 +33,7 @@ public class PerfSummarySupport {
 		}
 		return null;
 	}
-	
+
 	public static PerfSummaryData parsePerfSummaryTable1(JSONObject summaryChart) {
 		JSONArray columnLabels = summaryChart.getJSONArray("columnLabels");
 		int txIndex = -1;
@@ -84,8 +84,8 @@ public class PerfSummarySupport {
 			// Utilities.parseDouble(row.getString((stdDevIndex));
 			double errorPercentage = Utilities.parseDouble(row.get(errorIndex)
 					.toString());
-			double throughput = convertThoughputToTxPerHour(row.get(throughputIndex)
-					.toString());
+			double throughput = convertThoughputToTxPerHour(row.get(
+					throughputIndex).toString());
 			PerfSummaryItem item = transactionName2ItemMap.get(txName);
 			if (item == null)
 				transactionName2ItemMap.put(txName,
@@ -108,8 +108,8 @@ public class PerfSummarySupport {
 			// double stdDevRT = row.getDouble(stdDevIndex);
 			double errorPercentage = Utilities.parseDouble(row.get(errorIndex)
 					.toString());
-			double throughput = convertThoughputToTxPerHour(row.get(throughputIndex)
-					.toString());
+			double throughput = convertThoughputToTxPerHour(row.get(
+					throughputIndex).toString());
 			totalItem.setSamples(samples);
 			totalItem.setAverage(avgRT);
 			totalItem.set90Line(_90LineRT);
@@ -150,7 +150,7 @@ public class PerfSummarySupport {
 		int throughputIndex = columnKeys.getInt("Throughput (tx/h)");
 		JSONArray rows = summaryChart.getJSONArray("rows");
 		Map<String, PerfSummaryItem> transactionName2ItemMap = new HashMap<String, PerfSummaryItem>();
-		for (int j = 0; j < rows.length() - 1; ++j) {
+		for (int j = 0; j < rows.length() /*- 1*/; ++j) {
 			JSONArray row = (JSONArray) rows.get(j);
 			String txName = row.getJSONObject(txIndex).getString("value");
 			long samples = row.getJSONObject(samplesIndex).getLong("value");
@@ -175,25 +175,30 @@ public class PerfSummarySupport {
 			item.setThroughput(throughput);
 		}
 		PerfSummaryItem totalItem = null;
-		if (rows.length() > 0) {
-			totalItem = new PerfSummaryItem();
-			JSONArray row = (JSONArray) rows.get(rows.length() - 1);
-			// String txName = row.getJSONObject(txIndex).getString("value");
-			long samples = row.getJSONObject(samplesIndex).getLong("value");
-			double avgRT = getDoubleFromTableCell(row.getJSONObject(avgIndex));
-			double _90LineRT = getDoubleFromTableCell(row
-					.getJSONObject(_90LineIndex));
-			// double stdDevRT =
-			// getDoubleFromTableCell(row.getJSONObject(stdDevIndex);
-			double errorPercentage = getDoubleFromTableCell(row
-					.getJSONObject(errorIndex));
-			double throughput = getDoubleFromTableCell(row
-					.getJSONObject(throughputIndex));
-			totalItem.setSamples(samples);
-			totalItem.setAverage(avgRT);
-			totalItem.set90Line(_90LineRT);
-			totalItem.setError(errorPercentage);
-			totalItem.setThroughput(throughput);
+		if (summaryChart.has("bottomRows")) {
+			JSONArray bottomRows = summaryChart.getJSONArray("bottomRows");
+			if (bottomRows.length() > 0) {
+				totalItem = new PerfSummaryItem();
+				JSONArray row = (JSONArray) bottomRows.get(0);
+				// String txName =
+				// row.getJSONObject(txIndex).getString("value");
+				long samples = row.getJSONObject(samplesIndex).getLong("value");
+				double avgRT = getDoubleFromTableCell(row
+						.getJSONObject(avgIndex));
+				double _90LineRT = getDoubleFromTableCell(row
+						.getJSONObject(_90LineIndex));
+				// double stdDevRT =
+				// getDoubleFromTableCell(row.getJSONObject(stdDevIndex);
+				double errorPercentage = getDoubleFromTableCell(row
+						.getJSONObject(errorIndex));
+				double throughput = getDoubleFromTableCell(row
+						.getJSONObject(throughputIndex));
+				totalItem.setSamples(samples);
+				totalItem.setAverage(avgRT);
+				totalItem.set90Line(_90LineRT);
+				totalItem.setError(errorPercentage);
+				totalItem.setThroughput(throughput);
+			}
 		}
 		return new PerfSummaryData(transactionName2ItemMap, totalItem);
 	}

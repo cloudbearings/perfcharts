@@ -21,11 +21,24 @@ public class GenericTableFormatterImpl implements GenericTableFormatter {
 			chartJSON.put("header", new JSONArray(chart.getHeader()));
 		if (chart.getFooter() != null)
 			chartJSON.put("footer", new JSONArray(chart.getFooter()));
-		JSONArray rowsArray = new JSONArray();
-		for (TableCell[] row : chart.getRows())
-			rowsArray.put(parseTableRow(row));
-		chartJSON.put("rows", rowsArray);
-		// chartJSON.put("rowSize", chart.getRows().size());
+		if (chart.getTopRows() != null) {
+			JSONArray rowsArray = new JSONArray();
+			for (TableCell[] row : chart.getTopRows())
+				rowsArray.put(parseTableRow(row));
+			chartJSON.put("topRows", rowsArray);
+		}
+		if (chart.getRows() != null) {
+			JSONArray rowsArray = new JSONArray();
+			for (TableCell[] row : chart.getRows())
+				rowsArray.put(parseTableRow(row));
+			chartJSON.put("rows", rowsArray);
+		}
+		if (chart.getBottomRows() != null) {
+			JSONArray rowsArray = new JSONArray();
+			for (TableCell[] row : chart.getBottomRows())
+				rowsArray.put(parseTableRow(row));
+			chartJSON.put("bottomRows", rowsArray);
+		}
 		return chartJSON.toString();
 	}
 

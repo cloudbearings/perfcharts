@@ -249,7 +249,10 @@ public class JmeterSummaryChartGenerator implements Generator {
 		totalRow[8] = new TableCell(throughput * 1000 * 60 * 60);
 		totalRow[9] = new TableCell(bytesSumTotal / 1.024 / durationTotal);
 		totalRow[10] = new TableCell(1.0 * bytesSumTotal / numRTsuccessTotal);
-		tableRows.add(totalRow);
+		//tableRows.add(totalRow);
+		List<TableCell[]> bottomRows = new ArrayList<TableCell[]>(1);
+		bottomRows.add(totalRow);
+		
 		// complete the chart
 		GenericTable chart = new GenericTable(factory.createFormatter());
 		chart.setTitle(config.getTitle());
@@ -258,6 +261,7 @@ public class JmeterSummaryChartGenerator implements Generator {
 		chart.setHeader(header);
 		chart.setColumnKeys(columnKeys);
 		chart.setRows(tableRows);
+		chart.setBottomRows(bottomRows);
 		return chart;
 	}
 
