@@ -38,44 +38,375 @@ function ChartGeneration($) {
 	ChartGeneration.data = [];
 	ChartGeneration.compositeReport = {};
 
-	function setupUI() {
-		// set up tooltip
-		$("<div id='tooltip'></div>").css({
-			position : "absolute",
-			display : "none",
-			border : "1px solid #fdd",
-			padding : "2px",
-			"background-color" : "#fee",
-			opacity : 0.80
-		}).appendTo("body");
-		// set up nav
-		$("h1").text("Perf-test Report");
-		var data = ChartGeneration.data;
-		var $report_nav = $("#report_nav");
-		for (var i = 0; i < data.length; ++i) {
-			var report = data[i];
-			var $a = $("<a class='report_switch' href='javascript:'/>").text(
-					report.title).data("report-index", i).click(function() {
-				$(".control_pad").html("");
-				showReport($(this).data("report-index"));
-			});
-			$report_nav.append($("<li/>").append($a));
-		}
-		$("<li/>")
-				.append(
-						$(
-								"<a class='report_switch' href='javascript:'>Composite Chart</a>")
-								.click(function() {
-									showCompositeReport();
-								})).appendTo($report_nav);
-	}
-
 	function showReport(index) {
 		var data = ChartGeneration.data;
 		if (index >= data.length)
 			return;
 		data[index]._index = index;
 		drawReport($(".report"), data[index]);
+	}
+
+	function drawReport($container, report) {
+		$container.children(".report_title").text(report.title);
+		var $charts = $container.children(".charts");
+		var charts = report.charts;
+		$charts.html("");
+		for (var i = 0; i < charts.length; ++i) {
+			var chart = charts[i];
+			var $chart = $("<div class='chart'/>");
+			$charts.append($chart);
+			chart._index = i;
+			chart._reportIndex = report._index;
+			if (chart.chartType === "JmeterSummaryChart")
+				drawJmeterSummaryChart($chart, chart);
+			else if (chart.chartType === "TABLE")
+				drawTable($chart, chart);
+			else
+				drawChart($chart, chart);
+		}
+	}
+
+	function drawTable($chart, chart) {
+		$chart.append($("<h3 class='chart_title'/>").text(chart.title)).append(
+				$("<h4 class='chart_subtitle'/>").text(chart.subtitle));
+		var $table = $("<table class='chart_table'/>").appendTo($chart);
+		if (chart.key)
+			$table.attr("data-key", chart.key);
+		if (chart.header) {
+			var $tableHeaderRow = $("<tr/>").appendTo(
+					$("<thead/>").appendTo($table));
+			for (var i = 0; i < chart.header.length; ++i) {
+				$("<th/>").text(chart.header[i]).appendTo($tableHeaderRow);
+			}
+		}
+		if (chart.topRows) {
+			var $thead = $("<tbody class=\"tablesorter-no-sort\"/>").appendTo(
+					$table);
+			for (var i = 0; i < chart.topRows.length; ++i) {
+				var $tableRow = $("<tr/>").appendTo($thead);
+				var row = chart.topRows[i];
+				for (var j = 0; j < row.length; ++j) {
+					var cell = row[j];
+					createTableCell(row[j]).appendTo($tableRow);
+				}
+			}
+		}
+		if (chart.rows) {
+			var $tbody = $("<tbody/>").appendTo($table);
+			for (var i = 0; i < chart.rows.length; ++i) {
+				var $tableRow = $("<tr/>").appendTo($tbody);
+				var row = chart.rows[i];
+				for (var j = 0; j < row.length; ++j) {
+					var cell = row[j];
+					createTableCell(row[j]).appendTo($tableRow);
+				}
+			}
+		}
+		if (chart.bottomRows) {
+			var $tfoot = $("<tbody class=\"tablesorter-no-sort\"/>").appendTo(
+					$table);
+			for (var i = 0; i < chart.bottomRows.length; ++i) {
+				var $tableRow = $("<tr/>").appendTo($tfoot);
+				var row = chart.bottomRows[i];
+				for (var j = 0; j < row.length; ++j) {
+					var cell = row[j];
+					createTableCell(row[j]).appendTo($tableRow);
+				}
+			}
+		}
+		$table.tablesorter({
+			cssInfoBlock : "tablesorter-no-sort"
+		}).stickyTableHeaders({
+			scrollableArea : $chart
+		});
+	}
+
+	function createTableCell(cell) {
+		var isFloat = cell.valueType === "double" || cell.valueType === "float";
+		var isNumber = isFloat || typeof cell.value === "number"
+				|| cell.valueType === "int" || cell.valueType === "long";
+		var showText = cell.value;
+		if (isFloat) {
+			showText = cell.value !== null ? cell.value.toFixed(3)
+					: (cell.rawValue === "NaN" ? "N/A" : cell.rawValue);
+		}
+		var $td = $("<td/>").text(showText);
+		if (cell.cssClass)
+			$td.addClass(cell.cssClass);
+		if (isNumber)
+			$td.css("text-align", "right");
+		return $td;
+	}
+
+	// will be deprecated
+	function drawJmeterSummaryChart($chart, chart) {
+		$chart.append($("<h3 class='chart_title'/>").text(chart.title)).append(
+				$("<h4 class='chart_subtitle'/>").text(chart.subtitle));
+		var $table = $("<table class='chart_table JmeterSummaryChart'/>")
+				.appendTo($chart);
+		var $tableHeaderRow = $("<tr/>").appendTo(
+				$("<thead/>").appendTo($table));
+		for (var i = 0; i < chart.columnLabels.length; ++i) {
+			$("<th/>").text(chart.columnLabels[i]).appendTo($tableHeaderRow);
+		}
+		var $tbody = $("<tbody/>").appendTo($table);
+		for (var i = 0; i < chart.rows.length; ++i) {
+			var $tableRow = $("<tr/>").appendTo($tbody);
+			for (var j = 0; j < chart.rows[i].length; ++j) {
+				var val = chart.rows[i][j];
+				var $td = $("<td/>").text(val).appendTo($tableRow);
+				if (j > 0) {
+					if (j === 7 && val > 0) {
+						$td.addClass("JmeterSummaryChart_error");
+					} else if (j === 2) {
+						var fval = parseFloat(val);
+						if (isNaN(fval) || fval >= 5000)
+							$td.addClass("JmeterSummaryChart_error");
+					}
+				}
+			}
+		}
+		$table.tablesorter();
+	}
+	function drawChart($chart, chart) {
+		if (!chart._prepared) {
+			chart._prepared = true;
+			// add index to each series
+			for (var i = 0; i < chart.series.length; ++i) {
+				var series = chart.series[i];
+				series._index = i;
+				series._chartIndex = chart._index;
+				series._reportIndex = chart._reportIndex;
+				series._showLines = series.lines && series.lines.show === false ? false
+						: true;
+				series._showBars = series.bars && series.bars.show === true ? true
+						: false;
+				series._showPoints = series.points
+						&& series.points.show === true ? true : false;
+				// series._show = true;
+			}
+		}
+		$chart.append($("<h3 class='chart_title'/>").text(chart.title)).append(
+				$("<h4 class='chart_subtitle'/>").text(chart.subtitle));
+		var $placeholder = $("<div class='placeholder'/>").appendTo($chart);
+		$("<div class='x_label'/>").text(chart.xLabel).appendTo($chart);
+		var $legend = $("<div class='legend'/>").appendTo($chart);
+		var plot = draw($placeholder, $legend, chart);
+		registerEvents($placeholder);
+		setupChartControls($("<div class='chart_controls_pad'/>").appendTo(
+				$chart), chart);
+	}
+
+	function yTickFormatter(num, _) {
+		var r = num;
+		var absNum = Math.abs(num);
+		var rounded = Math.round(num);
+		var d = Math.abs(num - rounded);
+		if (absNum != 0 && (absNum >= 1e6 || num <= 1e-5))
+			r = num.toExponential();
+		else if (d >= 1e-5)
+			r = num.toFixed(1);
+		else if (d > 0)
+			r = rounded;
+		return r;
+	}
+	function draw($placeholder, $legend, chart, optionsHook) {
+		if (!chart.yaxes) {
+			chart.yaxes = [];
+			chart.yaxesMap = [];
+			for (var i = 0; i < chart.series.length; ++i) {
+				var line = chart.series[i];
+				// var yLabel = line._unit && line._unit.value ? chart.yLabel
+				// + " / " + line._unit.value : chart.yLabel;
+				var yLabel = line._unit && line._unit.value ? line._unit.value
+						: chart.yLabel;
+				if (!chart.yaxesMap[yLabel]) {
+					chart.yaxes.push({
+						position : chart.yaxes.length & 1 ? "right" : "left",
+						axisLabel : yLabel
+					});
+					line.yaxis = chart.yaxesMap[yLabel] = chart.yaxes.length;
+				} else {
+					line.yaxis = chart.yaxesMap[yLabel];
+				}
+			}
+		}
+
+		var options = {
+			yaxes : chart.yaxes,
+			yaxis : {
+				axisLabel : chart.yLabel,
+				minTickSize : 0.1,
+				tickFormatter : yTickFormatter
+			},
+			legend : {
+				position : "nw",
+				margin : [ 0, 0 ],
+				noColumns : 5,
+				container : $legend,
+				labelFormatter : labelFormatter
+			},
+			selection : {
+				mode : "xy"
+			},
+			series : {
+				lines : {
+					show : true
+				},
+				points : {
+					show : true,
+					radius : 1,
+					lineWidth : 0,
+					fill : 1,
+					fillColor : false
+				}
+			},
+			shadowSize : 0,
+			crosshair : {
+				mode : "xy"
+			},
+			grid : {
+				hoverable : true,
+				clickable : true
+			}
+		/*
+		 * , pan: { interactive: true }, zoom: { interactive: true }
+		 */
+		};
+		if (optionsHook)
+			options = optionsHook(options);
+		switch (chart.xaxisMode) {
+		case "TIME":
+			options.xaxis = {
+				mode : "time"
+			};
+			break;
+		case "CATEGORIES":
+			var map = [];
+			for (var i = 0; i < chart.series.length; ++i) {
+				var seriesData = chart.series[i].data[0];
+				seriesData[0] = i;
+				map.push(chart.series[i].label);
+			}
+			options.xaxis = {
+				minTickSize : 1,
+				tickSize : 1,
+				tickLength : 0,
+				tickFormatter : function(num, _) {
+					var newTick = map[num];
+					return newTick ? "<div class='category_tick'>" + map[num]
+							+ "</div>" : "";
+				}
+			}
+			options.series.bars = {
+				show : true,
+				align : "center",
+				barWidth : 0.8,
+				horizontal : false,
+				lineWidth : 0,
+				fill : 0.75,
+				fillColor : false
+
+			}
+			options.series.points.show = false;
+			break;
+		case "NUMBER":
+			break;
+		case "INTEGER":
+			options.xaxis = {
+				minTickSize : 1,
+				tickSize : 1
+			/*
+			 * tickFormatter : function(num, _) { return Math.round(num); }
+			 */
+			}
+			if (chart.xaxisTicks) {
+				options.xaxis.ticks = chart.xaxisTicks;
+			} else {
+				options.xaxis.tickFormatter = function(num, _) {
+					return Math.round(num);
+				};
+			}
+			break;
+		default:
+			break;
+		}
+		// plot
+		var plot = $.plot($placeholder, chart.series, options);
+		$placeholder.data("plot", plot);
+		$placeholder.data("chart", chart);
+		chart.plot = plot;
+
+		// fix category tick
+		if (chart.xaxisMode === "CATEGORIES") {
+			fixCategoryTick($placeholder);
+		}
+
+		return plot;
+	}
+
+	function setupChartControls($controlsPad, chart) {
+		// $controlsPad
+		$("<input type=\"button\" value=\"show all\"/>").click(function() {
+			showOrHideAllSeries(chart, false);
+		}).appendTo($controlsPad);
+		$("<input type=\"button\" value=\"hide all\"/>").click(function() {
+			showOrHideAllSeries(chart, true);
+		}).appendTo($controlsPad);
+	}
+
+	function showOrHideAllSeries(chart, hide) {
+		for (var i = 0; i < chart.series.length; ++i) {
+			var series = chart.series[i];
+			if (!series.lines)
+				series.lines = {};
+			series.lines.show = hide ? false : series.showLines;
+			if (!series.bars)
+				series.bars = {};
+			series.bars.show = hide ? false : series.showBars;
+			if (!series.points)
+				series.points = {};
+			series.points.show = hide ? false : series.showPoints;
+			series._show = hide ? false : true;
+		}
+		redraw(chart.plot.getPlaceholder(), chart.plot, chart, true);
+	}
+
+	function redraw($placeholder, plot, chart, ignoreGridUpdate) {
+		if (chart)
+			plot.setData(chart.series);
+		if (!ignoreGridUpdate)
+			plot.setupGrid();
+		plot.draw();
+		// fix category tick
+		if ($placeholder.data("chart").xaxisMode === "CATEGORIES") {
+			fixCategoryTick($placeholder);
+		}
+	}
+
+	function fixCategoryTick($placeholder) {
+		var chart = $placeholder.data("chart");
+		var $category_tick = $placeholder.find('.category_tick');
+		var maxTickLabelHeight = 0;
+		$category_tick.each(function(_, elem) {
+			var $this = $(elem), width = $this.width();
+			if (maxTickLabelHeight < width)
+				maxTickLabelHeight = width;
+			$this.css("margin-top", width);
+			$this.css("margin-left", -$this.height() / 2);
+		});
+		$placeholder.css("padding-bottom", maxTickLabelHeight);
+	}
+
+	function labelFormatter(label, series) {
+		var show = true;
+		if (series._show === false)
+			show = false;
+		return '<a class="'
+				+ (show ? 'series_label_shown' : 'series_label_hidden')
+				+ '" onclick="ChartGeneration.eventHandlers.toggleSeries(this, '
+				+ series._reportIndex + ", " + series._chartIndex + ", "
+				+ series._index + ');">' + label + '</a>';
 	}
 
 	function showCompositeReport() {
@@ -243,313 +574,6 @@ function ChartGeneration($) {
 		}
 	}
 
-	function drawReport($container, report) {
-		$container.children(".report_title").text(report.title);
-		var $charts = $container.children(".charts");
-		var charts = report.charts;
-		$charts.html("");
-		for (var i = 0; i < charts.length; ++i) {
-			var chart = charts[i];
-			var $chart = $("<div class='chart'/>");
-			$charts.append($chart);
-			chart._index = i;
-			chart._reportIndex = report._index;
-			if (chart.chartType === "JmeterSummaryChart")
-				drawJmeterSummaryChart($chart, chart);
-			else if (chart.chartType === "TABLE")
-				drawTable($chart, chart);
-			else
-				drawChart($chart, chart);
-		}
-	}
-
-	function drawTable($chart, chart) {
-		$chart.append($("<h3 class='chart_title'/>").text(chart.title)).append(
-				$("<h4 class='chart_subtitle'/>").text(chart.subtitle));
-		var $table = $("<table class='chart_table'/>").appendTo($chart);
-		if (chart.key)
-			$table.attr("data-key", chart.key);
-		if (chart.header) {
-			var $tableHeaderRow = $("<tr/>").appendTo(
-					$("<thead/>").appendTo($table));
-			for (var i = 0; i < chart.header.length; ++i) {
-				$("<th/>").text(chart.header[i]).appendTo($tableHeaderRow);
-			}
-		}
-		if (chart.topRows) {
-			var $thead = $("<tbody class=\"tablesorter-no-sort\"/>").appendTo($table);
-			for (var i = 0; i < chart.topRows.length; ++i) {
-				var $tableRow = $("<tr/>").appendTo($thead);
-				var row = chart.topRows[i];
-				for (var j = 0; j < row.length; ++j) {
-					var cell = row[j];
-					createTableCell(row[j]).appendTo($tableRow);
-				}
-			}
-		}
-		if (chart.rows) {
-			var $tbody = $("<tbody/>").appendTo($table);
-			for (var i = 0; i < chart.rows.length; ++i) {
-				var $tableRow = $("<tr/>").appendTo($tbody);
-				var row = chart.rows[i];
-				for (var j = 0; j < row.length; ++j) {
-					var cell = row[j];
-					createTableCell(row[j]).appendTo($tableRow);
-				}
-			}
-		}
-		if (chart.bottomRows) {
-			var $tfoot = $("<tbody class=\"tablesorter-no-sort\"/>").appendTo($table);
-			for (var i = 0; i < chart.bottomRows.length; ++i) {
-				var $tableRow = $("<tr/>").appendTo($tfoot);
-				var row = chart.bottomRows[i];
-				for (var j = 0; j < row.length; ++j) {
-					var cell = row[j];
-					createTableCell(row[j]).appendTo($tableRow);
-				}
-			}
-		}
-		$table.tablesorter({
-			 cssInfoBlock : "tablesorter-no-sort"
-		}).stickyTableHeaders();
-	}
-
-	function createTableCell(cell) {
-		var isFloat = cell.valueType === "double" || cell.valueType === "float";
-		var isNumber = isFloat || typeof cell.value === "number"
-				|| cell.valueType === "int" || cell.valueType === "long";
-		var showText = cell.value;
-		if (isFloat) {
-			showText = cell.value !== null ? cell.value.toFixed(3)
-					: (cell.rawValue === "NaN" ? "N/A" : cell.rawValue);
-		}
-		var $td = $("<td/>").text(showText);
-		if (cell.cssClass)
-			$td.addClass(cell.cssClass);
-		if (isNumber)
-			$td.css("text-align", "right");
-		return $td;
-	}
-
-	// will be deprecated
-	function drawJmeterSummaryChart($chart, chart) {
-		$chart.append($("<h3 class='chart_title'/>").text(chart.title)).append(
-				$("<h4 class='chart_subtitle'/>").text(chart.subtitle));
-		var $table = $("<table class='chart_table JmeterSummaryChart'/>")
-				.appendTo($chart);
-		var $tableHeaderRow = $("<tr/>").appendTo(
-				$("<thead/>").appendTo($table));
-		for (var i = 0; i < chart.columnLabels.length; ++i) {
-			$("<th/>").text(chart.columnLabels[i]).appendTo($tableHeaderRow);
-		}
-		var $tbody = $("<tbody/>").appendTo($table);
-		for (var i = 0; i < chart.rows.length; ++i) {
-			var $tableRow = $("<tr/>").appendTo($tbody);
-			for (var j = 0; j < chart.rows[i].length; ++j) {
-				var val = chart.rows[i][j];
-				var $td = $("<td/>").text(val).appendTo($tableRow);
-				if (j > 0) {
-					if (j === 7 && val > 0) {
-						$td.addClass("JmeterSummaryChart_error");
-					} else if (j === 2) {
-						var fval = parseFloat(val);
-						if (isNaN(fval) || fval >= 5000)
-							$td.addClass("JmeterSummaryChart_error");
-					}
-				}
-			}
-		}
-		$table.tablesorter();
-	}
-	function drawChart($chart, chart) {
-		if (!chart._prepared) {
-			chart._prepared = true;
-			// add index to each series
-			for (var i = 0; i < chart.series.length; ++i) {
-				var series = chart.series[i];
-				series._index = i;
-				series._chartIndex = chart._index;
-				series._reportIndex = chart._reportIndex;
-				series._showLines = series.lines && series.lines.show === false ? false
-						: true;
-				series._showBars = series.bars && series.bars.show === true ? true
-						: false;
-				series._showPoints = series.points
-						&& series.points.show === true ? true : false;
-				// series._show = true;
-			}
-		}
-		$chart.append($("<h3 class='chart_title'/>").text(chart.title)).append(
-				$("<h4 class='chart_subtitle'/>").text(chart.subtitle));
-		var $placeholder = $("<div class='placeholder'/>").appendTo($chart);
-		$("<div class='x_label'/>").text(chart.xLabel).appendTo($chart);
-		var $legend = $("<div class='legend'/>").appendTo($chart);
-		var plot = draw($placeholder, $legend, chart);
-		registerEvents($placeholder);
-		// var $category_tick = $placeholder.find('.category_tick');
-		// var maxTickLabelHeight = 0;
-		// $category_tick.each(function(_, elem) {
-		// var $this = $(elem);
-		// if (maxTickLabelHeight < $this.width())
-		// maxTickLabelHeight = $this.width();
-		// $this.css("margin-top", $this.width());
-		// $this.css("margin-left", $this.height());
-		// });
-		// $placeholder.css("padding-bottom", maxTickLabelHeight);
-	}
-
-	function yTickFormatter(num, _) {
-		var r = num;
-		var absNum = Math.abs(num);
-		var rounded = Math.round(num);
-		var d = Math.abs(num - rounded);
-		if (absNum != 0 && (absNum >= 1e6 || num <= 1e-5))
-			r = num.toExponential();
-		else if (d >= 1e-5)
-			r = num.toFixed(1);
-		else if (d > 0)
-			r = rounded;
-		return r;
-	}
-	function draw($placeholder, $legend, chart, optionsHook) {
-		if (!chart.yaxes) {
-			chart.yaxes = [];
-			chart.yaxesMap = [];
-			for (var i = 0; i < chart.series.length; ++i) {
-				var line = chart.series[i];
-				// var yLabel = line._unit && line._unit.value ? chart.yLabel
-				// + " / " + line._unit.value : chart.yLabel;
-				var yLabel = line._unit && line._unit.value ? line._unit.value
-						: chart.yLabel;
-				if (!chart.yaxesMap[yLabel]) {
-					chart.yaxes.push({
-						position : chart.yaxes.length & 1 ? "right" : "left",
-						axisLabel : yLabel
-					});
-					line.yaxis = chart.yaxesMap[yLabel] = chart.yaxes.length;
-				} else {
-					line.yaxis = chart.yaxesMap[yLabel];
-				}
-			}
-		}
-
-		var options = {
-			yaxes : chart.yaxes,
-			yaxis : {
-				axisLabel : chart.yLabel,
-				minTickSize : 0.1,
-				tickFormatter : yTickFormatter
-			},
-			legend : {
-				position : "nw",
-				margin : [ 0, 0 ],
-				noColumns : 5,
-				container : $legend,
-				labelFormatter : labelFormatter
-			},
-			selection : {
-				mode : "xy"
-			},
-			series : {
-				lines : {
-					show : true
-				},
-				points : {
-					show : true,
-					radius : 1,
-					lineWidth : 0,
-					fill : 1,
-					fillColor : false
-				}
-			},
-			shadowSize : 0,
-			crosshair : {
-				mode : "xy"
-			},
-			grid : {
-				hoverable : true
-			}
-		/*
-		 * , pan: { interactive: true }, zoom: { interactive: true }
-		 */
-		};
-		if (optionsHook)
-			options = optionsHook(options);
-		switch (chart.xaxisMode) {
-		case "TIME":
-			options.xaxis = {
-				mode : "time"
-			};
-			break;
-		case "CATEGORIES":
-			var map = [];
-			for (var i = 0; i < chart.series.length; ++i) {
-				var seriesData = chart.series[i].data[0];
-				seriesData[0] = i;
-				map.push(chart.series[i].label);
-			}
-			options.xaxis = {
-				minTickSize : 1,
-				tickSize : 1,
-				tickLength : 0,
-				tickFormatter : function(num, _) {
-					var newTick = map[num];
-					return newTick ? "<div class='category_tick'>" + map[num]
-							+ "</div>" : "";
-				}
-			}
-			options.series.bars = {
-				show : true,
-				//align: "center",
-				barWidth : 0.8,
-				horizontal: false,
-				lineWidth : 0,
-				fill : 0.95,
-				fillColor : false
-				
-			}
-			options.series.points.show = false;
-			break;
-		case "NUMBER":
-			break;
-		case "INTEGER":
-			options.xaxis = {
-				minTickSize : 1,
-				tickSize : 1
-			/*
-			 * tickFormatter : function(num, _) { return Math.round(num); }
-			 */
-			}
-			if (chart.xaxisTicks) {
-				options.xaxis.ticks = chart.xaxisTicks;
-			} else {
-				options.xaxis.tickFormatter = function(num, _) {
-					return Math.round(num);
-				};
-			}
-			break;
-		default:
-			break;
-		}
-		// plot
-		var plot = $.plot($placeholder, chart.series, options);
-		$placeholder.data("plot", plot);
-		$placeholder.data("chart", chart);
-		chart.plot = plot;
-		return plot;
-	}
-
-	function labelFormatter(label, series) {
-		var show = true;
-		if (series._show === false)
-			show = false;
-		return '<a class="'
-				+ (show ? 'series_label_shown' : 'series_label_hidden')
-				+ '" onclick="ChartGeneration.eventHandlers.toggleSeries(this, '
-				+ series._reportIndex + ", " + series._chartIndex + ", "
-				+ series._index + ');">' + label + '</a>';
-	}
-
 	function registerEvents($placeholder) {
 		$placeholder.off();
 		// zooming
@@ -580,41 +604,72 @@ function ChartGeneration($) {
 		});
 
 		// tooltip
-		$placeholder
-				.bind(
-						"plothover",
-						function(event, pos, item) {
-							// var plot = $placeholder.data("plot");
-							var chart = $placeholder.data("chart");
-							if (item) {
-								var x = item.series.xaxis.options.mode === "time" ? new Date(
-										item.datapoint[0]).toUTCString()
-										: item.datapoint[0];
-								if (chart.xaxisTicks) {
-									var tickLabel = binary_search_for_tick(
-											chart.xaxisTicks, x);
-									if (tickLabel)
-										x = tickLabel;
-								}
+		$placeholder.bind("plothover", function(event, pos, item) {
+			// var plot = $placeholder.data("plot");
+			var chart = $placeholder.data("chart");
+			if (item) {
+				var x;
+				switch (item.series.xaxis.options.mode) {
+				case "time":
+					x = new Date(item.datapoint[0]).toUTCString();
+					break;
+				default:
+					switch (chart.xaxisMode) {
+					case "CATEGORIES":
+						x = item.series.label;
+						break;
+					default:
+						x = item.datapoint[0];
+						if (chart.xaxisTicks) {
+							var tickLabel = binary_search_for_tick(
+									chart.xaxisTicks, x);
+							if (tickLabel)
+								x = tickLabel;
+						}
+						break;
+					}
+					break;
+				}
 
-								var y = item.datapoint[1].toFixed(3);
-								if (item.series._unit
-										&& item.series._unit.value)
-									y += " " + item.series._unit.value;
-								$("#tooltip").html(
-										"<b>" + item.series.label
-												+ "</b><br />" + x + "<br />"
-												+ y).css({
-									top : item.pageY + 5,
-									left : item.pageX + 5
-								}).fadeIn(200);
-							} else {
-								$("#tooltip").hide();
-							}
-						});
+				var y = item.datapoint[1].toFixed(3);
+				if (item.series._unit && item.series._unit.value)
+					y += " " + item.series._unit.value;
+				$("#tooltip").html(
+						"<b>" + item.series.label + "</b><br />" + x + "<br />"
+								+ y).css({
+					top : item.pageY + 5,
+					left : item.pageX + 5
+				}).fadeIn(200);
+			} else {
+				$("#tooltip").hide();
+			}
+		});
 		// reset zooming
 		$placeholder.bind("dblclick", function() {
 			resetZooming($placeholder);
+		});
+		// click to hide
+		$placeholder.bind("plotclick", function(event, pos, item) {
+			if (item) {
+				var chart = $placeholder.data("chart");
+				var activeSeries = chart.series[item.seriesIndex];
+				var ita = chart._interactive = !chart._interactive;
+				for (var i = 0; i < chart.series.length; ++i) {
+					var series = chart.series[i];
+					var hide = i != item.seriesIndex && ita;
+					if (!series.lines)
+						series.lines = {};
+					series.lines.show = hide ? false : series.showLines;
+					if (!series.bars)
+						series.bars = {};
+					series.bars.show = hide ? false : series.showBars;
+					if (!series.points)
+						series.points = {};
+					series.points.show = hide ? false : series.showPoints;
+					series._show = !hide;
+				}
+				redraw(chart.plot.getPlaceholder(), chart.plot, chart, true);
+			}
 		});
 	}
 
@@ -632,21 +687,6 @@ function ChartGeneration($) {
 		return null;
 	}
 
-	function redraw($placeholder, plot, chart, ignoreGridUpdate) {
-		if (chart)
-			plot.setData(chart.series);
-		if (!ignoreGridUpdate)
-			plot.setupGrid();
-		plot.draw();
-		// if (chart && chart.xaxisMode === "CATEGORIES"){
-		// $placeholder.find('.category_tick').each(function(_, elem) {
-		// var $this = $(elem);
-		// $this.css("margin-top", $this.width());
-		// $this.css("margin-left", $this.height());
-		// });
-		// }
-	}
-
 	function resetZooming($placeholder) {
 		var plot = $placeholder.data("plot");
 		$.each(plot.getXAxes(), function(_, axis) {
@@ -658,6 +698,38 @@ function ChartGeneration($) {
 			opts.min = opts.max = null;
 		});
 		redraw($placeholder, plot, null);
+	}
+
+	function setupUI() {
+		// set up tooltip
+		$("<div id='tooltip'></div>").css({
+			position : "absolute",
+			display : "none",
+			border : "1px solid #fdd",
+			padding : "2px",
+			"background-color" : "#fee",
+			opacity : 0.80
+		}).appendTo("body");
+		// set up nav
+		$("h1").text("Perf-test Report");
+		var data = ChartGeneration.data;
+		var $report_nav = $("#report_nav");
+		for (var i = 0; i < data.length; ++i) {
+			var report = data[i];
+			var $a = $("<a class='report_switch' href='javascript:'/>").text(
+					report.title).data("report-index", i).click(function() {
+				$(".control_pad").html("");
+				showReport($(this).data("report-index"));
+			});
+			$report_nav.append($("<li/>").append($a));
+		}
+		$("<li/>")
+				.append(
+						$(
+								"<a class='report_switch' href='javascript:'>Composite Chart</a>")
+								.click(function() {
+									showCompositeReport();
+								})).appendTo($report_nav);
 	}
 
 	$(function() {

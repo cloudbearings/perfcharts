@@ -32,6 +32,7 @@ header, #content, footer {
 	width: 1076px;
 	page-break-inside: avoid;
 	overflow: auto;
+	max-height: 620px;
 }
 
 .report_title, .chart_title, .chart_subtitle {
@@ -59,12 +60,17 @@ header, #content, footer {
 	margin: 0 auto;
 }
 
-/* .category_tick { */
-/* 	transform: rotate(-90deg); */
-/* 	float: left; */
+.chart_controls_pad {
+	width: 900px;
+	margin: 0 auto;
+}
+
+.category_tick {
+	transform: rotate(-90deg);
+	float: left;
 /* 	text-align : right; */
-/* 	transform-origin: 0 0 */
-/* } */
+	transform-origin: 0 0
+}
 .x_label {
 	margin: 5px 60px;
 	text-align: center;
