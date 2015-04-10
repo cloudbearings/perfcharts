@@ -82,7 +82,13 @@ public class PerformanceComparisonTableGenerator implements Generator {
 			double diffAverage = sAverage - dAverage;
 			row[3] = new TableCell(sAverage);
 			row[4] = new TableCell(diffAverage);
-			row[5] = new TableCell(diffAverage * 100.0 / dAverage);
+			double diffAveragePercentage = diffAverage * 100.0 / dAverage;
+			row[5] = new TableCell(diffAveragePercentage);
+			if (Double.isInfinite(diffAveragePercentage)|| diffAveragePercentage >= 50.0){
+				row[5].setCssClass("perfcharts_warning");
+				row[0].setCssClass("perfcharts_warning");
+			}
+			
 			double s90Line = (double) s90LineField.select(dataRow);
 			double d90Line = (double) d90LineField.select(dataRow);
 			row[6] = new TableCell(s90Line);
@@ -97,12 +103,14 @@ public class PerformanceComparisonTableGenerator implements Generator {
 			double sError = (double) sErrorField.select(dataRow);
 			double dError = (double) dErrorField.select(dataRow);
 			row[12] = new TableCell(sError);
+			if (Double.isInfinite(sError) || Double.isNaN(sError)
+					|| sError > 0.0){
+				row[12].setCssClass("perfcharts_warning");
+				row[0].setCssClass("perfcharts_warning");
+			}
 			row[13] = new TableCell(sError - dError);
 		}
-		List<TableCell[]> rows = new ArrayList<TableCell[]>(tx2RowMap.size()/*
-																			 * +
-																			 * 1
-																			 */);
+		List<TableCell[]> rows = new ArrayList<TableCell[]>(tx2RowMap.size());
 		for (Map.Entry<String, TableCell[]> entry : tx2RowMap.entrySet())
 			rows.add(entry.getValue());
 		// rows.add(totalRow);

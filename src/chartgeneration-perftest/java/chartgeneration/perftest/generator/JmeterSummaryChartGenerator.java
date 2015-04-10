@@ -160,8 +160,10 @@ public class JmeterSummaryChartGenerator implements Generator {
 				double avgRT = 1.0 * sumRT / numRTsuccess;
 				tableRow[2] = new TableCell(avgRT);
 				if (Double.isInfinite(avgRT) || Double.isNaN(avgRT)
-						|| avgRT > 5000)
+						|| avgRT >= 5000) {
 					tableRow[2].setCssClass("perfcharts_warning");
+					tableRow[0].setCssClass("perfcharts_warning");
+				}
 				tableRow[3] = new TableCell(minRT);
 				tableRow[4] = new TableCell(maxRT);
 				tableRow[5] = new TableCell(Utilities.fastSelect(RTs,
@@ -193,8 +195,10 @@ public class JmeterSummaryChartGenerator implements Generator {
 					: Double.NaN;
 			tableRow[7] = new TableCell(errorPerc);
 			if (Double.isInfinite(errorPerc) || Double.isNaN(errorPerc)
-					|| errorPerc > 0.0)
+					|| errorPerc > 0.0) {
 				tableRow[7].setCssClass("perfcharts_warning");
+				tableRow[0].setCssClass("perfcharts_warning");
+			}
 			tableRows.add(tableRow);
 
 			if (minTimestampTotal > minTimestamp)
@@ -249,10 +253,10 @@ public class JmeterSummaryChartGenerator implements Generator {
 		totalRow[8] = new TableCell(throughput * 1000 * 60 * 60);
 		totalRow[9] = new TableCell(bytesSumTotal / 1.024 / durationTotal);
 		totalRow[10] = new TableCell(1.0 * bytesSumTotal / numRTsuccessTotal);
-		//tableRows.add(totalRow);
+		// tableRows.add(totalRow);
 		List<TableCell[]> bottomRows = new ArrayList<TableCell[]>(1);
 		bottomRows.add(totalRow);
-		
+
 		// complete the chart
 		GenericTable chart = new GenericTable(factory.createFormatter());
 		chart.setTitle(config.getTitle());

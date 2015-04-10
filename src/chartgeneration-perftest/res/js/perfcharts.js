@@ -69,7 +69,10 @@ function ChartGeneration($) {
 	function drawTable($chart, chart) {
 		$chart.append($("<h3 class='chart_title'/>").text(chart.title)).append(
 				$("<h4 class='chart_subtitle'/>").text(chart.subtitle));
-		var $table = $("<table class='chart_table'/>").appendTo($chart);
+		var $table_container = $("<div class='chart_table_container'>")
+				.appendTo($chart);
+		var $table = $("<table class='chart_table'/>").appendTo(
+				$table_container);
 		if (chart.key)
 			$table.attr("data-key", chart.key);
 		if (chart.header) {
@@ -117,7 +120,7 @@ function ChartGeneration($) {
 		$table.tablesorter({
 			cssInfoBlock : "tablesorter-no-sort"
 		}).stickyTableHeaders({
-			scrollableArea : $chart
+			scrollableArea : $table_container
 		});
 	}
 
@@ -197,18 +200,33 @@ function ChartGeneration($) {
 				$chart), chart);
 	}
 
-	function yTickFormatter(num, _) {
-		var r = num;
-		var absNum = Math.abs(num);
-		var rounded = Math.round(num);
-		var d = Math.abs(num - rounded);
-		if (absNum != 0 && (absNum >= 1e6 || num <= 1e-5))
-			r = num.toExponential();
-		else if (d >= 1e-5)
-			r = num.toFixed(1);
-		else if (d > 0)
-			r = rounded;
-		return r;
+	function yTickFormatter(num, yaxis) {
+		var str, intLength, result, negative = num < 0, dotPos;
+		if (yaxis.tickSize >= 1){
+			str = Math.round(num).toString();
+			dotPos = str.length;
+		}
+		else if (yaxis.tickSize >= 0.1){
+			str = num.toFixed(1);
+			dotPos = str.length - 2;
+		}
+		else{
+			str = num.toFixed(2);
+			dotPos = str.length - 3;
+		}
+		var p = negative ? 1 : 0;
+		intLength = dotPos - p;
+		if (intLength <= 3)
+			return str;
+		result = negative ? "-" : "";
+		for (var i = p; i < dotPos; ++i) {
+			result += str[i];
+			var bits = dotPos - 1 - i;
+			if (bits && !(bits % 3))
+				result += ",";
+		}
+		return result + str.substring(dotPos);
+
 	}
 	function draw($placeholder, $legend, chart, optionsHook) {
 		if (!chart.yaxes) {
@@ -236,7 +254,7 @@ function ChartGeneration($) {
 			yaxes : chart.yaxes,
 			yaxis : {
 				axisLabel : chart.yLabel,
-				minTickSize : 0.1,
+				minTickSize : 0.01,
 				tickFormatter : yTickFormatter
 			},
 			legend : {

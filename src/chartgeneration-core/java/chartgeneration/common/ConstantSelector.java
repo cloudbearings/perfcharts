@@ -9,13 +9,13 @@ import java.util.List;
  * @author Rayson Zhu
  * @see FieldSelector
  */
-public class ConstantSelector implements FieldSelector {
+public class ConstantSelector<T> implements FieldSelector<T> {
 	/**
 	 * the constant
 	 * 
 	 * @see #select(List)
 	 */
-	private Object constant;
+	private T constant;
 
 	public ConstantSelector() {
 
@@ -27,7 +27,7 @@ public class ConstantSelector implements FieldSelector {
 	 * @param constant
 	 *            a constant
 	 */
-	public ConstantSelector(Object constant) {
+	public ConstantSelector(T constant) {
 		this.constant = constant;
 	}
 
@@ -39,7 +39,7 @@ public class ConstantSelector implements FieldSelector {
 	 * @see #getConstant()
 	 */
 	@Override
-	public Object select(List<?> row) {
+	public T select(List<?> row) {
 		return constant;
 	}
 
@@ -48,7 +48,7 @@ public class ConstantSelector implements FieldSelector {
 	 * 
 	 * @return a constant
 	 */
-	public Object getConstant() {
+	public T getConstant() {
 		return constant;
 	}
 
@@ -58,7 +58,7 @@ public class ConstantSelector implements FieldSelector {
 	 * @param constant
 	 *            a constant
 	 */
-	public void setConstant(Object constant) {
+	public void setConstant(T constant) {
 		this.constant = constant;
 	}
 

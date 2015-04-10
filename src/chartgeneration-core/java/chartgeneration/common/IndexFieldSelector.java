@@ -9,7 +9,7 @@ import java.util.List;
  * @author Rayson Zhu
  *
  */
-public class IndexFieldSelector implements FieldSelector {
+public class IndexFieldSelector<T> implements FieldSelector<T> {
 	/**
 	 * the column index for extracting values
 	 */
@@ -40,8 +40,9 @@ public class IndexFieldSelector implements FieldSelector {
 	 *            a data row
 	 * @return a value
 	 */
-	public Object select(List<?> row) {
-		return row.get(index);
+	@SuppressWarnings("unchecked")
+	public T select(List<?> row) {
+		return (T)row.get(index);
 	}
 
 	/**

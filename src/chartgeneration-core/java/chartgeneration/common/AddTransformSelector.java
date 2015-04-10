@@ -10,14 +10,15 @@ import java.util.List;
  * @author Rayson Zhu
  *
  */
-public class AddTransformSelector extends BinarySelector {
+public class AddTransformSelector<T extends Number, U extends Number, V extends Number>
+		extends BinarySelector<T, U, V> {
 
 	public AddTransformSelector() {
 
 	}
 
-	public AddTransformSelector(FieldSelector firstOperand,
-			FieldSelector secondOperand) {
+	public AddTransformSelector(FieldSelector<T> firstOperand,
+			FieldSelector<U> secondOperand) {
 		super(firstOperand, secondOperand);
 	}
 
@@ -28,11 +29,23 @@ public class AddTransformSelector extends BinarySelector {
 	 * @see #setFirstOperand(FieldSelector)
 	 * @see #setSecondOperand(FieldSelector)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object select(List<?> row) {
-		Number a = (Number) getFirstOperand().select(row);
-		Number b = (Number) getSecondOperand().select(row);
-		return a.longValue() + b.longValue();
+	public V select(List<?> row) {
+		Number a = getFirstOperand().select(row);
+		Number b = getSecondOperand().select(row);
+		Number r;
+		if (a instanceof Double || b instanceof Double)
+			r = a.doubleValue() + b.doubleValue();
+		else if (a instanceof Float || b instanceof Float)
+			r = a.floatValue() + b.floatValue();
+		else if (a instanceof Long || b instanceof Long)
+			r = a.longValue() + b.longValue();
+		else if (a instanceof Integer || b instanceof Integer)
+			r = a.intValue() + b.intValue();
+		else
+			throw new RuntimeException("Cannot add " + a + " and " + b + ".");
+		return (V) r;
 	}
 
 }

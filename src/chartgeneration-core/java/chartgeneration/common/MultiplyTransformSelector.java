@@ -10,13 +10,14 @@ import java.util.List;
  * @author Rayson Zhu
  *
  */
-public class MultiplyTransformSelector extends BinarySelector {
+public class MultiplyTransformSelector<T extends Number, U extends Number, V extends Number>
+		extends BinarySelector<T, U, V> {
 	public MultiplyTransformSelector() {
 
 	}
 
-	public MultiplyTransformSelector(FieldSelector firstOperand,
-			FieldSelector secondOperand) {
+	public MultiplyTransformSelector(FieldSelector<T> firstOperand,
+			FieldSelector<U> secondOperand) {
 		super(firstOperand, secondOperand);
 	}
 
@@ -27,10 +28,22 @@ public class MultiplyTransformSelector extends BinarySelector {
 	 * @see #setFirstOperand(FieldSelector)
 	 * @see #setSecondOperand(FieldSelector)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object select(List<?> row) {
-		Number a = (Number) getFirstOperand().select(row);
-		Number b = (Number) getSecondOperand().select(row);
-		return a.longValue() * b.longValue();
+	public V select(List<?> row) {
+		Number a = getFirstOperand().select(row);
+		Number b = getSecondOperand().select(row);
+		Number r;
+		if (a instanceof Double || b instanceof Double)
+			r = a.doubleValue() * b.doubleValue();
+		else if (a instanceof Float || b instanceof Float)
+			r = a.floatValue() * b.floatValue();
+		else if (a instanceof Long || b instanceof Long)
+			r = a.longValue() * b.longValue();
+		else if (a instanceof Integer || b instanceof Integer)
+			r = a.intValue() * b.intValue();
+		else
+			throw new RuntimeException("Cannot multiply " + a + " by " + b + ".");
+		return (V)r;
 	}
 }

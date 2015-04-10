@@ -11,15 +11,15 @@ import java.util.List;
  *
  * @see FieldSelector
  */
-public abstract class BinarySelector implements FieldSelector {
+public abstract class BinarySelector<T, U, V> implements FieldSelector<V> {
 	/**
 	 * the first FieldSelector
 	 */
-	private FieldSelector firstOperand;
+	private FieldSelector<T> firstOperand;
 	/**
 	 * the second FieldSelector
 	 */
-	private FieldSelector secondOperand;
+	private FieldSelector<U> secondOperand;
 
 	/**
 	 * constructor
@@ -36,8 +36,8 @@ public abstract class BinarySelector implements FieldSelector {
 	 * @param secondOperand
 	 *            The second FieldSelector
 	 */
-	public BinarySelector(FieldSelector firstOperand,
-			FieldSelector secondOperand) {
+	public BinarySelector(FieldSelector<T> firstOperand,
+			FieldSelector<U> secondOperand) {
 		this.firstOperand = firstOperand;
 		this.secondOperand = secondOperand;
 	}
@@ -50,14 +50,14 @@ public abstract class BinarySelector implements FieldSelector {
 	 * @see #setSecondOperand(FieldSelector)
 	 */
 	@Override
-	public abstract Object select(List<?> row);
+	public abstract V select(List<?> row);
 
 	/**
 	 * get the first FieldSelector
 	 * 
 	 * @return the first FieldSelector
 	 */
-	public FieldSelector getFirstOperand() {
+	public FieldSelector<T> getFirstOperand() {
 		return firstOperand;
 	}
 
@@ -67,7 +67,7 @@ public abstract class BinarySelector implements FieldSelector {
 	 * @param firstOperand
 	 *            the first FieldSelector
 	 */
-	public void setFirstOperand(FieldSelector firstOperand) {
+	public void setFirstOperand(FieldSelector<T> firstOperand) {
 		this.firstOperand = firstOperand;
 	}
 
@@ -76,7 +76,7 @@ public abstract class BinarySelector implements FieldSelector {
 	 * 
 	 * @return the second FieldSelector
 	 */
-	public FieldSelector getSecondOperand() {
+	public FieldSelector<U> getSecondOperand() {
 		return secondOperand;
 	}
 
@@ -86,7 +86,7 @@ public abstract class BinarySelector implements FieldSelector {
 	 * @param secondOperand
 	 *            the second FieldSelector
 	 */
-	public void setSecondOperand(FieldSelector secondOperand) {
+	public void setSecondOperand(FieldSelector<U> secondOperand) {
 		this.secondOperand = secondOperand;
 	}
 }

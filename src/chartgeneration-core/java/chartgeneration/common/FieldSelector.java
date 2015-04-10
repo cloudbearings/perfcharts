@@ -8,7 +8,7 @@ import java.util.List;
  * @author Rayson Zhu
  *
  */
-public interface FieldSelector {
+public interface FieldSelector<T> {
 	/**
 	 * extract the value from specified data row
 	 * 
@@ -16,5 +16,5 @@ public interface FieldSelector {
 	 *            a data row
 	 * @return a value
 	 */
-	public Object select(List<?> row);
+	public T select(List<?> row);
 }
