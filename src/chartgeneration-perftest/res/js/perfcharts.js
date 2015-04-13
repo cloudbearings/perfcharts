@@ -1,3 +1,6 @@
+// Perfcharts Default Front-End Support
+// Updated 10 Apr, 2015
+
 function ChartGeneration($) {
 	ChartGeneration.eventHandlers = {
 		toggleSeries : function(sender, reportIndex, chartIndex, seriesIndex) {

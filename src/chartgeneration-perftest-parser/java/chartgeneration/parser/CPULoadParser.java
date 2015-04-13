@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import chartgeneration.common.AppData;
 
@@ -32,13 +33,19 @@ public class CPULoadParser implements DataParser {
 		String lineStr;
 		Date startTime = Settings.getInstance().getStartTime();
 		Date endTime = Settings.getInstance().getEndTime();
+		Boolean isTimestamp = null;
 		while ((lineStr = reader.readLine()) != null) {
 			String[] extractedLine = lineStr.split(",");
 			long time = 0;
 			if (extractedLine.length < 2)
 				continue;
 			try {
-				Date date = timeFormat.parse(extractedLine[0]);
+				if (isTimestamp == null)
+					isTimestamp = Pattern.matches("\\d+", extractedLine[0]);
+
+				Date date = isTimestamp ? new Date(
+						Long.parseLong(extractedLine[0]) * 1000) : timeFormat
+						.parse(extractedLine[0]);
 				if (startTime != null && date.before(startTime)
 						|| endTime != null && date.after(endTime))
 					continue;
