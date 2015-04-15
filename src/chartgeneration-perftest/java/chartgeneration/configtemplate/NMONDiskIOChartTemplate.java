@@ -24,15 +24,15 @@ public class NMONDiskIOChartTemplate extends Chart2DTemplateWithIntervalBase {
 		rules.add(new Chart2DSeriesConfigRule("^DISKREAD-(.+)$", "Disk-$1-Read", "KiB/s",
 				labelField, timestampField, diskIOField,
 				new AverageCalculation(interval)));
-		rules.add(new Chart2DSeriesConfigRule("^DISKREAD-(.+)$", "Disk-Total-Read", "KiB/s",
-				labelField, timestampField, diskIOField, new SumByLabelCalculation(
-						labelField, interval)));
+//		rules.add(new Chart2DSeriesConfigRule("^DISKREAD-(.+)$", "Disk-Total-Read", "KiB/s",
+//				labelField, timestampField, diskIOField, new SumByLabelCalculation(
+//						labelField, interval)));
 		rules.add(new Chart2DSeriesConfigRule("^DISKWRITE-(.+)$", "Disk-$1-Write", "KiB/s",
 				labelField, timestampField, diskIOField,
 				new AverageCalculation(interval)));
-		rules.add(new Chart2DSeriesConfigRule("^DISKWRITE-(.+)$", "Disk-Total-Write", "KiB/s",
-				labelField, timestampField, diskIOField, new SumByLabelCalculation(
-						labelField, interval)));
+//		rules.add(new Chart2DSeriesConfigRule("^DISKWRITE-(.+)$", "Disk-Total-Write", "KiB/s",
+//				labelField, timestampField, diskIOField, new SumByLabelCalculation(
+//						labelField, interval)));
 		return createConfig("Disk IO", "Time", "Disk IO", rules, AxisMode.TIME);
 	}
 
