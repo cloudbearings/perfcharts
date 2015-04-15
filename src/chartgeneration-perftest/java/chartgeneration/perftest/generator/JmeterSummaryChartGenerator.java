@@ -17,7 +17,7 @@ import chartgeneration.common.AddTransformSelector;
 import chartgeneration.common.FieldSelector;
 import chartgeneration.common.IndexFieldSelector;
 import chartgeneration.common.Utilities;
-import chartgeneration.generator.Generator;
+import chartgeneration.generator.ChartGenerator;
 import chartgeneration.model.DataTable;
 import chartgeneration.perftest.config.JmeterSummaryChartConfig;
 
@@ -28,7 +28,7 @@ import chartgeneration.perftest.config.JmeterSummaryChartConfig;
  * @author Rayson Zhu
  *
  */
-public class JmeterSummaryChartGenerator implements Generator {
+public class JmeterSummaryChartGenerator implements ChartGenerator {
 	private final static Logger LOGGER = Logger
 			.getLogger(JmeterSummaryChartGenerator.class.getName());
 	/**

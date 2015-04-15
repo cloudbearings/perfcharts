@@ -6,7 +6,7 @@ import chartgeneration.formatter.Chart2DFormatter;
 import chartgeneration.formatter.ChartFormatter;
 
 /**
- * A factory for creating creating {@link Generator} and {@link ChartFormatter}
+ * A factory for creating creating {@link ChartGenerator} and {@link ChartFormatter}
  * objects for {@link Chart2D}
  * 
  * @author Rayson Zhu

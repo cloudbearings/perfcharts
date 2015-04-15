@@ -83,12 +83,14 @@ public class SumByLabelCalculation implements Chart2DCalculation {
 		Map<String, Integer> labelIndexMap = new HashMap<String, Integer>();
 		List<Double> valueList = new ArrayList<Double>();
 		List<Integer> countList = new ArrayList<Integer>();
-		Number firstX = (Number) xField.select(rows.get(0));
-		Number lastX = 0;
+		Comparable<?> firstX = (Comparable<?>)xField.select(rows.get(0));
+		Comparable<?> lastX = firstX;
 		for (List<Object> row : rows) {
-			Number x = (Number) xField.select(row);
+			Comparable<?> x = (Comparable<?>)xField.select(row);
 			if (interval > 1) {
-				x = firstX.longValue() + (x.longValue() - firstX.longValue())
+				Number _x = (Number)x;
+				Number _firstX = (Number)firstX;
+				x = _firstX.longValue() + (_x.longValue() - _firstX.longValue())
 						/ interval * interval;
 			}
 			String label = labelSelector.select(row).toString();

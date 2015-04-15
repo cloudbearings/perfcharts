@@ -12,11 +12,11 @@ import chartgeneration.chart.GenericTable;
 import chartgeneration.chart.TableCell;
 import chartgeneration.common.FieldSelector;
 import chartgeneration.common.IndexFieldSelector;
-import chartgeneration.generator.Generator;
+import chartgeneration.generator.ChartGenerator;
 import chartgeneration.model.DataTable;
 import chartgeneration.perftest.config.PerformanceComparisonTableConfig;
 
-public class PerformanceComparisonTableGenerator implements Generator {
+public class PerformanceComparisonTableGenerator implements ChartGenerator {
 	private final static Logger LOGGER = Logger
 			.getLogger(PerformanceComparisonTableGenerator.class.getName());
 	private PerformanceComparisonTableConfig config;
@@ -86,7 +86,9 @@ public class PerformanceComparisonTableGenerator implements Generator {
 			row[5] = new TableCell(diffAveragePercentage);
 			if (Double.isInfinite(diffAveragePercentage)|| diffAveragePercentage >= 50.0){
 				row[5].setCssClass("perfcharts_warning");
-				row[0].setCssClass("perfcharts_warning");
+				//row[0].setCssClass("perfcharts_warning");
+			} else if (diffAveragePercentage <= -50.0){
+				row[5].setCssClass("perfcharts_fine");
 			}
 			
 			double s90Line = (double) s90LineField.select(dataRow);

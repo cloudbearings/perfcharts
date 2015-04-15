@@ -9,7 +9,7 @@ import chartgeneration.model.DataTable;
  * 
  * @author Rayson Zhu
  */
-public interface Generator {
+public interface ChartGenerator {
 	/**
 	 * reads specified data table and produces a chart
 	 * 

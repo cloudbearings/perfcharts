@@ -164,6 +164,15 @@ Build
 
 Release Log
 -----------
+### v0.5.1 ###
+- add support perf-cmp report
+- add new style summary table and bar chart support
+- add a CPU load montoring script
+- upgrade JQuery lib to 2.1.3
+- remove TOTAL series from Disk Busy Chart
+- support JRE 1.7
+- and other improvements
+
 ### v0.5.0 ###
 - new feature: add partial support for Zabbix monitor (with cgt-zabbix-dl tool)
 - new feature: sort support

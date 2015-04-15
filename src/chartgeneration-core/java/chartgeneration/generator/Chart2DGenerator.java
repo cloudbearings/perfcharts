@@ -13,9 +13,11 @@ import chartgeneration.chart.Chart2DSeries;
 import chartgeneration.chart.Point2D;
 import chartgeneration.common.AppData;
 import chartgeneration.common.FieldSelector;
+import chartgeneration.config.BarChartStringIDMapper;
 import chartgeneration.config.Chart2DConfig;
 import chartgeneration.config.Chart2DSeriesConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
+import chartgeneration.config.Chart2DXValueComparator;
 import chartgeneration.config.SeriesOrder;
 import chartgeneration.model.DataTable;
 import chartgeneration.tick.TickGenerator;
@@ -27,7 +29,7 @@ import chartgeneration.tick.TickGenerator;
  * @author Rayson Zhu
  *
  */
-public class Chart2DGenerator implements Generator {
+public class Chart2DGenerator implements ChartGenerator {
 	/**
 	 * the chart configuration
 	 */
@@ -77,15 +79,18 @@ public class Chart2DGenerator implements Generator {
 			seriesConfigs.addAll(seriesConfigBuilder.build(rule, dataTable));
 
 		// sort series
-		Collections.sort(seriesConfigs, new Comparator<Chart2DSeriesConfig>() {
-			@Override
-			public int compare(Chart2DSeriesConfig o1, Chart2DSeriesConfig o2) {
-				return 0;
-			}
-		});
+		// Collections.sort(seriesConfigs, new Comparator<Chart2DSeriesConfig>()
+		// {
+		// @Override
+		// public int compare(Chart2DSeriesConfig o1, Chart2DSeriesConfig o2) {
+		// return 0;
+		// }
+		// });
 
 		final List<Chart2DSeries> series = new ArrayList<Chart2DSeries>(
 				seriesConfigs.size());
+		Chart2DXValueComparator comparator = chart2dConfig
+				.getXValueComparator();
 		for (final Chart2DSeriesConfig seriesConfig : seriesConfigs) {
 			LinkedList<List<Object>> involvedRows = new LinkedList<List<Object>>();
 			// collect involved rows
@@ -97,19 +102,10 @@ public class Chart2DGenerator implements Generator {
 			}
 			if (involvedRows.isEmpty())
 				continue;
-			// sort involvedRows by x-value
-			Collections.sort(involvedRows, new Comparator<List<Object>>() {
-				@Override
-				public int compare(List<Object> o1, List<Object> o2) {
-					@SuppressWarnings("unchecked")
-					Comparable<Object> a = (Comparable<Object>) seriesConfig
-							.getXField().select(o1);
-					@SuppressWarnings("unchecked")
-					Comparable<Object> b = (Comparable<Object>) seriesConfig
-							.getXField().select(o2);
-					return a.compareTo(b);
-				}
-			});
+			if (comparator != null) {
+				comparator.setSeriesConfig(seriesConfig);
+				Collections.sort(involvedRows, comparator);
+			}
 			Chart2DCalculation calc = seriesConfig.getCalculation();
 
 			int interval = chart2dConfig.getInterval();
@@ -190,6 +186,12 @@ public class Chart2DGenerator implements Generator {
 		TickGenerator xTickGenerator = chart2dConfig.getXTickGenerator();
 		if (xTickGenerator != null) {
 			graph.setXTicks(xTickGenerator.generate(dataRows));
+		}
+		BarChartStringIDMapper stringIDMapper = chart2dConfig
+				.getStringIDMapper();
+		if (stringIDMapper != null) {
+			graph.setBarChartStringIDMap(stringIDMapper.map(graph,
+					chart2dConfig));
 		}
 		return graph;
 	}

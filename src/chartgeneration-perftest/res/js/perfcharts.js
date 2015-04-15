@@ -4,7 +4,10 @@
 function ChartGeneration($) {
 	ChartGeneration.eventHandlers = {
 		toggleSeries : function(sender, reportIndex, chartIndex, seriesIndex) {
-			if (reportIndex < 0) // composite report does not support this
+			if (reportIndex === undefined || reportIndex < 0) // composite
+				// report does
+				// not support
+				// this
 				// function
 				return;
 			var chart = ChartGeneration.data[reportIndex].charts[chartIndex];
@@ -64,6 +67,8 @@ function ChartGeneration($) {
 				drawJmeterSummaryChart($chart, chart);
 			else if (chart.chartType === "TABLE")
 				drawTable($chart, chart);
+			else if (chart.xaxisMode === "BAR_STRING")
+				drawBarChart($chart, chart);
 			else
 				drawChart($chart, chart);
 		}
@@ -174,7 +179,7 @@ function ChartGeneration($) {
 		}
 		$table.tablesorter();
 	}
-	function drawChart($chart, chart) {
+	function prepareChart(chart) {
 		if (!chart._prepared) {
 			chart._prepared = true;
 			// add index to each series
@@ -192,6 +197,145 @@ function ChartGeneration($) {
 				// series._show = true;
 			}
 		}
+	}
+	function drawBarChart($chart, chart) {
+		prepareChart(chart);
+		$chart.append($("<h3 class='chart_title'/>").text(chart.title)).append(
+				$("<h4 class='chart_subtitle'/>").text(chart.subtitle));
+		var $placeholder = $("<div class='placeholder'/>").appendTo($chart);
+		$("<div class='x_label'/>").text(chart.xLabel).appendTo($chart);
+		var $legend = $("<div class='legend'/>").appendTo($chart);
+		var plot = draw($placeholder, $legend, chart);
+		registerEvents($placeholder);
+		// setupChartControls($("<div class='chart_controls_pad'/>").appendTo(
+		// $chart), chart);
+		var $group_controls = $("<div class='chart_controls_pad'/>").appendTo(
+				$chart);
+		var $group_list = $(
+				"<ul class='chart_group_list' style='max-height:100px; overflow:scroll'/>")
+				.appendTo($group_controls);
+		for ( var stringID in chart.stringMap) {
+			// use show/hide map int->boolean to indicate whether we should
+			// display it
+			var stringValue = chart.stringMap[stringID];
+			var $group_list_item = $(
+					"<li style='display:inline-block; width:20%;word-wrap: break-word;'/>")
+					.appendTo($group_list);
+			var $item_content = $("<label/>").appendTo($group_list_item);
+			var $cb = $(
+					"<input type='checkbox' class='cb_bar_group_selector' />")
+					.data("tag", {
+						sid : stringID,
+						chart : chart
+					}).prop("checked", chart._isGroupShowMap[stringID]).change(
+							on_cb_group_list_item_changed).appendTo(
+							$item_content);
+			$("<span/>").text(stringValue).appendTo($item_content);
+		}
+		var $showHildAllButtons = $("<div class='chart_bar_show_hide_all' />")
+				.appendTo($group_controls);
+		$("<input type='button' value='clear selection' />").click(function() {
+			$(".cb_bar_group_selector").prop("checked", false);
+			chart.series = [];
+			chart._isGroupShowMap = {};
+			redraw(plot.getPlaceholder(), plot, chart, true);
+		}).appendTo($showHildAllButtons);
+		$("<input type='button' value='select all' />").click(function() {
+			$(".cb_bar_group_selector").prop("checked", true);
+			chart._isGroupShowMap = {};
+			for (var stringID in chart.stringMap)
+				chart._isGroupShowMap[stringID] = true;
+			regenerateShowSeriesForBarChart(chart, chart.plot.getOptions());
+			var xaxisOption = plot.getXAxes()[0].options;
+			xaxisOption._zoomed = false;
+			xaxisOption.min = plot.getOptions().xaxis.min;
+			xaxisOption.max = plot.getOptions().xaxis.max;
+			redraw(plot.getPlaceholder(), plot, chart, false);
+		}).appendTo($showHildAllButtons);
+	}
+
+	function on_cb_group_list_item_changed(e) {
+		var $this = $(e.target);
+		var state = $this.is(":checked");
+		var tag = $this.data("tag");
+		var chart = tag.chart;
+		var isGroupShowMap = chart._isGroupShowMap;
+		var plot = chart.plot;
+		isGroupShowMap[tag.sid] = state;
+		regenerateShowSeriesForBarChart(chart, plot.getOptions());
+		var xaxisOption = plot.getXAxes()[0].options;
+		xaxisOption._zoomed = false;
+		xaxisOption.min = plot.getOptions().xaxis.min;
+		xaxisOption.max = plot.getOptions().xaxis.max;
+		redraw(plot.getPlaceholder(), plot, chart, false);
+	}
+
+	function regenerateShowSeriesForBarChart(chart, options) {
+		var rawSeries = chart._rawSeries ? chart._rawSeries : chart.series;
+		var map = chart.stringMap;
+		var isGroupShowMap;
+		if (!chart._isGroupShowMap) {
+			isGroupShowMap = chart._isGroupShowMap = {};
+			var counter = 0;
+			for ( var stringID in map) {
+				if (++counter > 10)
+					break;
+				isGroupShowMap[stringID] = true;
+			}
+		} else {
+			isGroupShowMap = chart._isGroupShowMap;
+		}
+		var barWidth = 1.0 / (rawSeries.length + 1);
+		var groupWidth = 1.0 - barWidth;
+		var showSeries = [];
+		// var groupShowMap = {};
+		var rawX2GroupIdMap = {};
+		var groupId2RawXMap = {};
+		var groups = 0;
+		for (var i = 0; i < rawSeries.length; i++) {
+			var seriesItem = rawSeries[i];
+			if (!seriesItem._showBars)
+				continue;
+			var newSeriesItem = {
+				label : seriesItem.label,
+				_showBars : seriesItem._showBars,
+				_showPoints : seriesItem._showPoints,
+				_showLines : seriesItem._showLines,
+				color : i + 1,
+				data : []
+			};
+			// var showCount = Math.min(seriesItem.data.length, 10);
+			for (var j = 0; j < seriesItem.data.length; j++) {
+				var rawPoint = seriesItem.data[j];
+				var rawX = rawPoint[0];
+				if (isGroupShowMap[rawX] !== true)
+					continue;
+				var groupID;
+				if (rawX2GroupIdMap[rawX] === undefined) {
+					groupID = rawX2GroupIdMap[rawX] = ++groups;
+					groupId2RawXMap[groups] = rawX;
+				} else {
+					groupID = rawX2GroupIdMap[rawX];
+				}
+				var newX = groupID + barWidth * i;
+				newSeriesItem.data.push([ newX, rawPoint[1] ]);
+			}
+			showSeries.push(newSeriesItem);
+		}
+		chart._groupId2RawXMap = groupId2RawXMap;
+		chart._barWidth = barWidth;
+		chart._rawSeries = rawSeries;
+		chart.series = showSeries;
+		if (options) {
+			if (!options.xaxis)
+				options.xaxis = {};
+			options.xaxis.min = 1 - chart._barWidth;
+			options.xaxis.max = groups + 0.9;
+		}
+	}
+
+	function drawChart($chart, chart) {
+		prepareChart(chart);
 		$chart.append($("<h3 class='chart_title'/>").text(chart.title)).append(
 				$("<h4 class='chart_subtitle'/>").text(chart.subtitle));
 		var $placeholder = $("<div class='placeholder'/>").appendTo($chart);
@@ -205,15 +349,13 @@ function ChartGeneration($) {
 
 	function yTickFormatter(num, yaxis) {
 		var str, intLength, result, negative = num < 0, dotPos;
-		if (yaxis.tickSize >= 1){
+		if (yaxis.tickSize >= 1) {
 			str = Math.round(num).toString();
 			dotPos = str.length;
-		}
-		else if (yaxis.tickSize >= 0.1){
+		} else if (yaxis.tickSize >= 0.1) {
 			str = num.toFixed(1);
 			dotPos = str.length - 2;
-		}
-		else{
+		} else {
 			str = num.toFixed(2);
 			dotPos = str.length - 3;
 		}
@@ -252,7 +394,6 @@ function ChartGeneration($) {
 				}
 			}
 		}
-
 		var options = {
 			yaxes : chart.yaxes,
 			yaxis : {
@@ -294,6 +435,7 @@ function ChartGeneration($) {
 		 * , pan: { interactive: true }, zoom: { interactive: true }
 		 */
 		};
+		var rawSeries = chart._rawSeries ? chart._rawSeries : chart.series;
 		if (optionsHook)
 			options = optionsHook(options);
 		switch (chart.xaxisMode) {
@@ -315,8 +457,13 @@ function ChartGeneration($) {
 				tickLength : 0,
 				tickFormatter : function(num, _) {
 					var newTick = map[num];
-					return newTick ? "<div class='category_tick'>" + map[num]
-							+ "</div>" : "";
+					if (!newTick)
+						return "";
+					var result = "<div class='category_tick'>";
+					for (var i = 0; i < newTick.length; i++) {
+						result + newTick[i] + "<br/>";
+					}
+					return result + "</div>";
 				}
 			}
 			options.series.bars = {
@@ -327,19 +474,42 @@ function ChartGeneration($) {
 				lineWidth : 0,
 				fill : 0.75,
 				fillColor : false
-
 			}
 			options.series.points.show = false;
 			break;
-		case "NUMBER":
+		case "BAR_STRING":
+			var barWidth = 1.0 / (rawSeries.length + 1);
+			regenerateShowSeriesForBarChart(chart, options);
+			options.series.lines.show = false;
+			options.series.points.show = false;
+			options.xaxis = {
+				min : options.xaxis.min,
+				max : options.xaxis.max,
+				minTickSize : 1,
+				tickSize : 1,
+				tickLength : 10,
+				tickFormatter : function(num, _) {
+					var newTick = chart.stringMap[chart._groupId2RawXMap[num]];
+					if (!newTick)
+						return "";
+					return "<div class='category_tick'>" + newTick + "</div>";
+				},
+				labelWidth : 100
+			}
+			options.series.bars = {
+				show : true,
+				align : "left",
+				barWidth : chart._barWidth,
+				horizontal : false,
+				lineWidth : 0,
+				fill : 0.8,
+				fillColor : false
+			}
 			break;
 		case "INTEGER":
 			options.xaxis = {
 				minTickSize : 1,
 				tickSize : 1
-			/*
-			 * tickFormatter : function(num, _) { return Math.round(num); }
-			 */
 			}
 			if (chart.xaxisTicks) {
 				options.xaxis.ticks = chart.xaxisTicks;
@@ -357,12 +527,6 @@ function ChartGeneration($) {
 		$placeholder.data("plot", plot);
 		$placeholder.data("chart", chart);
 		chart.plot = plot;
-
-		// fix category tick
-		if (chart.xaxisMode === "CATEGORIES") {
-			fixCategoryTick($placeholder);
-		}
-
 		return plot;
 	}
 
@@ -400,24 +564,26 @@ function ChartGeneration($) {
 			plot.setupGrid();
 		plot.draw();
 		// fix category tick
-		if ($placeholder.data("chart").xaxisMode === "CATEGORIES") {
-			fixCategoryTick($placeholder);
-		}
+		// if ($placeholder.data("chart").xaxisMode === "CATEGORIES"
+		// || chart.xaxisMode === "BAR_STRING") {
+		// fixCategoryTick($placeholder);
+		// }
 	}
 
-	function fixCategoryTick($placeholder) {
-		var chart = $placeholder.data("chart");
-		var $category_tick = $placeholder.find('.category_tick');
-		var maxTickLabelHeight = 0;
-		$category_tick.each(function(_, elem) {
-			var $this = $(elem), width = $this.width();
-			if (maxTickLabelHeight < width)
-				maxTickLabelHeight = width;
-			$this.css("margin-top", width);
-			$this.css("margin-left", -$this.height() / 2);
-		});
-		$placeholder.css("padding-bottom", maxTickLabelHeight);
-	}
+	// function fixCategoryTick($placeholder) {
+	// var chart = $placeholder.data("chart");
+	// var $category_tick = $placeholder.find('.category_tick');
+	// var maxTickLabelHeight = 0;
+	// $category_tick.each(function(_, elem) {
+	// var $this = $(elem), width = $this.width();
+	// if (maxTickLabelHeight < width)
+	// maxTickLabelHeight = width;
+	// var height = $this.height();
+	// $this.css("margin-left", 50);
+	// $this.css("margin-top", width);
+	// });
+	// $placeholder.css("padding-bottom", maxTickLabelHeight);
+	// }
 
 	function labelFormatter(label, series) {
 		var show = true;
@@ -607,6 +773,11 @@ function ChartGeneration($) {
 				var r = i > 1 ? ranges["x" + i + "axis"] : ranges.xaxis;
 				if (!r)
 					continue;
+				if (!opts._zoomed) {
+					opts._min = opts.min ? opts.min : null;
+					opts._max = opts.max ? opts.max : null;
+					opts._zoomed = true;
+				}
 				opts.min = r.from;
 				opts.max = r.to;
 			}
@@ -616,6 +787,11 @@ function ChartGeneration($) {
 				var r = i > 1 ? ranges["y" + i + "axis"] : ranges.yaxis;
 				if (!r)
 					continue;
+				if (!opts._zoomed) {
+					opts._min = opts.min ? opts.min : null;
+					opts._max = opts.max ? opts.max : null;
+					opts._zoomed = true;
+				}
 				opts.min = r.from;
 				opts.max = r.to;
 			}
@@ -635,12 +811,18 @@ function ChartGeneration($) {
 					x = new Date(item.datapoint[0]).toUTCString();
 					break;
 				default:
+					x = item.datapoint[0];
 					switch (chart.xaxisMode) {
 					case "CATEGORIES":
 						x = item.series.label;
 						break;
+					case "BAR_STRING":
+						if (chart._groupId2RawXMap && chart.stringMap) {
+							x = chart.stringMap[chart._groupId2RawXMap[Math
+									.floor(x)]];
+						}
+						break;
 					default:
-						x = item.datapoint[0];
 						if (chart.xaxisTicks) {
 							var tickLabel = binary_search_for_tick(
 									chart.xaxisTicks, x);
@@ -712,11 +894,19 @@ function ChartGeneration($) {
 		var plot = $placeholder.data("plot");
 		$.each(plot.getXAxes(), function(_, axis) {
 			var opts = axis.options;
-			opts.min = opts.max = null;
+			if (opts._zoomed) {
+				opts.min = opts._min;
+				opts.max = opts._max;
+				opts._zoomed = false;
+			}
 		});
 		$.each(plot.getYAxes(), function(_, axis) {
 			var opts = axis.options;
-			opts.min = opts.max = null;
+			if (opts._zoomed) {
+				opts.min = opts._min;
+				opts.max = opts._max;
+				opts._zoomed = false;
+			}
 		});
 		redraw($placeholder, plot, null);
 	}

@@ -8,7 +8,7 @@ import chartgeneration.formatter.GenericTableFormatterImpl;
 public abstract class GenericTableFactoryBase implements GenericTableFactory {
 
 	@Override
-	public abstract Generator createGenerator(ChartConfig<GenericTable> config)
+	public abstract ChartGenerator createGenerator(ChartConfig<GenericTable> config)
 			throws Exception;
 
 	@Override

@@ -76,10 +76,10 @@ header, #content, footer {
 }
 
 .category_tick {
-	transform: rotate(-90deg);
-	float: left;
-	/* 	text-align : right; */
-	transform-origin: 0 0
+	transform: translateX(50%) rotate(20deg);
+	transform-origin: 0 0;
+	min-height: 50px;
+	font-weight: bold;
 }
 
 .x_label {

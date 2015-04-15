@@ -4,10 +4,10 @@ import chartgeneration.chart.GenericTable;
 import chartgeneration.config.ChartConfig;
 import chartgeneration.formatter.ChartFormatter;
 import chartgeneration.formatter.GenericTableFormatter;
-import chartgeneration.generator.Generator;
+import chartgeneration.generator.ChartGenerator;
 import chartgeneration.generator.GenericTableFactory;
 /**
- * A factory for creating creating {@link Generator} and {@link ChartFormatter}
+ * A factory for creating creating {@link ChartGenerator} and {@link ChartFormatter}
  * objects for {@link JmeterSummaryChart}
  * 
  * @author Rayson Zhu

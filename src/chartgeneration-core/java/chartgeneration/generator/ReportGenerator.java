@@ -67,7 +67,7 @@ public class ReportGenerator {
 						ChartConfig<Chart> cfg = chartConfigs.get(taskId);
 						try {
 						ChartFactory<Chart> factory = cfg.createChartFactory();
-						Generator generator = factory.createGenerator(cfg);
+						ChartGenerator generator = factory.createGenerator(cfg);
 						charts[taskId] = generator.generate(dataTable);
 						} catch (Exception e){
 							e.printStackTrace();

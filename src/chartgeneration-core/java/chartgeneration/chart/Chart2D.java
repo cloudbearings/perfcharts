@@ -1,6 +1,7 @@
 package chartgeneration.chart;
 
 import java.util.List;
+import java.util.Map;
 
 import chartgeneration.config.AxisMode;
 import chartgeneration.formatter.Chart2DFormatter;
@@ -38,6 +39,8 @@ public class Chart2D extends Chart {
 	 * optional, custom x-ticks
 	 */
 	private Ticks xticks;
+	
+	private Map<String, Integer> barChartStringIDMap;
 
 	/**
 	 * Initialize an empty 2-dimensional chart
@@ -182,6 +185,14 @@ public class Chart2D extends Chart {
 
 	public void setXTicks(Ticks xticks) {
 		this.xticks = xticks;
+	}
+
+	public Map<String, Integer> getBarChartStringIDMap() {
+		return barChartStringIDMap;
+	}
+
+	public void setBarChartStringIDMap(Map<String, Integer> barChartStringIDMap) {
+		this.barChartStringIDMap = barChartStringIDMap;
 	}
 
 }

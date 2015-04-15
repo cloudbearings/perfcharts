@@ -39,6 +39,10 @@ public class Chart2DConfig extends ChartConfigBase<Chart2D> {
 	private TickGenerator xTickGenerator;
 
 	private SeriesOrder seriesOrder;
+	
+	private Chart2DXValueComparator xValueComparator;
+	
+	private BarChartStringIDMapper stringIDMapper;
 
 	public Chart2DConfig() {
 	}
@@ -110,6 +114,7 @@ public class Chart2DConfig extends ChartConfigBase<Chart2D> {
 		this.xaxisMode = xaxisMode;
 		this.interval = interval;
 		this.seriesOrder = seriesOrder;
+		this.xValueComparator = new Chart2DDefaultXValueComparator();
 	}
 	
 	
@@ -228,6 +233,22 @@ public class Chart2DConfig extends ChartConfigBase<Chart2D> {
 
 	public void setSeriesOrder(SeriesOrder seriesOrder) {
 		this.seriesOrder = seriesOrder;
+	}
+
+	public Chart2DXValueComparator getXValueComparator() {
+		return xValueComparator;
+	}
+
+	public void setXValueComparator(Chart2DXValueComparator xValueComparator) {
+		this.xValueComparator = xValueComparator;
+	}
+
+	public BarChartStringIDMapper getStringIDMapper() {
+		return stringIDMapper;
+	}
+
+	public void setStringIDMapper(BarChartStringIDMapper stringIDMapper) {
+		this.stringIDMapper = stringIDMapper;
 	}
 
 }

@@ -58,14 +58,16 @@ public class SumCalculation implements Chart2DCalculation {
 		List<Point2D> stops = new LinkedList<Point2D>();
 		if (rows.isEmpty())
 			return stops;
-		Number firstX = (Number) xField.select(rows.get(0));
-		Number lastX = 0;
+		Comparable<?> firstX = (Comparable<?>)xField.select(rows.get(0));
+		Comparable<?> lastX = firstX;
 		double y = 0.0;
 		int count = 0;
 		for (List<Object> row : rows) {
-			Number x = (Number) xField.select(row);
+			Comparable<?> x = (Comparable<?>)xField.select(row);
 			if (interval > 1) {
-				x = firstX.longValue() + (x.longValue() - firstX.longValue())
+				Number _x = (Number)x;
+				Number _firstX = (Number)firstX;
+				x = _firstX.longValue() + (_x.longValue() - _firstX.longValue())
 						/ interval * interval;
 			}
 			if (lastX.equals(x)) {

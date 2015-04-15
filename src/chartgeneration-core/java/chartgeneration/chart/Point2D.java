@@ -10,7 +10,7 @@ public class Point2D {
 	/**
 	 * x-value
 	 */
-	private Number x;
+	private Comparable<?> x;
 	/**
 	 * y-value
 	 */
@@ -36,7 +36,7 @@ public class Point2D {
 	 * @param y
 	 *            y-value
 	 */
-	public Point2D(Number x, double y) {
+	public Point2D(Comparable<?> x, double y) {
 		this(x, y, 1);
 	}
 
@@ -50,7 +50,7 @@ public class Point2D {
 	 * @param w
 	 *            weight
 	 */
-	public Point2D(Number x, double y, int w) {
+	public Point2D(Comparable<?> x, double y, int w) {
 		this.x = x;
 		this.y = y;
 		this.weight = w;
@@ -61,7 +61,7 @@ public class Point2D {
 	 * 
 	 * @return x-value
 	 */
-	public Number getX() {
+	public Comparable<?> getX() {
 		return x;
 	}
 
@@ -71,7 +71,7 @@ public class Point2D {
 	 * @param x
 	 *            x-value
 	 */
-	public void setX(Number x) {
+	public void setX(Comparable<?> x) {
 		this.x = x;
 	}
 

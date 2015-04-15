@@ -80,14 +80,17 @@ public class CountCalculation implements Chart2DCalculation {
 		List<Point2D> stops = new LinkedList<Point2D>();
 		if (rows.isEmpty())
 			return stops;
-		Number firstX = (Number) xField.select(rows.get(0));
-		Number lastX = 0;
+		Comparable<?> firstX = (Comparable<?>) xField.select(rows.get(0));
+		Comparable<?> lastX = firstX;
 		int count = 0;
 		for (List<Object> row : rows) {
-			Number x = (Number) xField.select(row);
+			Comparable<?> x = (Comparable<?>) xField.select(row);
 			if (interval > 1) {
-				x = firstX.longValue() + (x.longValue() - firstX.longValue())
-						/ interval * interval;
+				Number _x = (Number) x;
+				Number _firstX = (Number) firstX;
+				x = _firstX.longValue()
+						+ (_x.longValue() - _firstX.longValue()) / interval
+						* interval;
 			}
 			if (lastX.equals(x)) {
 				++count;
@@ -95,14 +98,17 @@ public class CountCalculation implements Chart2DCalculation {
 				if (count > 0) {
 					stops.add(new Point2D(lastX, count * times * 1000.0
 							/ interval, count));
-					if (setZeroIfIntervalNoData
-							&& lastX.doubleValue() + interval < x.doubleValue()) {
-						stops.add(new Point2D(lastX.doubleValue() + interval,
-								0, 0));
-						if (lastX.doubleValue() + interval < x.doubleValue()
-								- interval)
-							stops.add(new Point2D(x.doubleValue() - interval,
-									0, 0));
+					if (setZeroIfIntervalNoData) {
+						Number _x = (Number)x;
+						Number _lastX = (Number)lastX;
+						if (_lastX.doubleValue() + interval < _x.doubleValue()) {
+							stops.add(new Point2D(_lastX.doubleValue()
+									+ interval, 0, 0));
+							if (_lastX.doubleValue() + interval < _x
+									.doubleValue() - interval)
+								stops.add(new Point2D(_x.doubleValue()
+										- interval, 0, 0));
+						}
 					}
 				}
 				count = 1;
