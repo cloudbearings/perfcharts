@@ -3,7 +3,9 @@
 	<chartConfigTemplate class="JmeterSummaryChartTemplate"/>
 	<chartConfigTemplate class="JmeterThreadChartTemplate">
 	</chartConfigTemplate>
-	<chartConfigTemplate class="JmeterAverageRTOverallChartTemplate"/>
+	<!--chartConfigTemplate class="JmeterAverageRTOverallChartTemplate"/-->
+	<chartConfigTemplate class="TopTxWithHighestAvgRTBarChartTemplate"/>
+	<chartConfigTemplate class="TopTxWithMostHitsBarChartTemplate"/>
 	<chartConfigTemplate class="JmeterAverageRTChartTemplate">
 		<exclusionPattern><!--{command_line_exclusion_pattern}--></exclusionPattern>
 	</chartConfigTemplate>
