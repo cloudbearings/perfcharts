@@ -21,6 +21,9 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 
+import chartgeneration.parser.zabbix.ZabbixHistory;
+import chartgeneration.parser.zabbix.ZabbixItem;
+
 public class ZabbixParser implements DataParser {
 	private final static Logger LOGGER = Logger.getLogger(ZabbixParser.class
 			.getName());
@@ -341,107 +344,5 @@ public class ZabbixParser implements DataParser {
 
 }
 
-class ZabbixItem {
-	private int itemID;
-	private String key;
-	private int valueType;
-	private String name;
-	private int hostID;
 
-	public ZabbixItem(int itemID, String key, int valueType, String name,
-			int hostID) {
-		this.itemID = itemID;
-		this.key = key;
-		this.valueType = valueType;
-		this.name = name;
-		this.hostID = hostID;
-	}
 
-	public int getItemID() {
-		return itemID;
-	}
-
-	public void setItemID(int itemID) {
-		this.itemID = itemID;
-	}
-
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-	public int getValueType() {
-		return valueType;
-	}
-
-	public void setValueType(int valueType) {
-		this.valueType = valueType;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getHostID() {
-		return hostID;
-	}
-
-	public void setHostID(int hostID) {
-		this.hostID = hostID;
-	}
-
-}
-
-class ZabbixHistory {
-	private int itemID;
-	private Date timestop;
-	private int valueType;
-	private String value;
-
-	public ZabbixHistory(int itemID, Date timestop, int valueType, String value) {
-		this.itemID = itemID;
-		this.timestop = timestop;
-		this.valueType = valueType;
-		this.value = value;
-	}
-
-	public int getItemID() {
-		return itemID;
-	}
-
-	public void setIID(int itemID) {
-		this.itemID = itemID;
-	}
-
-	public Date getTimestop() {
-		return timestop;
-	}
-
-	public void setTimestop(Date timestop) {
-		this.timestop = timestop;
-	}
-
-	public int getValueType() {
-		return valueType;
-	}
-
-	public void setValueType(int valueType) {
-		this.valueType = valueType;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-}

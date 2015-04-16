@@ -31,11 +31,11 @@ public class ZabbixDownloader {
 			.getLogger(ZabbixDownloader.class.getName());
 
 	private int sequenceId = 0;
-
-	private final static String[] itemKeys = { "system.cpu.num",
-			"system.cpu.load", "system.cpu.util", "vm.memory.size",
-			"system.swap.in", "system.swap.out", "net.if.in", "net.if.out",
-			"vfs.dev.read", "vfs.dev.write" };
+	private final static String[] defaultItemKeys = { "system.cpu.num",
+		"system.cpu.load", "system.cpu.util", "vm.memory.size",
+		"system.swap.in", "system.swap.out", "net.if.in", "net.if.out",
+		"vfs.dev.read", "vfs.dev.write" };
+	private String[] itemKeys;
 
 	private String apiUrl;
 	// private String ca;
@@ -59,6 +59,8 @@ public class ZabbixDownloader {
 
 	public void download() throws MalformedURLException, IOException,
 			ZabbixAPIException {
+		if (itemKeys == null)
+			itemKeys = defaultItemKeys;
 		final long startTimeValue = startTime != null ? startTime.getTime() / 1000L
 				: 0L;
 		final long endTimeValue = endTime != null ? endTime.getTime() / 1000L
@@ -271,6 +273,7 @@ public class ZabbixDownloader {
 			String hostName = hostID2Name.get(hostId);
 			String outputFileName = outputDirectory + File.separator + hostName
 					+ ".zabbix";
+			LOGGER.info("create file '" + outputFileName + "'");
 			CSVPrinter printer = new CSVPrinter(
 					new BufferedWriter(new OutputStreamWriter(
 							new FileOutputStream(outputFileName))),
@@ -324,6 +327,88 @@ public class ZabbixDownloader {
 		LOGGER.info("JSON RPC Request ends: " + method);
 		return r;
 	}
+	
+
+	public int getSequenceId() {
+		return sequenceId;
+	}
+
+	public void setSequenceId(int sequenceId) {
+		this.sequenceId = sequenceId;
+	}
+
+	public String[] getItemKeys() {
+		return itemKeys;
+	}
+
+	public void setItemKeys(String[] itemKeys) {
+		this.itemKeys = itemKeys;
+	}
+
+	public String getApiUrl() {
+		return apiUrl;
+	}
+
+	public void setApiUrl(String apiUrl) {
+		this.apiUrl = apiUrl;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String[] getHosts() {
+		return hosts;
+	}
+
+	public void setHosts(String[] hosts) {
+		this.hosts = hosts;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getOutputDirectory() {
+		return outputDirectory;
+	}
+
+	public void setOutputDirectory(String outputDirectory) {
+		this.outputDirectory = outputDirectory;
+	}
+
+	public static Logger getLogger() {
+		return LOGGER;
+	}
+
+	public static String[] getDefaultitemkeys() {
+		return defaultItemKeys;
+	}
+
 
 	public static class ZabbixAPIException extends Exception {
 		/**

@@ -45,7 +45,6 @@ public class TopTxWithMostHitsBarChartTemplate extends Chart2DTemplateBase {
 				Collections.sort(series.getStops(), new Comparator<Point2D>() {
 					@Override
 					public int compare(Point2D o1, Point2D o2) {
-						System.err.println(o2.getWeight() - o1.getWeight());
 						return o2.getWeight() - o1.getWeight();
 					}
 				});

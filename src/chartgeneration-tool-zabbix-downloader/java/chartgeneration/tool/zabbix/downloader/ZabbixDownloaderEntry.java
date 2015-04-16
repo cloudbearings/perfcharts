@@ -69,6 +69,13 @@ public class ZabbixDownloaderEntry {
 			endTime = sdf.parse(endTimeStr);
 			LOGGER.info("Use end time " + endTime.toString());
 		}
+		
+		final String itemKeysStr = prop.getProperty("item_keys");
+		String[] itemKeys = null;
+		if (itemKeysStr != null && !itemKeysStr.isEmpty()) {
+			LOGGER.info("Use item keys " + itemKeysStr);
+			itemKeys = itemKeysStr.split(";");
+		}
 
 		// make sure output directory exists
 		new File(outputDir).mkdirs();
@@ -88,8 +95,10 @@ public class ZabbixDownloaderEntry {
 		if (password == null || password.isEmpty())
 			throw new InvalidParameterException("password is required.");
 
+		System.out.println("Downloading data from Zabbix server to '" + outputDir + "'...");
 		ZabbixDownloader downloader = new ZabbixDownloader(apiUrl, user,
 				password, hosts, startTime, endTime, outputDir);
+		downloader.setItemKeys(itemKeys);
 		downloader.download();
 	}
 }
