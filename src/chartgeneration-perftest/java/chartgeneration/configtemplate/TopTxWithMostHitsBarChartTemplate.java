@@ -42,23 +42,16 @@ public class TopTxWithMostHitsBarChartTemplate extends Chart2DTemplateBase {
 					return null;
 				Chart2DSeries series = chart.getLines().get(0);
 				Map<String, Integer> result = new HashMap<String, Integer>();
-				List<Point2D> copyOfStops = new ArrayList<Point2D>(series
-						.getStops().size());
-
-				for (Point2D point : series.getStops()) {
-					copyOfStops.add(new Point2D(point.getX(), point.getY(),
-							point.getWeight()));
-				}
-				Collections.sort(copyOfStops, new Comparator<Point2D>() {
+				Collections.sort(series.getStops(), new Comparator<Point2D>() {
 					@Override
 					public int compare(Point2D o1, Point2D o2) {
+						System.err.println(o2.getWeight() - o1.getWeight());
 						return o2.getWeight() - o1.getWeight();
 					}
 				});
-				for (int i = 0; i < copyOfStops.size();) {
-					result.put(copyOfStops.get(i).getX().toString(), ++i);
+				for (int i = 0; i < series.getStops().size();) {
+					result.put(series.getStops().get(i).getX().toString(), ++i);
 				}
-				series.setStops(copyOfStops);
 				return result;
 			}
 		});

@@ -17,45 +17,60 @@ import chartgeneration.common.StringExtractionTransformSelector;
 import chartgeneration.config.AxisMode;
 import chartgeneration.config.BarChartStringIDMapper;
 import chartgeneration.config.Chart2DConfig;
+import chartgeneration.config.Chart2DSeriesConfig;
 import chartgeneration.config.Chart2DSeriesConfigRule;
+import chartgeneration.config.Chart2DXValueComparator;
 import chartgeneration.config.SeriesOrder;
+import chartgeneration.perftest.calc.PerfCmpBarChartCalculation;
 
-public class PerformanceComparisonChartTemplate extends Chart2DTemplateBase {
+public class PerformanceComparisonChartTemplateOrderedByHits extends
+		Chart2DTemplateBase {
 
 	@Override
 	public Chart2DConfig generateChartConfig() {
 		List<Chart2DSeriesConfigRule> rules;
+		FieldSelector<Long> sourceSamplesField = new IndexFieldSelector(1);
+		FieldSelector<Long> destSamplesField = new IndexFieldSelector(2);
 		FieldSelector<Double> sourceRTField = new IndexFieldSelector<Double>(3);
 		FieldSelector<Double> destRTField = new IndexFieldSelector<Double>(4);
 		rules = new ArrayList<Chart2DSeriesConfigRule>();
 		rules.add(new Chart2DSeriesConfigRule("TX-.+", "compared build", "ms",
 				getLabelField(), new StringExtractionTransformSelector(
 						getLabelField(), "TX-(.+)", "$1"), destRTField,
-				new AverageCalculation(), false, true, false));
+				new PerfCmpBarChartCalculation(destSamplesField), false, true,
+				false));
 		rules.add(new Chart2DSeriesConfigRule("TX-.+", "this build", "ms",
 				getLabelField(), new StringExtractionTransformSelector(
 						getLabelField(), "TX-(.+)", "$1"), sourceRTField,
-				new AverageCalculation(), false, true, false));
+				new PerfCmpBarChartCalculation(sourceSamplesField), false,
+				true, false));
 		Chart2DConfig cfg = createConfig(
-				"Transactions Average Response Time Comparison", "",
-				"Response Time", rules, AxisMode.BAR_STRING);
+				"Transactions Average Response Time Comparison (Ordered by Hits)",
+				"", "Response Time", rules, AxisMode.BAR_STRING);
 		cfg.setSeriesOrder(SeriesOrder.NONE);
 		cfg.setInterval(1); // disable auto interval
 		cfg.setStringIDMapper(new BarChartStringIDMapper() {
 			@Override
 			public Map<String, Integer> map(Chart2D chart, Chart2DConfig config) {
-				if (chart.getLines() == null || chart.getLines().isEmpty())
+				if (chart.getLines() == null || chart.getLines().size() < 2)
 					return null;
 				Map<String, Integer> result = new HashMap<String, Integer>();
-				int count = 0;
-				for (Chart2DSeries series : chart.getLines()) {
-					for (Point2D point : series.getStops()) {
-						Integer stringID = result.get(point.getX().toString());
-						if (stringID == null) {
-							stringID = ++count;
-							result.put(point.getX().toString(), stringID);
-						}
-					}
+				Chart2DSeries comparedSeries = chart.getLines().get(0);
+				Chart2DSeries thisSeries = chart.getLines().get(1);
+				Collections.sort(thisSeries.getStops(),
+						new Comparator<Point2D>() {
+							@Override
+							public int compare(Point2D o1, Point2D o2) {
+//								System.err.println(o2.getWeight() + " "
+//										+ o1.getWeight() + " "
+//										+ (o2.getWeight() - o1.getWeight()));
+								return o2.getWeight() - o1.getWeight();
+							}
+						});
+
+				for (int i = 0; i < thisSeries.getStops().size();) {
+					String key = thisSeries.getStops().get(i).getX().toString();
+					result.put(key, ++i);
 				}
 				return result;
 			}

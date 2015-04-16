@@ -70,7 +70,8 @@ public class FlotChartFormatter implements Chart2DFormatter {
 						if (_x != null) {
 							x = _x;
 						} else {
-							x = -1;
+							//x = -1;
+							continue;
 						}
 					}
 					dataJson.put(new JSONArray().put(x).put(stop.getY()));
@@ -86,6 +87,7 @@ public class FlotChartFormatter implements Chart2DFormatter {
 					stringMapJson.put(val.toString(), key);
 				}
 				chartJson.put("stringMap", stringMapJson);
+				chartJson.put("stringMapSize", stringMapJson.length());
 			}
 		}
 
