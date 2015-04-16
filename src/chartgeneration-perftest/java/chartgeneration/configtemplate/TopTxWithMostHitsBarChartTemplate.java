@@ -32,7 +32,7 @@ public class TopTxWithMostHitsBarChartTemplate extends Chart2DTemplateBase {
 						getLabelField(), "TX-(.+)-S", "$1"), rtField,
 				new AverageCalculation(), false, true, false));
 		Chart2DConfig cfg = createConfig(
-				" Top 10 Transactions with the Highest Average Response Time",
+				" Top 10 Hits Transctions",
 				"", "Response Time", rules, AxisMode.BAR_STRING);
 		cfg.setSeriesOrder(SeriesOrder.NONE);
 		cfg.setStringIDMapper(new BarChartStringIDMapper() {
