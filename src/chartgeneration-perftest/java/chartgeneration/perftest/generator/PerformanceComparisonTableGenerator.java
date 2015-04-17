@@ -84,10 +84,10 @@ public class PerformanceComparisonTableGenerator implements ChartGenerator {
 			row[4] = new TableCell(diffAverage);
 			double diffAveragePercentage = diffAverage * 100.0 / dAverage;
 			row[5] = new TableCell(diffAveragePercentage);
-			if (Double.isInfinite(diffAveragePercentage)|| diffAveragePercentage >= 50.0){
+			/*if (Double.isInfinite(diffAveragePercentage)|| diffAveragePercentage >= 50.0){
 				row[5].setCssClass("perfcharts_warning");
 				//row[0].setCssClass("perfcharts_warning");
-			} else if (diffAveragePercentage <= -50.0){
+			} else */if (diffAveragePercentage <= -50.0){
 				row[5].setCssClass("perfcharts_fine");
 			}
 			
