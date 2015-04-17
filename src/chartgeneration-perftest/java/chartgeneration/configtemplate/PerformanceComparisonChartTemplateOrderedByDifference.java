@@ -81,8 +81,8 @@ public class PerformanceComparisonChartTemplateOrderedByDifference extends
 						continue;
 					}
 					double v = (thisRT - point.getY()) / point.getY();
-					if (Double.isNaN(v) || Double.isInfinite(v))
-						System.err.println("xxxxx" + v);
+//					if (Double.isNaN(v) || Double.isInfinite(v))
+//						System.err.println("xxxxx" + v);
 					diffMap.put(point.getX().toString(), v);
 				}
 				Collections.sort(thisSeries.getStops(),
