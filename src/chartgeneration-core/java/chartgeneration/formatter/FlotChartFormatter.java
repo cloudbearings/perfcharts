@@ -1,11 +1,11 @@
 package chartgeneration.formatter;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import chartgeneration.chart.Chart2D;
 import chartgeneration.chart.Chart2DSeries;
@@ -31,7 +31,8 @@ public class FlotChartFormatter implements Chart2DFormatter {
 		chartJson.put("yLabel", graph.getYLabel());
 		chartJson.put("xaxisMode", graph.getXaxisMode().toString());
 		if (graph.getXTicks() != null)
-			chartJson.put("xaxisTicks", graph.getXTicks().format());
+			chartJson.put("xaxisTicks", new JSONArray(new JSONTokener(graph
+					.getXTicks().format())));
 		List<Chart2DSeries> series = graph.getLines();
 		if (series != null) {
 			Map<String, Integer> xAxisString2IntegerMap = graph
@@ -70,7 +71,7 @@ public class FlotChartFormatter implements Chart2DFormatter {
 						if (_x != null) {
 							x = _x;
 						} else {
-							//x = -1;
+							// x = -1;
 							continue;
 						}
 					}
