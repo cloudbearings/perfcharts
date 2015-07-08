@@ -96,7 +96,16 @@ if [ -f "$file" ]; then
 			exit 1
 		fi
 		;;
-	jtl)
+	jtl|log)
+                if [[ `grep -L "[Ss]ample" $file` ]] && [[ ! -s $file ]];then
+                	echo "INFO: $file has none [sS]amplers.Will ignore." >&2
+			continue
+                fi
+                 
+                if [[ `grep -L "</testResults>" $file` ]]; then
+                 	echo "$file is missing the end tag(</testResults>) and adding--" >&2
+                 	sed -i '$a </testResults>' $file
+                fi
 		mkdir -p "$jmeter_dir"
 		parser_class=JmeterParser
 		if ! $CGT_JAVA_COMMAND "-DstartTime=$start_time" "-DendTime=$end_time" -jar "$perftest_parser" "$parser_class" "$time_zone" < "$file" >> "$jmeter_data_table"; then
