@@ -97,13 +97,16 @@ if [ -f "$file" ]; then
 		fi
 		;;
 	jtl|log)
+                # cara add the two if to check the input files completance
+                # if no [Ss]ample, will ingore 
                 if [[ `grep -L "[Ss]ample" $file` ]] && [[ ! -s $file ]];then
                 	echo "INFO: $file has none [sS]amplers.Will ignore." >&2
 			continue
                 fi
-                 
-                if [[ `grep -L "</testResults>" $file` ]]; then
-                 	echo "$file is missing the end tag(</testResults>) and adding--" >&2
+                # if missing the end tag, will backup and update the file.
+                if [[ `grep -L "</testResults>" $file` ]] && [[ `grep -l "<testResults" $file` ]]; then
+			echo "WARN: $file is not completed, having no end tags </testResults>." >&2
+                        cp $file ${file}_bak_percharts_auto
                  	sed -i '$a </testResults>' $file
                 fi
 		mkdir -p "$jmeter_dir"
@@ -111,6 +114,10 @@ if [ -f "$file" ]; then
 		if ! $CGT_JAVA_COMMAND "-DstartTime=$start_time" "-DendTime=$end_time" -jar "$perftest_parser" "$parser_class" "$time_zone" < "$file" >> "$jmeter_data_table"; then
 			exit 1
 		fi
+                #recover the origin file
+                if [[ ! -z ${file}_bak_percharts_auto ]]; then
+                	rm $file; mv ${file}_bak_percharts_auto ${file};
+                fi
 		;;
 	chartconf) ;;
 	*) echo "[Warning] The file'$file' is ignored, because I don't know what it is.";;
