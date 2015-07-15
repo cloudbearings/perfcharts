@@ -33,13 +33,15 @@ public class PerformanceComparisonChartTemplateOrderedByHits extends
 		FieldSelector<Long> destSamplesField = new IndexFieldSelector(2);
 		FieldSelector<Double> sourceRTField = new IndexFieldSelector<Double>(3);
 		FieldSelector<Double> destRTField = new IndexFieldSelector<Double>(4);
+		FieldSelector<String> sourceSeriesLabelField = new IndexFieldSelector<String>(13);
+        FieldSelector<String> destSeriesLabelField = new IndexFieldSelector<String>(14);
 		rules = new ArrayList<Chart2DSeriesConfigRule>();
-		rules.add(new Chart2DSeriesConfigRule("TX-.+", "compared build", "ms",
+		rules.add(new Chart2DSeriesConfigRule("TX-.+", destSeriesLabelField, "ms",
 				getLabelField(), new StringExtractionTransformSelector(
 						getLabelField(), "TX-(.+)", "$1"), destRTField,
 				new PerfCmpBarChartCalculation(destSamplesField), false, true,
 				false));
-		rules.add(new Chart2DSeriesConfigRule("TX-.+", "this build", "ms",
+		rules.add(new Chart2DSeriesConfigRule("TX-.+", sourceSeriesLabelField, "ms",
 				getLabelField(), new StringExtractionTransformSelector(
 						getLabelField(), "TX-(.+)", "$1"), sourceRTField,
 				new PerfCmpBarChartCalculation(sourceSamplesField), false,

@@ -5,6 +5,8 @@ import java.util.Map;
 public class PerfSummaryData {
 	private Map<String, PerfSummaryItem> items;
 	private PerfSummaryItem total;
+	private int buildId;
+	private String buildName;
 
 	public PerfSummaryData() {
 	}
@@ -31,4 +33,19 @@ public class PerfSummaryData {
 		this.total = total;
 	}
 
+	public int getBuildId() {
+		return buildId;
+	}
+
+	public void setBuildId(int buildId) {
+		this.buildId = buildId;
+	}
+
+	public String getBuildName() {
+		return buildName;
+	}
+
+	public void setBuildName(String buildName) {
+		this.buildName = buildName;
+	}
 }

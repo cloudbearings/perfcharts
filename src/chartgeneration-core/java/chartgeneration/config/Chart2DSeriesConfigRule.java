@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import chartgeneration.calc.Chart2DCalculation;
 import chartgeneration.common.FieldSelector;
+import chartgeneration.common.StringExtractionTransformSelector;
 import chartgeneration.generator.Chart2DSeriesConfigBuilder;
 
 /**
@@ -28,13 +29,17 @@ public class Chart2DSeriesConfigRule {
 	 * captured by {@link #labelPattern} will be used to replace the $1, $2,
 	 * $3,... marks in {@link #seriesLabelFormat}.
 	 * 
-	 * @see {@link Matcher#replaceAll(String)}
+	 * @see {@link #seriesLabelField}
 	 */
+	@Deprecated
 	private String seriesLabelFormat;
 	/**
 	 * the {@link FieldSelector} for extracting row labels of raw data
 	 */
 	private FieldSelector labelField;
+
+	private FieldSelector<String> seriesLabelField;
+
 	/**
 	 * the {@link FieldSelector} for extracting x-value of raw data
 	 */
@@ -100,6 +105,7 @@ public class Chart2DSeriesConfigRule {
 	 * @param calculation
 	 *            specify the calculation to be used for plotted chart
 	 */
+    @Deprecated
 	public Chart2DSeriesConfigRule(String labelPattern,
 			String seriesLabelFormat, String unit, FieldSelector labelField,
 			FieldSelector xField, FieldSelector yField,
@@ -140,6 +146,7 @@ public class Chart2DSeriesConfigRule {
 	 * @param showUnit
 	 *            show unit?
 	 */
+    @Deprecated
 	public Chart2DSeriesConfigRule(String labelPattern,
 			String seriesLabelFormat, String unit, FieldSelector labelField,
 			FieldSelector xField, FieldSelector yField,
@@ -156,6 +163,89 @@ public class Chart2DSeriesConfigRule {
 		this.unit = unit;
 		this.showUnit = showUnit;
 	}
+
+    /**
+     * constructor
+     *
+     * @param labelPattern
+     *            The regular expression to filter data rows by row label.
+     * @see {@link Pattern#compile(String)}
+     * @param seriesLabelField
+     *            The format of generated series label. The matched part of row
+     *            label captured by {@link #labelPattern} will be used to
+     *            replace the $1, $2, $3,... marks in {@link #seriesLabelFormat}
+     *            .
+     *
+     * @see {@link Matcher#replaceAll(String)}
+     * @param unit
+     *            The unit of y-value. It is mainly used to share axes for
+     *            composite charts.
+     * @param labelField
+     *            the {@link FieldSelector} for extracting row labels of raw
+     *            data
+     * @param xField
+     *            the {@link FieldSelector} for extracting x-value of raw data
+     * @param yField
+     *            the {@link FieldSelector} for extracting y-value of raw data
+     * @param calculation
+     *            specify the calculation to be used for plotted chart
+     */
+    public Chart2DSeriesConfigRule(String labelPattern,
+                                   FieldSelector<String> seriesLabelField, String unit, FieldSelector labelField,
+                                   FieldSelector xField, FieldSelector yField,
+                                   Chart2DCalculation calculation) {
+        this(labelPattern, seriesLabelField, unit, labelField, xField, yField,
+                calculation, true, false, false);
+    }
+
+    /**
+     * constructor
+     *
+     * @param labelPattern
+     *            The regular expression to filter data rows by row label.
+     * @see {@link Pattern#compile(String)}
+     * @param seriesLabelField
+     *            The format of generated series label. The matched part of row
+     *            label captured by {@link #labelPattern} will be used to
+     *            replace the $1, $2, $3,... marks in {@link #seriesLabelFormat}
+     *            .
+     *
+     * @see {@link Matcher#replaceAll(String)}
+     * @param unit
+     *            The unit of y-value. It is mainly used to share axes for
+     *            composite charts.
+     * @param labelField
+     *            the {@link FieldSelector} for extracting row labels of raw
+     *            data
+     * @param xField
+     *            the {@link FieldSelector} for extracting x-value of raw data
+     * @param yField
+     *            the {@link FieldSelector} for extracting y-value of raw data
+     * @param calculation
+     *            specify the calculation to be used for plotted chart
+     * @param showLines
+     *            show line?
+     * @param showBars
+     *            show bar?
+     * @param showUnit
+     *            show unit?
+     */
+    public Chart2DSeriesConfigRule(String labelPattern,
+                                   FieldSelector<String> seriesLabelField, String unit, FieldSelector labelField,
+                                   FieldSelector xField, FieldSelector yField,
+                                   Chart2DCalculation calculation, boolean showLines,
+                                   boolean showBars, boolean showUnit) {
+        this.labelPattern = labelPattern;
+        this.seriesLabelField = seriesLabelField;
+        this.labelField = labelField;
+        this.xField = xField;
+        this.yField = yField;
+        this.calculation = calculation;
+        this.showBar = showBars;
+        this.showLine = showLines;
+        this.unit = unit;
+        this.showUnit = showUnit;
+    }
 
 	/**
 	 * Get the regular expression to filter data rows by row label.
@@ -363,4 +453,15 @@ public class Chart2DSeriesConfigRule {
 		this.exclusionRule = exclusionRule;
 	}
 
+	/**
+	 * generated series label
+	 *
+	 */
+	public FieldSelector<String> getSeriesLabelField() {
+		return seriesLabelField;
+	}
+
+	public void setSeriesLabelField(FieldSelector<String> seriesLabelField) {
+		this.seriesLabelField = seriesLabelField;
+	}
 }

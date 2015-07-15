@@ -36,7 +36,8 @@ public class Chart2DSeriesConfigBuilder {
 	public List<Chart2DSeriesConfig> build(final Chart2DSeriesConfigRule rule,
 			DataTable dataTable) {
 		FieldSelector labelField = rule.getLabelField();
-		String labelFormat = rule.getSeriesLabelFormat();
+		String seriesLabelFormat = rule.getSeriesLabelFormat();
+		FieldSelector<String> seriesLabelField = rule.getSeriesLabelField();
 		List<List<Object>> rows = dataTable.getRows();
 		Pattern pattern = Pattern.compile(rule.getLabelPattern());
 		// define the map from series label to its involved row labels.
@@ -56,7 +57,8 @@ public class Chart2DSeriesConfigBuilder {
 					if (exclusionPattern.matcher(source).matches())
 						continue; // exclude this row;
 				}
-				String seriesLabel = matcher.replaceAll(labelFormat);
+
+				String seriesLabel = seriesLabelField != null ? seriesLabelField.select(row) : matcher.replaceAll(seriesLabelFormat);
 				Set<String> labels = map.get(seriesLabel);
 				if (labels == null)
 					map.put(seriesLabel, labels = new HashSet<String>());
