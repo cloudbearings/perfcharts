@@ -71,6 +71,7 @@ public class JmeterSummaryChartGenerator implements ChartGenerator {
 				rtField);
 		final FieldSelector errorField = new IndexFieldSelector(3);
 		final FieldSelector bytesField = new IndexFieldSelector(6);
+		final FieldSelector latencyField = new IndexFieldSelector(4);
 		// map table row label to related data rows
 		final Map<String, List<List<Object>>> involvedRows = new HashMap<String, List<List<Object>>>();
 		Pattern txPattern = Pattern.compile("^TX-(.+)-[SF]$");
@@ -88,7 +89,7 @@ public class JmeterSummaryChartGenerator implements ChartGenerator {
 		}
 		// generate table column labels
 		String[] header = new String[] { "Transation", "#Samples", "Average",
-				"Min", "Max", "90% Line", "Std. Dev.", "Error%",
+				"Min", "90% Line", "Max", "Latency", "Std. Dev.", "Error%",
 				"Throughput (tx/h)", "KiB/sec", "Avg. Bytes" };
 		Map<String, Object> columnKeys = new HashMap<String, Object>();
 		for (int i = 0; i < header.length; i++) {
@@ -106,6 +107,7 @@ public class JmeterSummaryChartGenerator implements ChartGenerator {
 		long maxRTTotal = Integer.MIN_VALUE;
 		double sumRTSquaredTotal = 0;
 		long bytesSumTotal = 0;
+		long sumLatencyTotal = 0;
 		List<Long> RTsTotal = new LinkedList<Long>();
 
 		// for each series (table row), do calculations
@@ -124,6 +126,7 @@ public class JmeterSummaryChartGenerator implements ChartGenerator {
 			long maxRT = Integer.MIN_VALUE;
 			double sumRTSquared = 0;
 			long bytesSum = 0;
+			long sumLatency = 0;
 
 			List<Long> RTs = new LinkedList<Long>();
 
@@ -138,6 +141,7 @@ public class JmeterSummaryChartGenerator implements ChartGenerator {
 					RTs.add(rt);
 					numRTsuccess++;
 					sumRT += rt;
+					sumLatency += ((Number)latencyField.select(row)).longValue();
 					if (rt < minRT)
 						minRT = rt;
 					if (rt > maxRT)
@@ -165,11 +169,13 @@ public class JmeterSummaryChartGenerator implements ChartGenerator {
 					tableRow[0].setCssClass("perfcharts_warning");
 				}
 				tableRow[3] = new TableCell(minRT);
-				tableRow[4] = new TableCell(maxRT);
-				tableRow[5] = new TableCell(Utilities.fastSelect(RTs,
+				tableRow[4] = new TableCell(Utilities.fastSelect(RTs,
 						(int) Math.round((RTs.size() - 1) * 0.9)).doubleValue());
+				tableRow[5] = new TableCell(maxRT);
+				double avgLatency = 1.0 * sumLatency / numRTsuccess;
+				tableRow[6] = new TableCell(avgLatency);
 				// std. dev. = sqrt(average of (x^2) - (average of x)^2)
-				tableRow[6] = new TableCell(Math.sqrt(sumRTSquared
+				tableRow[7] = new TableCell(Math.sqrt(sumRTSquared
 						/ numRTsuccess - avgRT * avgRT));
 
 				// tableRow[7] = new TableCell(100.0 * numRTfailure / samples);
@@ -177,26 +183,28 @@ public class JmeterSummaryChartGenerator implements ChartGenerator {
 				// tableRow[8] = new TableCell(formatThroughput(throughput),
 				// "string",
 				// throughput);
-				tableRow[8] = new TableCell(throughput * 1000 * 60 * 60);
+				tableRow[9] = new TableCell(throughput * 1000 * 60 * 60);
 				// tableRow[8].setCssClass("perfcharts-tx-summary-throughput");
-				tableRow[9] = new TableCell(bytesSum / 1.024 / duration);
-				tableRow[10] = new TableCell(1.0 * bytesSum / numRTsuccess);
+				tableRow[10] = new TableCell(bytesSum / 1.024 / duration);
+				tableRow[11] = new TableCell(1.0 * bytesSum / numRTsuccess);
 			} else {
 				tableRow[2] = new TableCell(Double.NaN);
 				tableRow[3] = new TableCell(Double.NaN);
 				tableRow[4] = new TableCell(Double.NaN);
 				tableRow[5] = new TableCell(Double.NaN);
 				tableRow[6] = new TableCell(Double.NaN);
+				tableRow[7] = new TableCell(Double.NaN);
 				tableRow[8] = new TableCell(Double.NaN);
 				tableRow[9] = new TableCell(Double.NaN);
 				tableRow[10] = new TableCell(Double.NaN);
+				tableRow[11] = new TableCell(Double.NaN);
 			}
 			double errorPerc = samples > 0 ? 100.0 * numRTfailure / samples
 					: Double.NaN;
-			tableRow[7] = new TableCell(errorPerc);
+			tableRow[8] = new TableCell(errorPerc);
 			if (Double.isInfinite(errorPerc) || Double.isNaN(errorPerc)
 					|| errorPerc > 0.0) {
-				tableRow[7].setCssClass("perfcharts_warning");
+				tableRow[8].setCssClass("perfcharts_warning");
 				tableRow[0].setCssClass("perfcharts_warning");
 			}
 			tableRows.add(tableRow);
@@ -215,6 +223,7 @@ public class JmeterSummaryChartGenerator implements ChartGenerator {
 			sumRTTotal += sumRT;
 			sumRTSquaredTotal += sumRTSquared;
 			bytesSumTotal += bytesSum;
+			sumLatencyTotal += sumLatency;
 			RTsTotal.addAll(RTs);
 		}
 
@@ -238,21 +247,23 @@ public class JmeterSummaryChartGenerator implements ChartGenerator {
 		double avgRTTotal = 1.0 * sumRTTotal / numRTsuccessTotal;
 		totalRow[2] = new TableCell(avgRTTotal);
 		totalRow[3] = new TableCell(minRTTotal);
-		totalRow[4] = new TableCell(maxRTTotal);
-		totalRow[5] = new TableCell(RTsTotal.isEmpty() ? Double.NaN : Utilities
+		totalRow[4] = new TableCell(RTsTotal.isEmpty() ? Double.NaN : Utilities
 				.fastSelect(RTsTotal,
 						(int) Math.round((RTsTotal.size() - 1) * 0.9))
 				.doubleValue());
-		totalRow[6] = (new TableCell(Math.sqrt(sumRTSquaredTotal
+		totalRow[5] = new TableCell(maxRTTotal);
+		double avgLatencyTotal = 1.0 * sumLatencyTotal / numRTsuccessTotal;
+		totalRow[6] = new TableCell(avgLatencyTotal);
+		totalRow[7] = (new TableCell(Math.sqrt(sumRTSquaredTotal
 				/ numRTsuccessTotal - avgRTTotal * avgRTTotal)));
-		totalRow[7] = new TableCell(100.0 * numRTfailureTotal / samplesTotal);
+		totalRow[8] = new TableCell(100.0 * numRTfailureTotal / samplesTotal);
 		long durationTotal = maxTimestampTotal - minTimestampTotal + 1;
 		double throughput = 1.0 * numRTsuccessTotal / durationTotal;
 		// totalRow[8] = new TableCell(formatThroughput(throughput), "string",
 		// throughput);
-		totalRow[8] = new TableCell(throughput * 1000 * 60 * 60);
-		totalRow[9] = new TableCell(bytesSumTotal / 1.024 / durationTotal);
-		totalRow[10] = new TableCell(1.0 * bytesSumTotal / numRTsuccessTotal);
+		totalRow[9] = new TableCell(throughput * 1000 * 60 * 60);
+		totalRow[10] = new TableCell(bytesSumTotal / 1.024 / durationTotal);
+		totalRow[11] = new TableCell(1.0 * bytesSumTotal / numRTsuccessTotal);
 		// tableRows.add(totalRow);
 		List<TableCell[]> bottomRows = new ArrayList<TableCell[]>(1);
 		bottomRows.add(totalRow);

@@ -13,5 +13,6 @@ output/
 bin/*
 res/*
 /bin/
+/.idea/
 
 src/chartgeneration-perftest/res/data.js
