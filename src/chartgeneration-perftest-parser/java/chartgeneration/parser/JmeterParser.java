@@ -18,11 +18,11 @@ public class JmeterParser implements DataParser {
 
 	@Override
 	public void parse(InputStream in, OutputStream out) throws Exception {
-		in.mark(512);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-		String firstLine = reader.readLine();
-		if (firstLine == null || firstLine.isEmpty())
-			return;
+		final int BUFFER_SIZE = 512;
+		in.mark(BUFFER_SIZE);
+		byte[] buffer = new byte[BUFFER_SIZE];
+		in.read(buffer, 0, BUFFER_SIZE);
+		String firstLine = new String(buffer, "ascii");
 		in.reset();
 		if (firstLine.startsWith("<?xml")) {
 			new JmeterXMLParser().parse(in, out);
