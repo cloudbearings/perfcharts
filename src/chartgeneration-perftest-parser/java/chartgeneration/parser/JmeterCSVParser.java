@@ -1,10 +1,6 @@
 package chartgeneration.parser;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -22,7 +18,7 @@ public class JmeterCSVParser implements DataParser {
 	@Override
 	public void parse(InputStream in, OutputStream out) throws Exception {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-		OutputStreamWriter writer = new OutputStreamWriter(out);
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
 
 		Date startTime = Settings.getInstance().getStartTime();
 		Date endTime = Settings.getInstance().getEndTime();

@@ -1,11 +1,6 @@
 package chartgeneration.parser;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 
 /**
  * The parser converts Jmeter test logs to data tables (in CSV format). The raw
@@ -31,7 +26,7 @@ public class JmeterParser implements DataParser {
 		}
 	}
 
-	static void writeFields(OutputStreamWriter writer, Object... objs)
+	static void writeFields(Writer writer, Object... objs)
 			throws IOException {
 		if (objs.length < 1)
 			return;
@@ -43,7 +38,7 @@ public class JmeterParser implements DataParser {
 		writer.write('\n');
 	}
 
-	static void writeField(OutputStreamWriter writer, Object obj)
+	static void writeField(Writer writer, Object obj)
 			throws IOException {
 		writer.write('\"');
 		writer.write(obj.toString().replace("\"", "\"\""));

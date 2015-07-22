@@ -3,10 +3,7 @@ package chartgeneration.parser;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -24,7 +21,7 @@ public class JmeterXMLParser implements DataParser {
             throws XMLStreamException, IOException {
         XMLStreamReader reader = XMLInputFactory.newInstance()
                 .createXMLStreamReader(in);
-        OutputStreamWriter writer = new OutputStreamWriter(out);
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
         Date startTime = Settings.getInstance().getStartTime();
         Date endTime = Settings.getInstance().getEndTime();
         long startTimeVal = startTime == null ? -1 : startTime.getTime();
