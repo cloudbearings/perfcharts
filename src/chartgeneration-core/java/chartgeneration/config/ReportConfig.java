@@ -13,6 +13,8 @@ import chartgeneration.configtemplate.ChartConfigTemplate;
  *
  */
 public class ReportConfig {
+
+	private String basePath;
 	/**
 	 * The version of configuration file.
 	 */
@@ -191,4 +193,11 @@ public class ReportConfig {
 		this.configTemplate = configTemplate;
 	}
 
+	public String getBasePath() {
+		return basePath;
+	}
+
+	public void setBasePath(String basePath) {
+		this.basePath = basePath;
+	}
 }

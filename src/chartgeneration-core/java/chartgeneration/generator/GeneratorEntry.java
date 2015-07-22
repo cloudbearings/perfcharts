@@ -1,9 +1,6 @@
 package chartgeneration.generator;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,10 +47,10 @@ public class GeneratorEntry {
 		// specify the input stream and output stream
 		InputStream in = config.getInputFile() == null
 				|| config.getInputFile().isEmpty() ? System.in
-				: new FileInputStream(config.getInputFile());
+				: new FileInputStream(getFile(config.getBasePath(), config.getInputFile()));
 		OutputStream out = config.getOutputFile() == null
 				|| config.getOutputFile().isEmpty() ? System.out
-				: new FileOutputStream(config.getOutputFile());
+				: new FileOutputStream(getFile(config.getBasePath(),config.getOutputFile()));
 		// generate a report through ReportGenerator
 		ReportGenerator generator = new ReportGenerator(chartConfigs);
 		Report report = generator.generate(in);
@@ -63,5 +60,12 @@ public class GeneratorEntry {
 		// write to output stream
 		ReportWritter reportWritter = new ReportWritter();
 		reportWritter.write(report, out);
+	}
+
+	private static File getFile(String parent, String relative) {
+		if (relative.startsWith("/") || relative.startsWith("file:"))
+			return new File(relative);
+		else
+			return new File(parent, relative);
 	}
 }

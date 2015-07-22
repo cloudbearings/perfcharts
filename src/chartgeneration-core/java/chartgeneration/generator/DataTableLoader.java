@@ -38,12 +38,28 @@ public class DataTableLoader {
 		for (CSVRecord csvRecord : csvParser)
 			rows.add(getFields(csvRecord));
 		csvParser.close();
+		/*String line;
+		while ((line = reader.readLine()) != null) {
+			rows.add(getFields(line));
+		}*/
 		return new DataTable(rows);
 	}
 	
 	private static List<Object> getFields(CSVRecord record){
 		List<Object> result = new ArrayList<Object>(record.size());
 		for (String col : record) {
+			result.add(Utilities.parseString(col));
+		}
+		return result;
+	}
+
+	private static List<Object> getFields(String line){
+		List<Object> result = new ArrayList<Object>();
+		String[] cols = line.split(",");
+		for (String col : cols) {
+			if (col.length() >= 2 && col.charAt(0) == '"' && col.charAt(col.length() - 1) == '"'){
+				col = col.substring(1, col.length() - 1).replace("\"\"", "\"");
+			}
 			result.add(Utilities.parseString(col));
 		}
 		return result;
