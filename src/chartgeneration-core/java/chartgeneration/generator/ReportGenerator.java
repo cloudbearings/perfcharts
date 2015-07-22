@@ -50,11 +50,12 @@ public class ReportGenerator {
 	 */
 	public Report generate(InputStream in) throws Exception {
 		// load data table
-		final DateTableLoader loader = new DateTableLoader();
+		final DataTableLoader loader = new DataTableLoader();
 		final DataTable dataTable = loader.load(in);
+		in.close();
 
-		final int workingThreadsCount = Math.min(chartConfigs.size(), Runtime
-				.getRuntime().availableProcessors() * 2);
+		final int workingThreadsCount = Math.min(chartConfigs.size(), (int)(Runtime
+				.getRuntime().availableProcessors() * 1.6));
 		final Thread[] workingThreads = new Thread[workingThreadsCount];
 		final AtomicInteger remainedTasks = new AtomicInteger(chartConfigs.size());
 		final Chart[] charts = new Chart[chartConfigs.size()];

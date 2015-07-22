@@ -20,7 +20,7 @@ import chartgeneration.model.DataTable;
  * @author Rayson Zhu
  *
  */
-public class DateTableLoader {
+public class DataTableLoader {
 	/**
 	 * Load the data table file (in CSV format) to memory.
 	 * 
@@ -34,7 +34,8 @@ public class DateTableLoader {
 		List<List<Object>> rows = new ArrayList<List<Object>>();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
-		for (CSVRecord csvRecord : csvParser.getRecords())
+		// don't use csvParser.getRecords() for iteration, may cause huge memory usage and lead to out-of-memory error
+		for (CSVRecord csvRecord : csvParser)
 			rows.add(getFields(csvRecord));
 		csvParser.close();
 		return new DataTable(rows);
