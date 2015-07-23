@@ -1,5 +1,8 @@
 package chartgeneration.parser;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+
 import java.io.*;
 import java.util.Date;
 import java.util.logging.Logger;
@@ -19,7 +22,7 @@ public class JmeterCSVParser implements DataParser {
 	public void parse(InputStream in, OutputStream out) throws Exception {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
-
+		CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT);
 		Date startTime = Settings.getInstance().getStartTime();
 		Date endTime = Settings.getInstance().getEndTime();
 		long startTimeVal = startTime == null ? -1 : startTime.getTime();
@@ -47,9 +50,10 @@ public class JmeterCSVParser implements DataParser {
 			int threads = 0;
 			int bytes = Integer.parseInt(fields[skip + 8]);
 			boolean error = !Boolean.parseBoolean(fields[skip + 7]);
-			JmeterParser.writeFields(writer, "TX-" + label
+			csvPrinter.printRecord("TX-" + label
 					+ (error ? "-F" : "-S"), timestamp, threads, error ? '1'
 					: '0', latency, rt, bytes);
+
 		}
 		writer.flush();
 

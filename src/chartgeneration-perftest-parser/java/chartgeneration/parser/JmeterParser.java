@@ -1,5 +1,7 @@
 package chartgeneration.parser;
 
+import org.apache.commons.csv.CSVPrinter;
+
 import java.io.*;
 
 /**
@@ -24,25 +26,6 @@ public class JmeterParser implements DataParser {
 		} else {
 			new JmeterCSVParser().parse(in, out);
 		}
-	}
-
-	static void writeFields(Writer writer, Object... objs)
-			throws IOException {
-		if (objs.length < 1)
-			return;
-		writeField(writer, objs[0]);
-		for (int i = 1; i < objs.length; ++i) {
-			writer.write(',');
-			writeField(writer, objs[i]);
-		}
-		writer.write('\n');
-	}
-
-	static void writeField(Writer writer, Object obj)
-			throws IOException {
-		writer.write('\"');
-		writer.write(obj.toString().replace("\"", "\"\""));
-		writer.write('\"');
 	}
 
 }

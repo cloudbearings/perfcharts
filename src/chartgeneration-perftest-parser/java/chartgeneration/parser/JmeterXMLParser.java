@@ -1,5 +1,8 @@
 package chartgeneration.parser;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -22,6 +25,7 @@ public class JmeterXMLParser implements DataParser {
         XMLStreamReader reader = XMLInputFactory.newInstance()
                 .createXMLStreamReader(in);
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
+        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT);
         Date startTime = Settings.getInstance().getStartTime();
         Date endTime = Settings.getInstance().getEndTime();
         long startTimeVal = startTime == null ? -1 : startTime.getTime();
@@ -33,7 +37,7 @@ public class JmeterXMLParser implements DataParser {
         int rt = 0;
         int latency = 0;
         int threads = 0;
-        int bytes = 0;
+        long bytes = 0;
         boolean error = false;
         boolean isEmptyTag = true;
         while (reader.hasNext()) {
@@ -60,16 +64,17 @@ public class JmeterXMLParser implements DataParser {
                             String na = reader.getAttributeValue(null, "na");
                             threads = Integer.parseInt(na != null ? na : reader
                                     .getAttributeValue(null, "ng"));
-                            bytes = Integer.parseInt(reader.getAttributeValue(null,
+                            bytes = Long.parseLong(reader.getAttributeValue(null,
                                     "by"));
                             error = !Boolean.parseBoolean(reader.getAttributeValue(
                                     null, "s"));
                             if ((startTimeVal <= 0 || timestamp + rt >= startTimeVal)
-                                    && (endTimeVal <= 0 || timestamp + rt <= endTimeVal))
-                                JmeterParser.writeFields(writer, "TX-" + label
+                                    && (endTimeVal <= 0 || timestamp + rt <= endTimeVal)) {
+                                csvPrinter.printRecord("TX-" + label
                                                 + (error ? "-F" : "-S"), timestamp,
                                         threads, error ? '1' : '0', latency, rt,
                                         bytes);
+                            }
                         }
                     } else if (level >= 3) {
                         boolean isSample = "sample".equals(reader.getLocalName());
@@ -85,8 +90,7 @@ public class JmeterXMLParser implements DataParser {
                                 continue;
                             long rt_ = Integer.parseInt(reader.getAttributeValue(
                                     null, "t"));
-                            JmeterParser
-                                    .writeFields(writer, "HIT", timestamp_, rt_);
+                            csvPrinter.printRecord("HIT", timestamp_, rt_);
                         }
                     }
                     break;
@@ -98,13 +102,14 @@ public class JmeterXMLParser implements DataParser {
                                 && "httpSample".equals(reader.getLocalName());
                         if (isHttpSample
                                 && (startTimeVal <= 0 || timestamp + rt >= startTimeVal)
-                                && (endTimeVal <= 0 || timestamp + rt <= endTimeVal))
-                            JmeterParser.writeFields(writer, "HIT", timestamp, rt);
+                                && (endTimeVal <= 0 || timestamp + rt <= endTimeVal)) {
+                            csvPrinter.printRecord("HIT", timestamp, rt);
+                        }
                     }
                     --level;
                     break;
             }
         }
-        writer.flush();
+        csvPrinter.flush();
     }
 }
