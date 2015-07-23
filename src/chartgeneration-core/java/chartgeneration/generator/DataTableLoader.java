@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
@@ -31,7 +32,7 @@ public class DataTableLoader {
 	 * @throws IOException
 	 */
 	public DataTable load(InputStream in) throws IOException {
-		List<List<Object>> rows = new ArrayList<List<Object>>();
+		List<List<Object>> rows = new LinkedList<>();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
 		// don't use csvParser.getRecords() for iteration, may cause huge memory usage and lead to out-of-memory error
@@ -54,8 +55,8 @@ public class DataTableLoader {
 	}
 
 	private static List<Object> getFields(String line){
-		List<Object> result = new ArrayList<Object>();
 		String[] cols = line.split(",");
+		List<Object> result = new ArrayList<Object>(cols.length);
 		for (String col : cols) {
 			if (col.length() >= 2 && col.charAt(0) == '"' && col.charAt(col.length() - 1) == '"'){
 				col = col.substring(1, col.length() - 1).replace("\"\"", "\"");
