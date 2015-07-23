@@ -54,8 +54,8 @@ public class ReportGenerator {
 		final DataTable dataTable = loader.load(in);
 		in.close();
 
-		final int workingThreadsCount = 1;/*Math.min(chartConfigs.size(), (int)(Runtime
-				.getRuntime().availableProcessors() * 1.6));*/
+		final int workingThreadsCount = Math.min(chartConfigs.size(), (int)(Runtime
+				.getRuntime().availableProcessors() * 1.6));
 		final Thread[] workingThreads = new Thread[workingThreadsCount];
 		final AtomicInteger remainedTasks = new AtomicInteger(chartConfigs.size());
 		final Chart[] charts = new Chart[chartConfigs.size()];
